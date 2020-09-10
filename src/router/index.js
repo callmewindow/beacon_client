@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import PostDetail from "../views/PostDetail";
+import Login from "../views/Login";
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ Vue.use(VueRouter)
     path: '/postdetail',
     name: 'PostDetail',
     component: PostDetail
+  },
+  {
+    path: '/Login',
+    name: 'Login',
+    component: Login
   },
 ]
 
