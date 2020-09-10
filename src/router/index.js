@@ -1,20 +1,23 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import PostDetail from "../views/PostDetail";
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: () => import('@/views/Home.vue'),
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    component: () => import('@/views/Home.vue'),
   },
   {
     path: '/postdetail',
     name: 'PostDetail',
-    component: PostDetail
+    component: () => import('@/views/PostDetail.vue'),
   },
 ]
 

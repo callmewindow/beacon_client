@@ -1,0 +1,103 @@
+<template>
+  <div id="navigator">
+    <el-menu id="menu" :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+      <el-menu-item @click="toHome" index="Home">
+        <el-image style="height: 50px;width: 130px;margin: auto;" :src="wel" />
+      </el-menu-item>
+      <el-menu-item class="nav-text" @click="toSearch" index="class">
+        课程
+      </el-menu-item>
+      <el-menu-item class="nav-text" @click="toSearch" index="college">
+        学校
+      </el-menu-item>
+      <el-menu-item class="nav-text" @click="toSearch" index="forum">
+        圈子
+      </el-menu-item>
+
+      <el-menu-item style="float:right;" @click="toUser" index="User">
+        <el-badge
+          :is-dot="this.$store.state.messageNum !== 0"
+          :hidden="this.$store.state.messageNum === 0"
+          class="item"
+        >
+          <i class="el-icon-user"></i>
+        </el-badge>
+      </el-menu-item>
+
+      <!-- <el-menu-item style="float:right;" @click="toExpert" index="Expert">
+        <i class="el-icon-s-custom"></i>
+      </el-menu-item> -->
+
+      <!-- <el-menu-item v-if="this.$store.state.identity === 'admin'" style="float:right;" @click="toApprove" index="Approve">
+        <i class="el-icon-document"></i>
+      </el-menu-item> -->
+
+    </el-menu>
+
+    <el-card shadow="never" id="loginWin" v-if="loginShow === 'yes'">
+      <!-- <Login /> -->
+    </el-card>
+  </div>
+</template>
+
+<script>
+import { siteTitle } from "@/tools/strings";
+export default {
+  name: "Navigator",
+  props: {
+    activeFunc: String,
+    login: String
+  },
+  data() {
+    return {
+      wel: require("@/assets/logo-horizon-simple.png"),
+      siteTitle,
+      activeIndex: this.activeFunc,
+      now: this.activeFunc,
+      loginShow: this.login
+    };
+  },
+  methods: {
+    toHome() {
+      this.$router.push({ path: "/Home" });
+    },
+    toUser() {
+      if (this.$store.state.userId === "null") {
+        this.$message("请先登录");
+        this.$router.push({ path: "/Login" });
+      } else {
+        this.$router.push({ path: "/User" });
+      }
+    },
+    toExpert() {
+      if (this.$store.state.userId === "null") {
+        this.$message("请先登录");
+        this.$router.push({ path: "/Login" });
+        return ;
+      }
+      if(this.$store.state.expertId === 'null'){
+        this.$message('暂无专家身份，请进行申请或等待审核');
+        this.$router.push({path: '/ExpertApp'});
+        return ;
+      }
+      this.$router.push({path: '/Expert/'+this.$store.state.expertId});
+    }
+  }
+
+};
+</script>
+
+
+<style scoped>
+#menu {
+  width: 100%;
+  float: left;
+}
+#loginWin {
+  margin: auto;
+  max-width: 500px;
+}
+.nav-text{
+  margin-left: 20px;
+}
+</style>

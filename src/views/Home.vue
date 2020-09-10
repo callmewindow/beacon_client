@@ -1,21 +1,24 @@
 <template>
-  <h1>
-    /postdetail 跳转到帖子详情页
-  </h1>
+  <el-card>
+    <Navigator active-func="Home" />
+    asd
+  </el-card>
 </template>
 
 <script>
-  export default {
-    name: "Home",
-    data() {
-      return {
-      };
-    },
-    methods: {
-    }
-  };
+import Navigator from "@/components/Navigator";
+// import Footer from "@/components/Footer";
+export default {
+  name: "Home",
+  components: {
+    Navigator,
+  },
+  data() {
+    return {};
+  },
+  methods: {},
+};
 </script>
 
 <style scoped>
-
 </style>
