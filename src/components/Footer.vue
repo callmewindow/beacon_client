@@ -1,6 +1,6 @@
 <template>
   <div id="footer">
-    © 2019 Tech Share
+    Copyright © 2020 Beacon
   </div>
 </template>
 
@@ -16,9 +16,11 @@
     width: 100%;
     height: 24px;
     line-height: 24px;
-    font-size: 14px;
+    color: #909399;
+    font-size: 10px;
     text-align: center;
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
     bottom: 0;
+    position: absolute;
   }
 </style>
