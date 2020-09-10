@@ -27,7 +27,7 @@ export default {
     };
   },
   async created() {
-      const userre = await UserAPI.login(this.abc, this.username, this.pwd);
+      const userre = await UserAPI.login(this.username, this.pwd);
       console.log(userre);
   },
   methods: {

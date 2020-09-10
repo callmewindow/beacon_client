@@ -17,12 +17,12 @@ const routes = [
   {
     path: '/postdetail',
     name: 'PostDetail',
-    component: () => import('@/views/PostDetail.vue'),
+    component: () => import('@/components/PostDetail.vue'),
   },
   {
-    path: '/Login',
-    name: 'Login',
-    component: () => import('@/views/Login.vue'),
+    path: '/userdetail',
+    name: 'UserDetail',
+    component: () => import('@/views/UserDetail.vue'),
   },
 ]
 
