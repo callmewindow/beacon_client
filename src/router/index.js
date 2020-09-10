@@ -19,6 +19,11 @@ const routes = [
     name: 'PostDetail',
     component: () => import('@/views/PostDetail.vue'),
   },
+  {
+    path: '/Login',
+    name: 'Login',
+    component: () => import('@/views/Login.vue'),
+  },
 ]
 
 const router = new VueRouter({
