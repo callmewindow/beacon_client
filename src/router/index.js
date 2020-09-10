@@ -19,6 +19,11 @@ const routes = [
     name: 'PostDetail',
     component: () => import('@/components/PostDetail.vue'),
   },
+  {
+    path: '/postlist',
+    name: 'PostList',
+    component: () => import('@/components/PostList.vue'),
+  },
 ]
 
 const router = new VueRouter({
