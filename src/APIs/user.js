@@ -1,9 +1,10 @@
 //axios是http请求的框架，用于发送请求
 import axios from 'axios'
 //QS为json对象转为字符串的函数
+
 import {
   QS
-} from './../tools/frontTool'
+} from './../tools/apiTool'
 
 //同步接口的调用示例见User.vue组件中的script部分
 //Get方法就将参数放在url中，注意传参的方式

@@ -3,8 +3,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     name: 'Home',
     component: () => import('@/views/Home.vue'),
@@ -24,6 +23,21 @@ const routes = [
     name: 'UserDetail',
     component: () => import('@/views/UserDetail.vue'),
   },
+  {
+    path: '/UploadVideo',
+    name: 'UploadVideo',
+    component: () => import('@/components/UploadVideo.vue'),
+  },
+  {
+    path: '/AddCourse',
+    name: 'AddCourse',
+    component: () => import('@/components/AddCourse.vue'),
+  },
+  {
+    path: '/video',
+    name: 'Video',
+    component: () => import('@/views/Video.vue'),
+  }
 ]
 
 const router = new VueRouter({

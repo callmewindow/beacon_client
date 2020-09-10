@@ -39,7 +39,11 @@
             <el-card>
               <div slot="header">
                 <span>热门课程</span>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="FT.building()">刷新</el-button>
+                <el-button
+                  style="float: right; padding: 3px 0"
+                  type="text"
+                  @click="FT.building()"
+                >刷新</el-button>
               </div>
               <el-row type="flex" class="row-bg" justify="space-around">
                 <el-col :span="5" v-for="o in 4" :key="o">
@@ -62,7 +66,11 @@
             <el-card>
               <div slot="header">
                 <span>热门分类</span>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="FT.building()">刷新</el-button>
+                <el-button
+                  style="float: right; padding: 3px 0"
+                  type="text"
+                  @click="FT.building()"
+                >刷新</el-button>
               </div>
               <el-row type="flex" class="row-bg" justify="start" :gutter="10">
                 <el-col :span="2" v-for="o in 8" :key="o">
@@ -74,7 +82,7 @@
         </el-row>
       </div>
     </div>
-    <Footer/>
+    <Footer />
   </div>
 </template>
 
@@ -93,10 +101,15 @@ export default {
       FT,
       centerLogo: require("@/assets/logo-horizon-complex.png"),
       username: "暂未登录",
+      // classes: [
+      //   "软件系统分析-软件工程",
+      //   "软件过程质量-软件工程",
+      //   "软件测试-软件工程",
+      // ],
       classes: [
-        "软件系统分析-软件工程",
-        "软件过程质量-软件工程",
-        "软件测试-软件工程",
+        "/home主页，/uploadvideo上传视频",
+        "/user个人主页，/video课程信息",
+        "/addcourse新增课程，/postdetail帖子",
       ],
       classIntro:
         "《软件工程实践》是软件工程本科专业的一门专业必修课。它是集软件、硬件、程序语言开发、数据库设计、软件过程管理和交互设计为一体的重要实践课程。",
@@ -131,8 +144,8 @@ export default {
   border-radius: 5px;
   background-color: white;
 }
-.selfBlock{
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+.selfBlock {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 #username {
   padding-top: 10px;
@@ -148,7 +161,7 @@ export default {
   color: #797b80;
 }
 .classes {
-  cursor: pointer;
+  /* cursor: pointer; */
   margin-top: 5px;
   margin-left: 15px;
   font-size: 16px;
@@ -195,8 +208,7 @@ export default {
   margin: 10px;
 }
 
-#bottom{
+#bottom {
   margin-top: 15px;
 }
-
 </style>
