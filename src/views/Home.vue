@@ -18,7 +18,7 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="5" id="latest">
-            <div class="con-block">
+            <div class="con-block selfBlock">
               <div id="username">{{username}}</div>
               <div id="tip">最近学习：</div>
               <div
@@ -59,7 +59,7 @@
       <div id="bottom">
         <el-row type="flex" class="row-bg" justify="center">
           <el-col :span="18">
-            <el-card shadow="never">
+            <el-card>
               <div slot="header">
                 <span>热门分类</span>
                 <el-button style="float: right; padding: 3px 0" type="text" @click="FT.building()">刷新</el-button>
@@ -118,7 +118,7 @@ export default {
 
 <style scoped>
 #all {
-  width: 100% auto;
+  width: 100%;
   height: 100vh;
   background-color: rgb(240, 240, 240);
 }
@@ -130,6 +130,9 @@ export default {
 .con-block {
   border-radius: 5px;
   background-color: white;
+}
+.selfBlock{
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
 }
 #username {
   padding-top: 10px;
