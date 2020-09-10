@@ -1,20 +1,20 @@
 <template>
   <div id="navigator">
     <el-menu id="menu" :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
-      <el-menu-item @click="toHome" index="Home">
-        <el-image style="height: 50px;width: 130px;margin: auto;" :src="wel" />
+      <el-menu-item @click="FT.toHome('')">
+        <el-image style="height:50px;width:130px;margin:auto;margin-left:100px;" :src="wel" />
       </el-menu-item>
-      <el-menu-item class="nav-text" @click="toSearch" index="class">
+      <el-menu-item class="nav-text" @click="FT.building" index="class">
         课程
       </el-menu-item>
-      <el-menu-item class="nav-text" @click="toSearch" index="college">
+      <el-menu-item class="nav-text" @click="FT.building" index="college">
         学校
       </el-menu-item>
-      <el-menu-item class="nav-text" @click="toSearch" index="forum">
+      <el-menu-item class="nav-text" @click="FT.building" index="forum">
         圈子
       </el-menu-item>
 
-      <el-menu-item style="float:right;" @click="toUser" index="User">
+      <el-menu-item style="float:right;margin-right:100px;" @click="FT.building" index="user">
         <el-badge
           :is-dot="this.$store.state.messageNum !== 0"
           :hidden="this.$store.state.messageNum === 0"
@@ -23,14 +23,6 @@
           <i class="el-icon-user"></i>
         </el-badge>
       </el-menu-item>
-
-      <!-- <el-menu-item style="float:right;" @click="toExpert" index="Expert">
-        <i class="el-icon-s-custom"></i>
-      </el-menu-item> -->
-
-      <!-- <el-menu-item v-if="this.$store.state.identity === 'admin'" style="float:right;" @click="toApprove" index="Approve">
-        <i class="el-icon-document"></i>
-      </el-menu-item> -->
 
     </el-menu>
 
@@ -41,7 +33,7 @@
 </template>
 
 <script>
-import { siteTitle } from "@/tools/strings";
+import * as FT  from "@/tools/frontTool";
 export default {
   name: "Navigator",
   props: {
@@ -50,17 +42,14 @@ export default {
   },
   data() {
     return {
+      FT,
       wel: require("@/assets/logo-horizon-simple.png"),
-      siteTitle,
       activeIndex: this.activeFunc,
       now: this.activeFunc,
       loginShow: this.login
     };
   },
   methods: {
-    toHome() {
-      this.$router.push({ path: "/Home" });
-    },
     toUser() {
       if (this.$store.state.userId === "null") {
         this.$message("请先登录");
@@ -69,26 +58,19 @@ export default {
         this.$router.push({ path: "/User" });
       }
     },
-    toExpert() {
-      if (this.$store.state.userId === "null") {
-        this.$message("请先登录");
-        this.$router.push({ path: "/Login" });
-        return ;
-      }
-      if(this.$store.state.expertId === 'null'){
-        this.$message('暂无专家身份，请进行申请或等待审核');
-        this.$router.push({path: '/ExpertApp'});
-        return ;
-      }
-      this.$router.push({path: '/Expert/'+this.$store.state.expertId});
-    }
   }
 
 };
 </script>
 
-
 <style scoped>
+#navigator{
+  width: 100%;
+  height: auto;
+  position: fixed;
+  z-index: 10;
+}
+
 #menu {
   width: 100%;
   float: left;
@@ -98,6 +80,6 @@ export default {
   max-width: 500px;
 }
 .nav-text{
-  margin-left: 20px;
+  margin-left: 30px;
 }
 </style>
