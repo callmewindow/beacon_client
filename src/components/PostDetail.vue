@@ -5,7 +5,7 @@
       <div
           style="color: rgb(0,102,204); margin-top: 20px; margin-left: 20px; margin-bottom: 20px; font-family: 微软雅黑; font-size: 30px; font-weight: bold">
         {{ post.title }}
-        <el-tag effect="dark">置顶</el-tag>
+        <el-tag type="success" effect="dark">置顶</el-tag>
         <el-tag type="warning" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;">精华</el-tag>
       </div>
 
@@ -19,7 +19,7 @@
         </el-col>
         <el-col :span="12">
           <div style="float: right; margin-right: 50px; color: rgb(120,120,120)">
-            阅读量：{{post.read}}
+            阅读量：{{ post.read }}
           </div>
         </el-col>
       </el-row>
@@ -93,6 +93,7 @@ export default {
   data() {
     return {
       reply_button_clicked: false,
+      reply_text: "",
       post: {
         title: "帖子标题啊啊啊啊啊啊",
         author: "田所浩二",
@@ -109,13 +110,13 @@ export default {
   },
   methods: {
     like(e) {
-      this.like_number += 1;
+      this.post.like += 1;
       let target = e.target;
       if (target.nodeName === 'SPAN' || target.nodeName === 'I') target = e.target.parentNode;
       target.blur();
     },
     dislike(e) {
-      if (this.like_number > 0) this.like_number -= 1;
+      if (this.post.like > 0) this.post.like -= 1;
       let target = e.target;
       if (target.nodeName === 'SPAN' || target.nodeName === 'I') target = e.target.parentNode;
       target.blur();

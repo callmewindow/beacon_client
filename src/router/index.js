@@ -19,6 +19,11 @@ const routes = [{
     component: () => import('@/components/PostDetail.vue'),
   },
   {
+    path: '/postlist',
+    name: 'PostList',
+    component: () => import('@/components/PostList.vue'),
+  },
+  {
     path: '/userdetail',
     name: 'UserDetail',
     component: () => import('@/views/UserDetail.vue'),
