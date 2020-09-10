@@ -1,8 +1,8 @@
 <template>
   <div id="navigator">
     <el-menu id="menu" :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
-      <el-menu-item @click="FT.toHome('')" index="home">
-        <el-image style="height:50px;width:130px;margin:auto;" :src="wel" />
+      <el-menu-item @click="FT.toHome('')">
+        <el-image style="height:50px;width:130px;margin:auto;margin-left:100px;" :src="wel" />
       </el-menu-item>
       <el-menu-item class="nav-text" @click="FT.building" index="class">
         课程
@@ -14,7 +14,7 @@
         圈子
       </el-menu-item>
 
-      <el-menu-item style="float:right;" @click="toUser" index="user">
+      <el-menu-item style="float:right;margin-right:100px;" @click="FT.building" index="user">
         <el-badge
           :is-dot="this.$store.state.messageNum !== 0"
           :hidden="this.$store.state.messageNum === 0"
@@ -63,12 +63,17 @@ export default {
 };
 </script>
 
-
 <style scoped>
+#navigator{
+  width: 100%;
+  height: auto;
+  position: fixed;
+  z-index: 10;
+}
+
 #menu {
-  width: 90%;
+  width: 100%;
   float: left;
-  margin-left: 5%;
 }
 #loginWin {
   margin: auto;
