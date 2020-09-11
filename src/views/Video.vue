@@ -25,7 +25,8 @@
       <el-col>
         <el-card>
           <el-tabs tab-position="left" style="width: 100%;" @tab-click="click_community">
-            <el-tab-pane label="课程信息">
+            <el-tab-pane>
+              <div class="left_tab" slot="label">课程信息</div>
               <el-row>
                 <el-col style="font-size: 22px;">课程信息</el-col>
               </el-row>
@@ -89,6 +90,7 @@
               </el-row>
             </el-tab-pane>
             <el-tab-pane label="教师简介">
+              <div class="left_tab" slot="label">教师简介</div>
               <el-row>
                 <el-col style="font-size: 22px;">教师简介</el-col>
               </el-row>
@@ -99,8 +101,9 @@
               </el-row>
             </el-tab-pane>
             <el-tab-pane label="视频课程">
+              <div class="left_tab" slot="label">视频资源</div>
               <el-row>
-                <el-col style="font-size: 22px;">视频课程</el-col>
+                <el-col style="font-size: 22px;">视频资源</el-col>
               </el-row>
               <el-row>
                 <el-card style="margin-top: 10px;">
@@ -146,6 +149,7 @@
               </el-row>
             </el-tab-pane>
             <el-tab-pane label="圈子社区">
+              <div class="left_tab" slot="label">圈子社区</div>
               <el-row>
                 <el-col style="font-size: 22px;">圈子社区</el-col>
               </el-row>
@@ -161,10 +165,6 @@
     </el-row>
   </div>
 </template>
-
-
-
-
 
 <script>
 import VideoPlayer from "@/components/VideoPlayer";
@@ -323,6 +323,12 @@ export default {
 #video-title-part {
   color: #303133;
   font-size: 22px;
+}
+
+.left_tab{
+  width: 10vw;
+  text-align: center;
+  font-size: 16px;
 }
 </style>
 
