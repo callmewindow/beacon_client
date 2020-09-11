@@ -53,21 +53,41 @@
                 <el-card style="margin-top: 10px;">
                   <el-row id="course-selector">
                     <span id="course-selector-title">请选择章节：</span>
-                    <VideoSelector
-                      style="margin-left: 185px;"
-                      @sendValue1Event="getValue1"
-                      @sendValue2Event="getValue2"
-                    ></VideoSelector>
+
+                    <div style="margin-left: 14%">
+                      <el-select
+                        v-model="course_index"
+                        placeholder="请选择"
+                        @change="get_course_index"
+                      >
+                        <el-option
+                          v-for="item in course_array"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+
+                      <el-select
+                        v-model="video_index"
+                        style="margin-left: 20px;"
+                        placeholder="请选择"
+                        @change="get_video_index"
+                      >
+                        <el-option
+                          v-for="item in url_array"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+                    </div>
                   </el-row>
                   <el-row style="margin-top: 20px;">
                     <span id="video-title-part">{{video_title}}</span>
                   </el-row>
                   <el-row>
                     <VideoPlayer style=" margin-top: 20px; width: 80%; border-radius: 5px;"></VideoPlayer>
-                  </el-row>
-
-                  <el-row>
-                    <button @click="changeVideo()"></button>
                   </el-row>
                 </el-card>
               </el-row>
@@ -89,12 +109,10 @@
 
 
 <script>
-import VideoSelector from "@/components/VideoSelector";
 import VideoPlayer from "@/components/VideoPlayer";
 export default {
   name: "Vedio",
   components: {
-    VideoSelector,
     VideoPlayer,
   },
   data() {
@@ -104,18 +122,61 @@ export default {
       course_teachers: "Yuan Cangzhou",
       course_description: "很玄学，很魔幻",
       video_title: "8 0 3 8 6",
+      course_index: null,
+      video_index: null,
+      course_array: [
+        {
+          value: 1,
+          label: "第一节课",
+          url_array: [
+            {
+              value: 1,
+              label: "第一个视频",
+              url: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
+            },
+            {
+              value: 2,
+              label: "第二个视频",
+              url: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
+            },
+          ],
+        },
+        {
+          value: 2,
+          label: "第二节课",
+          url_array: [
+            {
+              value: 1,
+              label: "第一个视频",
+              url: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
+            },
+            {
+              value: 2,
+              label: "第二个视频",
+              url: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
+            },
+            {
+              value: 3,
+              label: "第三个视频",
+              url: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
+            },
+          ],
+        },
+      ],
+      url_array: [],
     };
   },
   methods: {
+    get_course_index() {
+      this.url_array = this.course_array[this.course_index - 1].url_array;
+    },
+    get_video_index() {
+      this.changeVideo();
+    },
     changeVideo: function () {
       var e = document.getElementById("video-player");
-      e.src = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-    },
-    getValue1(data) {
-      console.log(data);
-    },
-    getValue2(data) {
-      console.log(data);
+      e.src = this.url_array[this.video_index - 1].url;
+      e.play();
     },
   },
 };
@@ -162,7 +223,7 @@ export default {
 }
 
 #course-selector-title {
-  margin-left: 130px;
+  margin-left: 10%;
   color: #606266;
   font-size: 18px;
 }
