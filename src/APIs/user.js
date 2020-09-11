@@ -3,7 +3,7 @@ import axios from 'axios'
 //QS为json对象转为字符串的函数
 import {
   QS
-} from './../tools/frontTool'
+} from './../tools/apiTool'
 
 //同步接口的调用示例见User.vue组件中的script部分
 //Get方法就将参数放在url中，注意传参的方式
@@ -22,15 +22,17 @@ export const login = (username, password) => {
 //如果post出错，特别是500 Internet serve error有以下解决方案
 //例：将data: QS({ paper })换成data: { paper }   或反向操作（加上QS）
 //（obj的转化是自动的，不是代码）
-export const register = (username, nickname, password, userEmail) => {
+export const register = (username, user_nickname, user_password, email, school, school_id) => {
   return axios({
     method: 'POST',
     url: `/api/user/register`,
     data: QS({
-      username,
-      nickname,
-      password,
-      userEmail
+		username,
+		user_nickname,
+		user_password,
+		email,
+		school,
+		school_id,
     }),
   })
 }

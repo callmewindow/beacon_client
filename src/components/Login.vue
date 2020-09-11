@@ -22,22 +22,30 @@
           <el-form-item label="用户名" prop="username">
             <el-input v-model="register.username" clearable></el-input>
           </el-form-item>
-          <el-form-item label="昵称" prop="nickname">
-            <el-input v-model="register.nickname" clearable></el-input>
+          <el-form-item label="昵称" prop="user_nickname">
+            <el-input v-model="register.user_nickname" clearable></el-input>
           </el-form-item>
-          <el-form-item label="邮箱" prop="userEmail">
-            <el-input v-model="register.userEmail" clearable>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="register.email" clearable>
             </el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="register.password" show-password></el-input>
-          </el-form-item>
-          <el-form-item label="确认密码" prop="checkPass">
+			<el-form-item label="学校" prop="school">
+			<el-input v-model="register.school" clearable>
+			</el-input>
+			</el-form-item>
+		<el-form-item label="学号" prop="school_id">
+			<el-input v-model="register.school_id" clearable>
+			</el-input>
+			</el-form-item>
+			<el-form-item label="密码" prop="user_password">
+			<el-input v-model="register.user_password" show-password></el-input>
+			</el-form-item>
+			<el-form-item label="确认密码" prop="checkPass">
             <el-input v-model="register.checkPass" show-password></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="doSubmitRegister('register')">立即注册</el-button>
-            <el-button @click="resetForm('register')">清空</el-button>
+            <el-button type="primary"  style="width: 45%;" @click="doSubmitRegister('register')">立即注册</el-button>
+            <el-button  style="width: 50%;" @click="resetForm('register')">清空</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -76,7 +84,7 @@ import * as UserAPI from "@/APIs/user.js";
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.register.password) {
+        } else if (value !== this.register.user_password) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
@@ -89,29 +97,37 @@ import * as UserAPI from "@/APIs/user.js";
           password: ""
         },
         register: {
-          username: "",
-          password: "",
-          checkPass: "",
-          nickname: "",
-          userEmail: ""
+			username: "",
+			user_password: "",
+			checkPass: "",
+			user_nickname: "",
+			email: "",
+			school: "",
+			school_id: "",
         },
 
         rules: {
           username: [
             {required: true, message: '请输入用户名', trigger: 'blur'}
           ],
-          nickname: [
+          user_nickname: [
             {required: true, message: '请输入昵称', trigger: 'blur'}
           ],
-          userEmail: [
+          email: [
             {required: true, validator: checkEmail, trigger: 'blur'}
           ],
-          password: [
+          user_password: [
             {required: true, validator: validatePass, trigger: 'blur'}
           ],
           checkPass: [
             {required: true, validator: validatePass2, trigger: 'blur'}
-          ]
+          ],
+		school: [
+			{required: true, message: '请输入学校', trigger: 'blur'}
+		],
+		school_id: [
+			{required: true, message: '请输入学号', trigger: 'blur'}
+		],
         }
 
       }
@@ -158,7 +174,8 @@ import * as UserAPI from "@/APIs/user.js";
         this.$refs[formName].validate(async (valid) => {
           if (valid) {
             try {
-              const userInfo = await UserAPI.register(this.register.username, this.register.nickname, this.register.password, this.register.userEmail);
+				// 发送注册数据给后端
+              const userInfo = await UserAPI.register(this.register.username, this.register.userr_nickname, this.register.user_password, this.register.email, this.register.school, this.register.school_id);
               const res = userInfo.data.msg;
               if (res === "existUsername") {
                 this.$message.error('用户名已被注册');
@@ -213,6 +230,7 @@ import * as UserAPI from "@/APIs/user.js";
     margin: 0 auto;
   }
   .register-container {
+	width: 450px;
     margin: 0 auto;
   }
 </style>
