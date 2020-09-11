@@ -19,7 +19,9 @@
           <el-col :span="1"></el-col>
           <el-col :span="5" id="latest">
             <div class="con-block selfBlock">
-              <div id="username">{{username}}</div>
+              <div id="username">
+                <Username :name="username" text="教师" type="1" />
+              </div>
               <div id="tip">最近学习：</div>
               <div
                 class="classes"
@@ -83,31 +85,33 @@
 </template>
 
 <script>
+import * as FT from "@/tools/frontTool";
 import * as UserAPI from "@/APIs/user.js";
 import Navigator from "@/components/Navigator";
 import Footer from "@/components/Footer";
-import * as FT from "@/tools/frontTool";
+import Username from "@/components/Username";
 export default {
   name: "Home",
   components: {
     Navigator,
     Footer,
+    Username,
   },
   data() {
     return {
       FT,
       centerLogo: require("@/assets/logo-horizon-complex.png"),
       username: "暂未登录",
-      // classes: [
-      //   "软件系统分析-软件工程",
-      //   "软件过程质量-软件工程",
-      //   "软件测试-软件工程",
-      // ],
       classes: [
-        "/home主页，/uploadvideo上传视频",
-        "/user个人主页，/video课程信息",
-        "/addcourse新增课程，/postdetail帖子",
+        "软件系统分析-软件工程",
+        "软件过程质量-软件工程",
+        "软件测试-软件工程",
       ],
+      // classes: [
+      //   "/home主页，/uploadvideo上传视频",
+      //   "/user个人主页，/video课程信息",
+      //   "/addcourse新增课程，/postdetail帖子",
+      // ],
       classIntro:
         "《软件工程实践》是软件工程本科专业的一门专业必修课。它是集软件、硬件、程序语言开发、数据库设计、软件过程管理和交互设计为一体的重要实践课程。",
     };
@@ -169,7 +173,6 @@ export default {
 #all {
   width: 100%;
   height: 100vh;
-  background-color: rgb(240, 240, 240);
 }
 #main {
   padding-top: 75px;
@@ -184,8 +187,8 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 #username {
-  padding-top: 10px;
-  font-size: 15px;
+  padding-top: 12px;
+  font-size: 14px;
   font-weight: bold;
   width: 100%;
   text-align: center;
@@ -197,7 +200,7 @@ export default {
   color: #797b80;
 }
 .classes {
-  /* cursor: pointer; */
+  cursor: pointer;
   margin-top: 5px;
   margin-left: 15px;
   font-size: 16px;
