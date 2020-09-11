@@ -90,6 +90,16 @@ import * as UserAPI from "@/APIs/user.js";
           callback();
         }
       };
+		var checkSID = (rule, value, callback) => {
+			if(value === ''){
+				callback(new Error('请输入学号'));
+			} else {
+				if(/^[0-9]+$/.test(value) == false) {
+					return callback(new Error('学号格式错误：只能包含数字'));
+				}
+				callback();
+			}
+		}
 
       return {
         login: {
@@ -126,7 +136,7 @@ import * as UserAPI from "@/APIs/user.js";
 			{required: true, message: '请输入学校', trigger: 'blur'}
 		],
 		school_id: [
-			{required: true, message: '请输入学号', trigger: 'blur'}
+			{required: true, validator: checkSID,  trigger: 'blur'}
 		],
         }
 
