@@ -24,15 +24,68 @@
     <el-row id="down-part" :gutter="10">
       <el-col>
         <el-card>
-          <el-tabs tab-position="left" style="width: 100%;">
-            <el-tab-pane label="课程简介">
+          <el-tabs tab-position="left" style="width: 100%;" @tab-click="click_community">
+            <el-tab-pane label="课程信息">
               <el-row>
-                <el-col style="font-size: 22px;">课程简介</el-col>
+                <el-col style="font-size: 22px;">课程信息</el-col>
               </el-row>
-              <el-row>
-                <el-card
-                  style="margin-top: 10px; color: #909399; font-size: 18px;"
-                >{{course_description}}</el-card>
+              <el-row type="flex" class="row-bg" :gutter="10">
+                <el-col :span="8" :offset="3">
+                  <el-card
+                    style="height: 600px; margin-top: 10px; color: #909399; font-size: 18px;"
+                  >
+                    <el-row style="margin-bottom: 20px; color: #303133; font-size: 20px;">课程简介</el-row>
+                    <el-row>{{course_description}}</el-row>
+                  </el-card>
+                </el-col>
+
+                <el-col :span="8" :offset="2">
+                  <el-card
+                    style="height: 45%; margin-top: 10px; color: #909399; font-size: 18px; display: flex; justify-content: center; align-items: center;"
+                  >
+                    <el-row style="margin-bottom: 30px; color: #303133; font-size: 20px;">人员导入</el-row>
+
+                    <el-row>
+                      <el-upload
+                        class="upload-demo"
+                        action
+                        :on-preview="handlePreview"
+                        :on-remove="handleRemove"
+                        :before-remove="beforeRemove"
+                        multiple
+                        :limit="3"
+                        :on-exceed="handleExceed"
+                        :file-list="fileList"
+                      >
+                        <el-button type="primary" icon="el-icon-upload2" circle></el-button>
+                        <div slot="tip" class="el-upload__tip">只能上传xls/xlsx/csv文件，且不超过500kb</div>
+                      </el-upload>
+                    </el-row>
+                  </el-card>
+
+                  <el-card
+                    style="height: 45%; margin-top: 10%; color: #909399; font-size: 18px; display: flex; justify-content: center; align-items: center;"
+                  >
+                    <el-row style="margin-bottom: 30px; color: #303133; font-size: 20px;">视频上传</el-row>
+
+                    <el-row>
+                      <el-upload
+                        class="upload-demo"
+                        action
+                        :on-preview="handlePreview"
+                        :on-remove="handleRemove"
+                        :before-remove="beforeRemove"
+                        multiple
+                        :limit="3"
+                        :on-exceed="handleExceed"
+                        :file-list="fileList"
+                      >
+                        <el-button type="primary" icon="el-icon-upload2" circle></el-button>
+                        <div slot="tip" class="el-upload__tip">只能上传xls/xlsx/csv文件，且不超过500kb</div>
+                      </el-upload>
+                    </el-row>
+                  </el-card>
+                </el-col>
               </el-row>
             </el-tab-pane>
             <el-tab-pane label="教师简介">
@@ -41,7 +94,7 @@
               </el-row>
               <el-row>
                 <el-card
-                  style="margin-top: 10px; color: #909399; font-size: 18px;"
+                  style="height: 500px; margin-top: 10px; color: #909399; font-size: 18px;"
                 >{{course_description}}</el-card>
               </el-row>
             </el-tab-pane>
@@ -95,6 +148,11 @@
             <el-tab-pane label="圈子社区">
               <el-row>
                 <el-col style="font-size: 22px;">圈子社区</el-col>
+              </el-row>
+              <el-row>
+                <el-card
+                  style="height: 500px; margin-top: 10px; color: #909399; font-size: 18px;"
+                >{{course_description}}</el-card>
               </el-row>
             </el-tab-pane>
           </el-tabs>
@@ -164,6 +222,7 @@ export default {
         },
       ],
       url_array: [],
+      fileList: [],
     };
   },
   methods: {
@@ -177,6 +236,39 @@ export default {
       var e = document.getElementById("video-player");
       e.src = this.url_array[this.video_index - 1].url;
       e.play();
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    beforeRemove(file) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    click_community(target) {
+      if (target.label == "圈子社区") {
+        this.$alert(
+          "该课程现在还未创建圈子社区，现在要创建圈子社区吗？",
+          "创建圈子社区",
+          {
+            confirmButtonText: "确定",
+            callback: (action) => {
+              this.$message({
+                type: "info",
+                message: `action: ${action}`,
+              });
+            },
+          }
+        );
+      }
     },
   },
 };
