@@ -10,7 +10,7 @@ import Router from 'vue-router';
 Vue.config.productionTip = true
 
 Vue.prototype.$http = axios
-axios.defaults.baseURL = 'http://101.200.219.50'
+axios.defaults.baseURL = '/api'
 
 // 捕获路由异常
 const originalPush = Router.prototype.push

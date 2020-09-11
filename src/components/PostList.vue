@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import * as postAPI from "../APIs/";//<-----------------------------------------NEED API
+import * as postAPI from "@/APIs/forum.js";
 
 export default {
   name: "PostList",

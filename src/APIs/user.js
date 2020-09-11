@@ -6,19 +6,52 @@ import {
   QS
 } from './../tools/apiTool'
 
+export const addUser = (username, user_password, user_nickname, school, school_id, email) => {
+  return axios({
+    method: 'POST',
+    url: `/addUser`,
+    data: QS({
+      username,
+      user_password,
+      user_nickname,
+      school,
+      school_id,
+      email
+    }),
+  })
+}
+
+export const login = (username, user_password) => {
+  return axios({
+    method: 'POST',
+    url: `/login`,
+    data: QS({
+      username,
+      user_password,
+    }),
+  })
+}
+
+export const queryTest = () => {
+  return axios({
+    method: 'POST',
+    url: `/courseQuery`,
+  })
+}
+
 //同步接口的调用示例见User.vue组件中的script部分
 //Get方法就将参数放在url中，注意传参的方式
 //如果get出错，与后端确认请求URL的格式
-export const login = (username, password) => {
-  return axios({
-    method: 'POST',
-    url: `/api/user/login`,
-    data: (
-      username,
-      password
-    ),
-  })
-}
+// export const login = (username, password) => {
+//   return axios({
+//     method: 'POST',
+//     url: `/api/user/login`,
+//     data: (
+//       username,
+//       password
+//     ),
+//   })
+// }
 //post方法就将参数放在data中
 //如果post出错，特别是500 Internet serve error有以下解决方案
 //例：将data: QS({ paper })换成data: { paper }   或反向操作（加上QS）
