@@ -24,6 +24,11 @@ const routes = [{
     component: () => import('@/components/PostList.vue'),
   },
   {
+    path: '/courselist',
+    name: 'CourseList',
+    component: () => import('@/views/CourseList.vue'),
+  },
+  {
     path: '/userdetail',
     name: 'UserDetail',
     component: () => import('@/views/UserDetail.vue'),
