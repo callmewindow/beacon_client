@@ -88,43 +88,63 @@
 </template>
 
 <script>
+import * as postAPI from "@/APIs/forum.js";
+
 export default {
   name: "PostDetail",
   data() {
     return {
       reply_button_clicked: false,
       reply_text: "",
-      post: {
-        title: "帖子标题啊啊啊啊啊啊",
-        author: "田所浩二",
-        datetime: "8.10",
-        content: "帖子内容啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
-        read: "114514",
-        like: "1919"
+      //帖子详情页规范，前端传递参数：postId
+      post: {                            //帖子主要内容，字典
+        id: "帖子id，后端是int就int，是str就str",
+        title: "帖子标题str",
+        author: "发帖人str",
+        datetime: "发帖时间，str，月.日 时:分",
+        content: "帖子内容str",
+        read: "阅读数，int",
+        like: "点赞数，int",
+        top: "是否置顶，bool",
+        highlight: "是否精华，bool"
       },
-      reply_list: [
-        {id: 2, content: "这是2楼的内容", author: "田所浩三", datetime: "9.9 19:59"},
-        {id: 3, content: "这是3楼的内容", author: "田所浩四", datetime: "9.9 19:69"},
+      reply_list: [            //帖子下面的回复，列表，列表元素是字典
+        {
+          id: "回复的id，没有则提供楼层号",
+          content: "回复内容str",
+          author: "回复作者str",
+          datetime: "回复时间str",
+          floor: "回复的楼层号, int str 随意"
+        },
       ]
     };
+  },
+  created() {
+    this.get_post_detail();
   },
   methods: {
     like(e) {
       this.post.like += 1;
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I') target = e.target.parentNode;
+      if (target.nodeName === 'SPAN' || target.nodeName === 'I')
+        target = e.target.parentNode;
       target.blur();
     },
     dislike(e) {
       if (this.post.like > 0) this.post.like -= 1;
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I') target = e.target.parentNode;
+      if (target.nodeName === 'SPAN' || target.nodeName === 'I')
+        target = e.target.parentNode;
       target.blur();
     },
     report(e) {
-      alert("已举报");
+      this.$message({
+        message: "已举报",
+        type: "success"
+      });
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I') target = e.target.parentNode;
+      if (target.nodeName === 'SPAN' || target.nodeName === 'I')
+        target = e.target.parentNode;
       target.blur();
     },
     reply_reply(id) {
@@ -136,12 +156,21 @@ export default {
       this.reply_text = "";
       this.reply_button_clicked = !this.reply_button_clicked;
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I') target = e.target.parentNode;
+      if (target.nodeName === 'SPAN' || target.nodeName === 'I')
+        target = e.target.parentNode;
       target.blur();
+    },
+    async get_post_detail() {
+      try {
+        const detail_dict = await postAPI;//<-----------------------------------------NEED API
+        window.console.log(detail_dict);
+      } catch (e) {
+        this.$message.error('请求超时');
+      }
     },
     async send_reply(e) {
       if (this.reply_text === "") {
-        alert("不能回复空内容");
+        this.$message.error("不能回复空内容");
         return;
       }
       let reply_dict = {
@@ -151,10 +180,20 @@ export default {
         datetime: "9.9 19:59"
       };
       this.reply_list.push(reply_dict);
-      alert("已发送");
+      try {
+        const result = await postAPI;//<-----------------------------------------NEED API
+        window.console.log(result);
+      } catch (e) {
+        this.$message.error('请求超时');
+      }
+      this.$message({
+        message: "回复成功",
+        type: "success"
+      });
       this.reply_button_clicked = false
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I') target = e.target.parentNode;
+      if (target.nodeName === 'SPAN' || target.nodeName === 'I')
+        target = e.target.parentNode;
       target.blur();
     },
   }
