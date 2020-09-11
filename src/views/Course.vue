@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="course">
     <Navigator active-func="home"></Navigator>
     <el-row type="flex" style="padding-top: 70px;">
       <el-col :xs="4" :sm="4" :md="4" :lg="4">
@@ -14,13 +14,13 @@
             type="primary"
             :underline="false"
             style="font-size: 22px; padding-right: 15px; border-right: 1px solid #aaaaaa;"
-          >{{course_name}}</el-link>
+          >{{courseName}}</el-link>
 
           <el-link
             type="success"
             :underline="false"
             style="font-size: 16px; margin-left: 15px;"
-          >{{course_teachers}}</el-link>
+          >{{courseTeacher}}</el-link>
         </el-card>
       </el-col>
     </el-row>
@@ -28,7 +28,7 @@
     <el-row id="down-part">
       <el-col>
         <el-card>
-          <el-tabs tab-position="left" style="width: 100%;" @tab-click="click_community">
+          <el-tabs tab-position="left" style="width: 100%;" @tab-click="clickCommunity">
             <el-tab-pane>
               <div class="left_tab" slot="label">课程信息</div>
               <el-row>
@@ -40,7 +40,7 @@
                     style="height: 600px; margin-top: 10px; color: #909399; font-size: 18px;"
                   >
                     <el-row style="margin-bottom: 20px; color: #303133; font-size: 20px;">课程简介</el-row>
-                    <el-row>{{course_description}}</el-row>
+                    <el-row>{{courseDescription}}</el-row>
                   </el-card>
                 </el-col>
 
@@ -104,13 +104,9 @@
                     <span id="course-selector-title">请选择章节：</span>
 
                     <div style="margin-left: 14%">
-                      <el-select
-                        v-model="course_index"
-                        placeholder="请选择"
-                        @change="get_course_index"
-                      >
+                      <el-select v-model="courseIndex" placeholder="请选择" @change="getCourseIndex">
                         <el-option
-                          v-for="item in course_array"
+                          v-for="item in courseArray"
                           :key="item.value"
                           :label="item.label"
                           :value="item.value"
@@ -118,13 +114,13 @@
                       </el-select>
 
                       <el-select
-                        v-model="video_index"
+                        v-model="videoIndex"
                         style="margin-left: 20px;"
                         placeholder="请选择"
-                        @change="get_video_index"
+                        @change="getVideoIndex"
                       >
                         <el-option
-                          v-for="item in url_array"
+                          v-for="item in urlArray"
                           :key="item.value"
                           :label="item.label"
                           :value="item.value"
@@ -133,7 +129,7 @@
                     </div>
                   </el-row>
                   <el-row style="margin-top: 20px;">
-                    <span id="video-title-part">{{video_title}}</span>
+                    <span id="video-title-part">{{videoTitle}}</span>
                   </el-row>
                   <el-row>
                     <VideoPlayer style=" margin-top: 20px; width: 80%; border-radius: 5px;"></VideoPlayer>
@@ -149,7 +145,7 @@
               <el-row>
                 <el-card
                   style="height: 500px; margin-top: 10px; color: #909399; font-size: 18px;"
-                >{{course_description}}</el-card>
+                >{{courseDescription}}</el-card>
               </el-row>
             </el-tab-pane>
           </el-tabs>
@@ -171,17 +167,17 @@ export default {
   data() {
     return {
       university_logo_url: require("@/assets/BUAA.png"),
-      course_name: "Operating System",
-      course_teachers: "Yuan Cangzhou",
-      course_description: "很玄学，很魔幻",
-      video_title: "8 0 3 8 6",
-      course_index: null,
-      video_index: null,
-      course_array: [
+      courseName: "Operating System",
+      courseTeacher: "Yuan Cangzhou",
+      courseDescription: "很玄学，很魔幻",
+      videoTitle: "8 0 3 8 6",
+      courseIndex: null,
+      videoIndex: null,
+      courseArray: [
         {
           value: 1,
           label: "第一节课",
-          url_array: [
+          urlArray: [
             {
               value: 1,
               label: "第一个视频",
@@ -197,7 +193,7 @@ export default {
         {
           value: 2,
           label: "第二节课",
-          url_array: [
+          urlArray: [
             {
               value: 1,
               label: "第一个视频",
@@ -216,20 +212,28 @@ export default {
           ],
         },
       ],
-      url_array: [],
+      urlArray: [],
       fileList: [],
     };
   },
+  mounted() {
+    this.getCourseInfo();
+  },
   methods: {
-    get_course_index() {
-      this.url_array = this.course_array[this.course_index - 1].url_array;
+    getCourseInfo() {
+
+      
     },
-    get_video_index() {
+
+    getCourseIndex() {
+      this.urlArray = this.courseArray[this.courseIndex - 1].urlArray;
+    },
+    getVideoIndex() {
       this.changeVideo();
     },
     changeVideo: function () {
       var e = document.getElementById("video-player");
-      e.src = this.url_array[this.video_index - 1].url;
+      e.src = this.urlArray[this.videoIndex - 1].url;
       e.play();
     },
     handleRemove(file, fileList) {
@@ -248,7 +252,7 @@ export default {
     beforeRemove(file) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    click_community(target) {
+    clickCommunity(target) {
       if (target.label == "圈子社区") {
         this.$alert(
           "该课程现在还未创建圈子社区，现在要创建圈子社区吗？",
@@ -270,8 +274,11 @@ export default {
 </script>
 
 <style scoped>
+.course {
+  text-align: center;
+}
+
 #university-card {
-  width: 100%;
   height: 60px;
   background-color: #409eff;
   color: #fff;
@@ -279,10 +286,10 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 20px;
+  margin-right: 10px;
 }
 
 #course-and-teacher-card {
-  width: 100%;
   height: 60px;
   display: flex;
   justify-content: flex-start;

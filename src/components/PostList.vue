@@ -1,13 +1,14 @@
 <template>
-  <el-col :span="19" :offset="4">
+
     <el-card style="margin-bottom: 20px;">
 
       <el-card v-for="post in post_list" :key="post.id" style="margin-bottom: 20px;">
-
         <el-row style="margin-top: 10px; margin-bottom: 20px; margin-left: 5px">
+
           <el-col :span="2" style="text-align: center;">
             <el-tag style="width: 50px; text-align: center; font-size: 16px">{{ post.reply_num }}</el-tag>
           </el-col>
+
           <el-col :span="22">
 
             <el-row style="margin-bottom: 10px">
@@ -27,6 +28,7 @@
                 </div>
               </el-col>
             </el-row>
+
             <el-row>
               <el-col :span="20">
                 {{ post.content|cut }}
@@ -39,12 +41,12 @@
             </el-row>
 
           </el-col>
-        </el-row>
 
+        </el-row>
       </el-card>
 
     </el-card>
-  </el-col>
+
 </template>
 
 <script>
