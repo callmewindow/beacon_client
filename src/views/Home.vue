@@ -66,11 +66,7 @@
             <el-card>
               <div slot="header">
                 <span>热门分类</span>
-                <el-button
-                  style="float: right; padding: 3px 0"
-                  type="text"
-                  @click="FT.building()"
-                >刷新</el-button>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="queryTest">刷新</el-button>
               </div>
               <el-row type="flex" class="row-bg" justify="start" :gutter="10">
                 <el-col :span="2" v-for="o in 8" :key="o">
@@ -87,6 +83,7 @@
 </template>
 
 <script>
+import * as UserAPI from "@/APIs/user.js";
 import Navigator from "@/components/Navigator";
 import Footer from "@/components/Footer";
 import * as FT from "@/tools/frontTool";
@@ -124,6 +121,45 @@ export default {
   methods: {
     toClass(item) {
       this.$message(item);
+    },
+    async registerTest() {
+      // 手动修改内容可以完成注册
+      const tempU = {
+        username: "wyx0",
+        user_password: "wyx847590417",
+        school: "北京航空航天大学",
+        user_nickname: "稼轩fake",
+        school_id: "17373109",
+        email: "847590417@qq.com",
+      };
+      const temp = await UserAPI.addUser(
+        tempU.username,
+        tempU.user_password,
+        tempU.user_nickname,
+        tempU.school,
+        tempU.school_id,
+        tempU.email
+      );
+      // 获取其中需要的内容
+      let userData = temp.data;
+      console.log(userData);
+    },
+    async loginTest() {
+      const tempU = {
+        username: "张泰威3",
+        user_password: "张泰威",
+      };
+      const temp = await UserAPI.login(tempU.username, tempU.user_password);
+      // 完整的返回消息
+      console.log(temp);
+      // 获取其中需要的内容，也就是后端给的result
+      let userData = temp.data;
+      console.log(userData);
+    },
+    async queryTest() {
+      const temp = await UserAPI.queryTest();
+      console.log(temp);
+      console.log(temp.data);
     },
   },
 };
