@@ -1,7 +1,8 @@
 <template>
   <div class="about">
-    
-    <el-row type="flex" :gutter="10">
+    <Navigator active-func="home"></Navigator>
+
+    <el-row type="flex" :gutter="10" style="padding-top: 70px;">
       <el-col :xs="4" :sm="4" :md="4" :lg="4">
         <el-card id="university-card">
           <div>大学名称</div>
@@ -10,14 +11,17 @@
 
       <el-col :xs="20" :sm="20" :md="20" :lg="20">
         <el-card id="course-and-teacher-card">
-          <el-row :gutter="10">
-            <el-col
-              style="display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;"
-            >
-              <el-link target="_blank" style="padding: 5px 5px; font-size: 24px;">{{course_name}}</el-link>
-              <el-link type="success" style="padding: 5px 5px; font-size: 18px;">{{course_teachers}}</el-link>
-            </el-col>
-          </el-row>
+          <el-link
+            type="primary"
+            :underline="false"
+            style="font-size: 22px; padding-right: 15px; border-right: 1px solid #aaaaaa;"
+          >{{course_name}}</el-link>
+
+          <el-link
+            type="success"
+            :underline="false"
+            style="font-size: 16px; margin-left: 15px;"
+          >{{course_teachers}}</el-link>
         </el-card>
       </el-col>
     </el-row>
@@ -88,17 +92,6 @@
                     </el-row>
                   </el-card>
                 </el-col>
-              </el-row>
-            </el-tab-pane>
-            <el-tab-pane label="教师简介">
-              <div class="left_tab" slot="label">教师简介</div>
-              <el-row>
-                <el-col style="font-size: 22px;">教师简介</el-col>
-              </el-row>
-              <el-row>
-                <el-card
-                  style="height: 500px; margin-top: 10px; color: #909399; font-size: 18px;"
-                >{{course_description}}</el-card>
               </el-row>
             </el-tab-pane>
             <el-tab-pane label="视频课程">
@@ -278,13 +271,9 @@ export default {
 </script>
 
 <style scoped>
-#up-part {
-  height: 70px;
-}
-
 #university-card {
   width: 100%;
-  height: 90px;
+  height: 60px;
   background-color: #409eff;
   color: #fff;
   display: flex;
@@ -295,15 +284,10 @@ export default {
 
 #course-and-teacher-card {
   width: 100%;
-  height: 90px;
-}
-
-#course-description {
-  margin-left: 20px;
+  height: 60px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 #down-part {
@@ -328,10 +312,10 @@ export default {
   font-size: 22px;
 }
 
-.left_tab{
+.left_tab {
   width: 10vw;
   text-align: center;
-  font-size: 16px;
+  font-size: 18px;
 }
 </style>
 
