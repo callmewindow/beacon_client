@@ -2,7 +2,7 @@
   <div>
     <el-select v-model="value1" placeholder="请选择" @change="sendValue1">
       <el-option
-        v-for="item in course_array"
+        v-for="item in courseArray"
         :key="item.value"
         :label="item.label"
         :value="item.value"
@@ -11,7 +11,7 @@
 
     <el-select v-model="value2" style="margin-left: 20px;" placeholder="请选择" @change="sendValue2">
       <el-option
-        v-for="item in url_array"
+        v-for="item in urlArray"
         :key="item.value"
         :label="item.label"
         :value="item.value"
@@ -24,19 +24,19 @@
 export default {
   name: "VideoSelector",
   props: {
-    video_url_array: Array,
+    videoUrlArray: Array,
   },
   data() {
     return {
-      course_array: this.video_url_array,
-      url_array: [],
+      courseArray: this.videoUrlArray,
+      urlArray: [],
       value1: "",
       value2: "",
     };
   },
   methods: {
     sendValue1() {
-      this.url_array = this.course_array[this.value1 - 1].url_array;
+      this.urlArray = this.courseArray[this.value1 - 1].urlArray;
       this.$emit("sendValue1Event", this.value1);
     },
     sendValue2() {
