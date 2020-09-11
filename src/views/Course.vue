@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="course">
     <Navigator active-func="home"></Navigator>
     <el-row type="flex" style="padding-top: 70px;">
       <el-col :xs="4" :sm="4" :md="4" :lg="4">
@@ -270,8 +270,11 @@ export default {
 </script>
 
 <style scoped>
+.course {
+  text-align: center;
+}
+
 #university-card {
-  width: 100%;
   height: 60px;
   background-color: #409eff;
   color: #fff;
@@ -279,10 +282,10 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 20px;
+  margin-right: 10px;
 }
 
 #course-and-teacher-card {
-  width: 100%;
   height: 60px;
   display: flex;
   justify-content: flex-start;
