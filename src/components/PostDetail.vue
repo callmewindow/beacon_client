@@ -96,16 +96,26 @@ export default {
     return {
       reply_button_clicked: false,
       reply_text: "",
-      post: {
-        title: "帖子标题",
-        author: "田所浩二",
-        datetime: "8.10",
-        content: "帖子内容",
-        read: "114514",
-        like: "1919"
+      //帖子详情页规范，前端传递参数：postId
+      post: {                            //帖子主要内容，字典
+        id: "帖子id，后端是int就int，是str就str",
+        title: "帖子标题str",
+        author: "发帖人str",
+        datetime: "发帖时间，str，月.日 时:分",
+        content: "帖子内容str",
+        read: "阅读数，int",
+        like: "点赞数，int",
+        top: "是否置顶，bool",
+        highlight: "是否精华，bool"
       },
-      reply_list: [
-        {id: 2, content: "2", author: "2", datetime: "2"}
+      reply_list: [            //帖子下面的回复，列表，列表元素是字典
+        {
+          id: "回复的id，没有则提供楼层号",
+          content: "回复内容str",
+          author: "回复作者str",
+          datetime: "回复时间str",
+          floor: "回复的楼层号, int str 随意"
+        },
       ]
     };
   },
@@ -154,8 +164,7 @@ export default {
       try {
         const detail_dict = await postAPI;//<-----------------------------------------NEED API
         window.console.log(detail_dict);
-      }
-      catch (e) {
+      } catch (e) {
         this.$message.error('请求超时');
       }
     },
@@ -174,8 +183,7 @@ export default {
       try {
         const result = await postAPI;//<-----------------------------------------NEED API
         window.console.log(result);
-      }
-      catch (e) {
+      } catch (e) {
         this.$message.error('请求超时');
       }
       this.$message({

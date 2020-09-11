@@ -54,16 +54,19 @@ export default {
   name: "PostList",
   data() {
     return {
-      post_list: [
+      //帖子列表规范，前端传参：forumId
+      post_list: [      //某个圈子下面的所有帖子（即帖子基本信息和一楼内容），列表，元素是字典
         {
-          id:1,
-          title: "帖子1标题啊啊啊啊啊啊",
-          author: "田所浩二",
-          datetime: "08:10",
-          content: "帖子内容啊啊",
-          read: "114",
-          like: "1919",
-          reply_num: "2"
+          id:"帖子id",
+          title: "标题",
+          author: "作者",
+          datetime: "发帖时间",
+          content: "内容",
+          read: "阅读数，int",
+          like: "点赞数，int",
+          reply_num: "回复数，即最大楼层-1",
+          top: "是否置顶，bool",
+          highlight: "是否精华，bool"
         },
       ],
     };
