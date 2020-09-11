@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import * as postAPI from "../APIs/";//<-----------------------------------------NEED API
+
 export default {
   name: "PostList",
   data() {
@@ -58,26 +60,16 @@ export default {
           title: "帖子1标题啊啊啊啊啊啊",
           author: "田所浩二",
           datetime: "08:10",
-          content: "帖子内容啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
+          content: "帖子内容啊啊",
           read: "114",
           like: "1919",
           reply_num: "2"
-        },
-        {
-          id:2,
-          title: "帖子2标题啊啊啊啊啊啊",
-          author: "田所浩三",
-          datetime: "08:11",
-          content: "帖子内容太长被截断了啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
-          read: "114",
-          like: "1919",
-          reply_num: "222"
         },
       ],
     };
   },
   created() {
-
+    this.get_post_list();
   },
   filters: {
     cut(str) {
@@ -86,7 +78,15 @@ export default {
     }
   },
   methods: {
-
+    async get_post_list(){
+      try {
+        const detail_dict = await postAPI;//<-----------------------------------------NEED API
+        window.console.log(detail_dict);
+      }
+      catch (e) {
+        this.$message.error('请求超时');
+      }
+    },
   }
 };
 </script>
