@@ -20,10 +20,8 @@ export function building() {
     Message("功能开发中，敬请期待");
 }
 
-export function toHome(text) {
-    if (text != '')
-        Message(text + "，正在前往主页");
+export function toPath(pos) {
     router.push({
-        path: "/home"
+        path: pos
     })
 }
