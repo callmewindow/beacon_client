@@ -1,5 +1,6 @@
 <template>
   <div class="about">
+    
     <el-row type="flex" :gutter="10">
       <el-col :xs="4" :sm="4" :md="4" :lg="4">
         <el-card id="university-card">
@@ -168,10 +169,12 @@
 
 <script>
 import VideoPlayer from "@/components/VideoPlayer";
+import Navigator from "@/components/Navigator";
 export default {
-  name: "Vedio",
+  name: "Course",
   components: {
     VideoPlayer,
+    Navigator,
   },
   data() {
     return {
