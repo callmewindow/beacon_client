@@ -212,6 +212,7 @@ export default {
   margin-top: 15px;
 }
 .className {
+  cursor: pointer;
   font-size: 20px;
   font-weight: bold;
   height: 26px;
