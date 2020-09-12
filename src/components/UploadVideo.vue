@@ -204,7 +204,7 @@ export default {
         window.console.log(this.uploadVideoForm);
         const temp = await applyAPI.uploadApply(this.uploadVideoForm);
         window.console.log(temp.data["msg"]);
-        if (temp.data["msg"] === "ok") {
+        if (temp.data["ms'g"] === "ok") {
           this.success();
         } else {
           this.$message.error("上传失败，请联系管理员");
