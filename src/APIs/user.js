@@ -32,12 +32,6 @@ export const login = (username, user_password) => {
   })
 }
 
-export const queryTest = () => {
-  return axios({
-    method: 'POST',
-    url: `/courseQuery`,
-  })
-}
 
 //同步接口的调用示例见User.vue组件中的script部分
 //Get方法就将参数放在url中，注意传参的方式

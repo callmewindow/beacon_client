@@ -7,6 +7,13 @@ import axios from 'axios'
 export const getCourseInfo = (courseId) => {
     return axios({
         method: 'GET',
-        url: `/api/course/getCourseInfo=${courseId}`
+        url: `/course/?getCourseInfo=${courseId}`
+    })
+}
+
+export const courseQuery = () => {
+    return axios({
+        method: 'POST',
+        url: `/courseQuery`,
     })
 }
