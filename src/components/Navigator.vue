@@ -4,7 +4,7 @@
       <el-menu-item @click="FT.toPath('/home')">
         <el-image style="height:50px;width:130px;margin:auto;margin-left:100px;" :src="wel" />
       </el-menu-item>
-      <el-menu-item class="nav-text" @click="FT.toPath('/course/0')" index="class">
+      <el-menu-item class="nav-text" @click="FT.toPath('/courseList')" index="class">
         课程
       </el-menu-item>
       <el-menu-item class="nav-text" @click="FT.building" index="college">

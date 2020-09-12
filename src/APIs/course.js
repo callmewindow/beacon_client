@@ -24,3 +24,19 @@ export const courseQuery = () => {
         url: `/courseQuery`,
     })
 }
+
+export const addCourse = (courseEntity) => {
+    return axios({
+        method: 'POST',
+        url: `/course/createCourse`,
+        data: { courseEntity }
+    })
+}
+
+ export const uploadVideo = (videoEntity) => {
+     return axios({
+         method: 'POST',
+         url: `/course/createCourse`,
+         data: { videoEntity }
+     })
+ }

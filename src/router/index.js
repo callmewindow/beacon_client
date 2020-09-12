@@ -33,27 +33,21 @@ const routes = [{
     component: () => import('@/views/UserDetail.vue'),
   },
   {
-    path: '/UploadVideo',
-    name: 'UploadVideo',
-    component: () => import('@/components/UploadVideo.vue'),
-  },
-  {
     path: '/AddCourse',
     name: 'AddCourse',
     component: () => import('@/components/AddCourse.vue'),
   },
   {
     path: '/course/:courseId',
+    redirect: '/course/:courseId/intro'
+  },
+  {
+    path: '/course/:courseId/:coursePos/',
     name: 'Course',
     component: () => import('@/views/Course.vue'),
     children: [
-      {path: 'intro/:postId'},
+      {path: 'post/:postId'},
     ]
-  },
-  {
-    path: '/sendPost',
-    name: 'sendPost',
-    component: () => import('@/components/sendPost.vue'),
   }
 
 ]

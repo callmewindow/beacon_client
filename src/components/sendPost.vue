@@ -1,9 +1,8 @@
 <template>
-  <el-card id="sendPA">
-    <div slot="header">
+  <div id="sendPA">
+    <!-- <div slot="header">
       发布帖子
-      <el-button slot="button" style="float: right;padding: 3px 0" type="text" @click="cancelSend">取消</el-button>
-    </div>
+    </div> -->
     <div class="sendItem">
       <div class="itemTitle"><span style="color:red">*</span>帖子标题</div>
       <el-input v-model="post.title" placeholder="请输入内容" maxlength="30" show-word-limit></el-input>
@@ -39,12 +38,12 @@
       </el-select>
     </div>
     <el-button id="sendBtn" type="primary" size="small" @click="sendPost">发布</el-button>
-  </el-card>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "sendPost",
+  name: "SendPost",
   data() {
     return {
       post: {
@@ -65,23 +64,14 @@ export default {
     };
   },
   methods:{
-    cancelSend(){
-      alert("取消")
-    },
     sendPost(){
-      alert("发送")
+      location.reload()
     }
   }
 };
 </script>
 
 <style scoped>
-#sendPA {
-  width: 500px;
-  height: 600px;
-  margin-left: 50px;
-  margin-top: 50px;
-}
 .sendItem{
   width: 80%;
   margin: 20px 0;

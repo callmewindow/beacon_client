@@ -49,7 +49,7 @@
               </div>
               <el-row type="flex" class="row-bg" justify="space-around">
                 <el-col :span="5" v-for="o in 4" :key="o">
-                  <div class="className">软件工程实践</div>
+                  <div class="className" @click="FT.building">软件工程实践</div>
                   <div class="classType">软件工程</div>
                   <div class="classFrom">北京航空航天大学-X老师</div>
                   <div class="studentNum">163人</div>
@@ -72,7 +72,7 @@
               </div>
               <el-row type="flex" class="row-bg" justify="start" :gutter="10">
                 <el-col :span="2" v-for="o in 8" :key="o">
-                  <el-tag type="info" effect="plain">软件工程</el-tag>
+                  <el-tag class="hotTag" type="primary" effect="plain" @click="FT.building">软件工程</el-tag>
                 </el-col>
               </el-row>
             </el-card>
@@ -242,7 +242,9 @@ export default {
 .el-divider {
   margin: 10px;
 }
-
+.hotTag {
+  cursor: pointer;
+}
 #bottom {
   margin-top: 15px;
 }
