@@ -1,48 +1,66 @@
 <template>
-  <el-row :gutter="10" style="margin-left: 15%; margin-right: 15%">
-    <el-col :span="6" v-for="course in course_list" :key="course.id" style="margin-top: 10px">
-      <el-card style="padding: 0">
-        <img src="@/assets/course-cover.png" style="width: 100%">
-        <el-row style="margin-top: 5px">
-          <el-link type="primary" :underline="false" style="font-size: 20px">
-            {{ course.title }}
-          </el-link>
-        </el-row>
-        <el-row style="margin-top: 5px">
-          <div>
-            开课时间：{{course.time_from}}-{{course.time_to}}
-          </div>
-        </el-row>
-      </el-card>
-    </el-col>
-  </el-row>
+  <div>
+    <Navigator active-func="home"/>
+    <el-row style="margin-left: 15%; margin-right: 15%">
+      <el-button type="primary" round style="margin-top: 80px; float: right">创建课程</el-button>
+    </el-row>
+    <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%">
+      <el-col :span="6" v-for="course in course_list" :key="course" style="margin-top: 20px">
+        <el-card style="padding: 0">
+          <img src="@/assets/course-cover.png" style="width: 100%">
+          <el-row style="margin-top: 5px">
+            <el-link type="primary" :underline="false" style="font-size: 20px"
+                     @click="frontTool.toPath('/course/'+course.id)">
+              {{ course.course_name }}
+            </el-link>
+          </el-row>
+          <el-row style="margin-top: 5px">
+            <div>
+              开课：{{ course.start_time|cut }} 至 {{ course.end_time|cut }}
+            </div>
+          </el-row>
+        </el-card>
+      </el-col>
+    </el-row>
+    <Footer/>
+  </div>
 </template>
 
 <script>
-import * as postAPI from "@/APIs/course.js";
+import * as courseAPI from "@/APIs/course.js";
+import Navigator from "@/components/Navigator";
+import Footer from "@/components/Footer";
+import * as frontTool from "@/tools/frontTool";
+//import Username from "@/components/Username";
 
 export default {
   name: "CourseList",
+  components: {
+    Navigator,
+    Footer,
+    //Username,
+  },
   data() {
-    return {
-      course_list: [
-        {
-          id: "课程id",
-          title: "课程名名名名名名",
-          time_from: "开始时间",
-          time_to: "结束时间"
-        },
-      ]
+    return {// course_intro,course_name,end_time,id,is_open,profession,rule,start_time
+      frontTool,
+      course_list: []
     };
   },
   created() {
     this.get_course_list();
   },
+  filters: {
+    cut(str) {
+      if (str) str = str.slice(0, 10);
+      return str;
+    }
+  },
   methods: {
     async get_course_list() {
       try {
-        const list = await postAPI;//<-----------------------------------------NEED API
-        window.console.log(list);
+        const list = await courseAPI.courseQuery();
+        //window.console.log(list.data.courses);
+        this.course_list = list.data.courses
       } catch (e) {
         this.$message.error('请求超时');
       }

@@ -51,11 +51,13 @@
 
 <script>
 import * as postAPI from "@/APIs/forum.js";
+import * as frontTool from "@/tools/frontTool";
 
 export default {
   name: "PostList",
   data() {
     return {
+      frontTool,
       post_list: [],
     };
   },
@@ -72,6 +74,7 @@ export default {
     async get_post_list() {
       try {
         const list = await postAPI.postList(1);//------------------------------圈子id
+        //window.console.log(list.data);
         this.post_list = list.data
       } catch (e) {
         this.$message.error('请求超时');

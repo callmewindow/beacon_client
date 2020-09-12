@@ -65,16 +65,16 @@
       <el-row style="margin-left: 5px">
         <el-col :span="12">
           <div>
-            {{ reply.author }}
+            {{ reply.owner.user_nickname }}
             <el-divider direction="vertical"></el-divider>
-            {{ reply.datetime }}
+            {{ reply.post_time|cut }}
           </div>
         </el-col>
         <el-col :span="12">
           <div style="float: right; margin-right: 20px">
-            {{ reply.floor }}楼
+            {{ reply.floor_num }}楼
             <el-divider direction="vertical"></el-divider>
-            <el-button type="text" @click="reply_reply(reply.floor)">回复</el-button>
+            <el-button type="text" @click="reply_reply(reply.floor_num)">回复</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button type="text" @click="report">举报</el-button>
           </div>
@@ -94,23 +94,18 @@ export default {
     return {
       reply_button_clicked: false,
       reply_text: "",
-      post: {
-        id: 0,
-        title: "帖子标题",
-        author: "发帖人",
-        author_tag: "发帖人身份",
-        datetime: "发帖时间",
-        content: "帖子内容",
-        read: 0,
-        like: 0,
-        top: "是否置顶",
-        star: "是否精华"
-      },
+      post: {},//id,title,author,author_tag,datetime,content,read,like,top,star
       reply_list: []
     };
   },
   created() {
     this.get_post_detail();
+  },
+  filters: {
+    cut(str) {
+      if (str) str = str.slice(0, 10);
+      return str;
+    }
   },
   methods: {
     like(e) {
@@ -153,7 +148,7 @@ export default {
     async get_post_detail() {
       try {
         const detail_dict = await postAPI.postDetail(1);//-----------------------------postid
-        window.console.log(detail_dict.data);
+        //window.console.log(detail_dict.data);
         this.post.id = detail_dict.data.post.id;
         this.post.title = detail_dict.data.post.title;
         this.post.author = detail_dict.data.post.owner.user_nickname;
@@ -165,13 +160,7 @@ export default {
         this.post.top = detail_dict.data.post.topped;
         this.post.star = detail_dict.data.post.stared;
         for (let i = 1; i < detail_dict.data.floors.length; i++) {
-          let reply = {
-            content: detail_dict.data.floors[i].content,
-            author: detail_dict.data.floors[i].owner.user_nickname,
-            datetime: detail_dict.data.floors[i].post_time.slice(5, 16),
-            floor: detail_dict.data.floors[i].floor_num
-          };
-          this.reply_list.push(reply);
+          this.reply_list.push(detail_dict.data.floors[i]);
         }
       } catch (e) {
         this.$message.error('请求超时');
