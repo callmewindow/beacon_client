@@ -5,8 +5,7 @@ Vue.use(VueRouter)
 
 const routes = [{
     path: '/',
-    name: 'Home',
-    component: () => import('@/views/Home.vue'),
+    redirect: '/home',
   },
   {
     path: '/home',
@@ -24,7 +23,12 @@ const routes = [{
     component: () => import('@/components/PostList.vue'),
   },
   {
-    path: '/userdetail',
+    path: '/courselist',
+    name: 'CourseList',
+    component: () => import('@/views/CourseList.vue'),
+  },
+  {
+    path: '/user',
     name: 'UserDetail',
     component: () => import('@/views/UserDetail.vue'),
   },
@@ -39,10 +43,16 @@ const routes = [{
     component: () => import('@/components/AddCourse.vue'),
   },
   {
-    path: '/video',
-    name: 'Video',
-    component: () => import('@/views/Video.vue'),
+    path: '/course',
+    name: 'Course',
+    component: () => import('@/views/Course.vue'),
+  },
+  {
+    path: '/sendPost',
+    name: 'sendPost',
+    component: () => import('@/components/sendPost.vue'),
   }
+
 ]
 
 const router = new VueRouter({
