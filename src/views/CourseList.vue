@@ -2,10 +2,10 @@
   <div>
     <Navigator active-func="home"/>
     <el-row style="margin-left: 15%; margin-right: 15%">
-      <el-button type="primary" round style="margin-top: 80px; float: right">创建课程</el-button>
+      <el-button type="primary" round style="margin-top: 80px; float: right" @click="showAddCourse = true">创建课程</el-button>
     </el-row>
-    <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%">
-      <el-col :span="6" v-for="course in course_list" :key="course" style="margin-top: 20px">
+    <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px">
+      <el-col :span="6" v-for="(course,index) in course_list" :key="index" style="margin-top: 20px">
         <el-card style="padding: 0">
           <img src="@/assets/course-cover.png" style="width: 100%">
           <el-row style="margin-top: 5px">
@@ -22,6 +22,9 @@
         </el-card>
       </el-col>
     </el-row>
+    <el-dialog :visible.sync="showAddCourse" width="50%">
+      <AddCourse />
+    </el-dialog>
     <Footer/>
   </div>
 </template>
@@ -29,6 +32,7 @@
 <script>
 import * as courseAPI from "@/APIs/course.js";
 import Navigator from "@/components/Navigator";
+import AddCourse from "@/components/AddCourse";
 import Footer from "@/components/Footer";
 import * as frontTool from "@/tools/frontTool";
 //import Username from "@/components/Username";
@@ -38,12 +42,14 @@ export default {
   components: {
     Navigator,
     Footer,
+    AddCourse,
     //Username,
   },
   data() {
     return {// course_intro,course_name,end_time,id,is_open,profession,rule,start_time
       frontTool,
-      course_list: []
+      showAddCourse: false,
+      course_list: [],
     };
   },
   created() {
@@ -70,5 +76,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

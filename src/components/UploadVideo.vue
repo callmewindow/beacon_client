@@ -2,7 +2,7 @@
   <div class="All">
     <el-row>
       <el-steps
-        style="margin-top:-30px;;margin-left:15%;width:70%"
+        style="margin-top:-30px;margin-left:15%;width:70%"
         :active="page"
         align-center
         finish-status="success"
