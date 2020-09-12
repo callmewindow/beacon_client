@@ -13,7 +13,6 @@
         class="uploadStu"
         drag
         action="https://jsonplaceholder.typicode.com/posts/"
-        :on-remove="handleRemove"
         multiple
         :limit="1"
         :on-exceed="handleExceed"
@@ -28,6 +27,7 @@
         </div>
         <div class="el-upload__tip" slot="tip">只能上传.xls或.xlsx格式文件</div>
       </el-upload>
+      <el-button type="primary" @click="uploadMem">进行导入</el-button>
     </el-col>
   </div>
 </template>
@@ -54,6 +54,10 @@ export default {
     },
     handleExceed() {
       this.$message.warning(`每次仅允许上传一个excel文件`);
+    },
+    uploadMem() {
+      this.$message.success("导入成功");
+      setTimeout("location.reload()", 2000);
     },
   },
 };

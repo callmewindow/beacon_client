@@ -108,7 +108,7 @@ export default {
       identityVideo: [],
       ifIdentityVideo: false,
       uploadVideoForm: {
-        course_id: "5",
+        course_id: this.$route.params.courseId,
         title: "",
         introduction: "",
         upload_time: "",
