@@ -166,7 +166,7 @@
       <UploadMember />
       <span slot="footer" class="dialog-footer">
         <el-button @click="showMemberUp = false">取 消</el-button>
-        <el-button type="primary" @click="showMemberUp = false">确 定</el-button>
+        <!-- <el-button type="primary" @click="showMemberUp = false">确 定</el-button> -->
       </span>
     </el-dialog>
 
