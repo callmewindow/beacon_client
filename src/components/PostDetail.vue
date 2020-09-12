@@ -1,11 +1,11 @@
 <template>
 
-  <el-card style="margin-bottom: 20px;">
+  <div style="margin-bottom: 20px;">
     <div
         style="color: rgb(0,102,204); margin-top: 20px; margin-left: 20px; margin-bottom: 20px; font-family: 微软雅黑; font-size: 30px; font-weight: bold">
       {{ post.title }}
-      <el-tag type="success" effect="dark">置顶</el-tag>
-      <el-tag type="warning" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;">精华</el-tag>
+      <!-- <el-tag type="success" effect="dark">置顶</el-tag>
+      <el-tag type="warning" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;">精华</el-tag> -->
     </div>
 
     <el-row style="font-size: 18px; margin-bottom: 20px;">
@@ -81,7 +81,7 @@
         </el-col>
       </el-row>
     </el-card>
-  </el-card>
+  </div>
 
 </template>
 
@@ -90,6 +90,9 @@ import * as postAPI from "@/APIs/forum.js";
 
 export default {
   name: "PostDetail",
+  props:{
+    postId: String
+  },
   data() {
     return {
       reply_button_clicked: false,
@@ -98,8 +101,19 @@ export default {
       reply_list: []
     };
   },
+  watch: {
+    postId(newID){
+      let numPID = parseInt(newID)
+      this.get_post_detail(numPID)
+    }
+  },
   created() {
-    this.get_post_detail();
+    let numPID = parseInt(this.postId)
+    this.get_post_detail(numPID);
+  },
+  updated() {
+    let a = localStorage.getItem("postId");
+    console.log(a);
   },
   filters: {
     cut(str) {
@@ -145,9 +159,9 @@ export default {
         target = e.target.parentNode;
       target.blur();
     },
-    async get_post_detail() {
+    async get_post_detail(pid) {
       try {
-        const detail_dict = await postAPI.postDetail(1);//-----------------------------postid
+        const detail_dict = await postAPI.postDetail(pid);//-----------------------------postid
         //window.console.log(detail_dict.data);
         this.post.id = detail_dict.data.post.id;
         this.post.title = detail_dict.data.post.title;
@@ -159,6 +173,7 @@ export default {
         this.post.like = detail_dict.data.floors[0].like_num;
         this.post.top = detail_dict.data.post.topped;
         this.post.star = detail_dict.data.post.stared;
+        this.reply_list = [];
         for (let i = 1; i < detail_dict.data.floors.length; i++) {
           this.reply_list.push(detail_dict.data.floors[i]);
         }

@@ -23,6 +23,7 @@
       <div class="itemTitle">帖子标签</div>
       <el-select
         v-model="value"
+        disabled
         multiple
         filterable
         allow-create
@@ -37,11 +38,12 @@
         ></el-option>
       </el-select>
     </div>
-    <el-button id="sendBtn" type="primary" size="small" @click="SendPost">发布</el-button>
+    <el-button id="sendBtn" type="primary" size="small" @click="sendPost">发布</el-button>
   </div>
 </template>
 
 <script>
+import * as forumAPI from "@/APIs/forum"
 export default {
   name: "SendPost",
   data() {
@@ -64,7 +66,19 @@ export default {
     };
   },
   methods:{
-    sendPost(){
+    async sendPost(){
+      let tempP = {
+        title: this.post.title,
+        content: this.post.content,
+        senderId: 10,
+        tags: '',
+        courseId: this.$route.params.courseId,
+      }
+      try {
+        await forumAPI.sendPost(tempP);
+      } catch (error) {
+        console.log(error)
+      }
       location.reload()
     }
   }
