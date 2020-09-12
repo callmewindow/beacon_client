@@ -183,6 +183,8 @@
 <script>
 import VideoPlayer from "@/components/VideoPlayer";
 import Navigator from "@/components/Navigator";
+import * as CourseAPI from "@/APIs/course.js";
+
 export default {
   name: "Course",
   components: {
@@ -191,7 +193,6 @@ export default {
   },
   data() {
     return {
-      university_logo_url: require("@/assets/BUAA.png"),
       courseName: "Operating System",
       courseTeacher: "Yuan Cangzhou",
       courseDescription: "很玄学，很魔幻",
@@ -242,10 +243,19 @@ export default {
     };
   },
   mounted() {
-    this.getCourseInfo();
+    this.getCourseBasicInfo();
+    this.getCourseVideoUrlArray();
   },
   methods: {
-    getCourseInfo() {},
+    async getCourseBasicInfo() {
+      const temp = await CourseAPI.getCourseBasicInfo(1);
+      console.log(temp.data);
+    },
+
+    async getCourseVideoUrlArray() {
+      const temp = await CourseAPI.getCourseVideoUrlArray(1);
+      console.log(temp.data);
+    },
 
     getCourseIndex() {
       this.urlArray = this.courseArray[this.courseIndex - 1].urlArray;

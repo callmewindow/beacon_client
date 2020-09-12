@@ -4,10 +4,17 @@ import axios from 'axios'
 //     QS
 // } from './../tools/apiTool'
 
-export const getCourseInfo = (courseId) => {
+export const getCourseBasicInfo = (courseId) => {
     return axios({
         method: 'GET',
-        url: `/course/?getCourseInfo=${courseId}`
+        url: `/info/basic/class/?class_id=${courseId}`
+    })
+}
+
+export const getCourseVideoUrlArray = (courseId) => {
+    return axios({
+        method: 'GET',
+        url: `/video/play/?class_id=${courseId}`
     })
 }
 
