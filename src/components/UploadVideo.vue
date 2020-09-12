@@ -1,101 +1,96 @@
 <template>
-  <el-card class="All">
-    <Navigator active-func="class" />
-    <el-card id="card">
-      <el-row>
-        <el-col :span="22" :offset="1">
-          <div class="bg-top font-top">
-            视频上传
-            <el-divider></el-divider>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-steps :active="page" align-center finish-status="success">
-          <el-step icon="el-icon-edit" title="视频上传"></el-step>
-          <el-step icon="el-icon-upload2" title="上传成功"></el-step>
-        </el-steps>
-      </el-row>
-      <el-row>
-        <el-col :offset="5" :span="14">
-          <div class="grid-content bg-white">
-            <el-tabs type="border-card">
-              <el-form
-                :model="ruleForm"
-                :rules="rules"
-                label-width="120px"
-                ref="ruleForm"
-                v-if="page===0"
-              >
-                <el-form-item></el-form-item>
-                <el-form-item label="视频标题" prop="videoTitle">
-                  <el-input v-model="ruleForm.videoTitle"></el-input>
-                </el-form-item>
-                <el-form-item label="视频简介" prop="videoIntro">
-                  <el-input v-model="ruleForm.videoIntro"></el-input>
-                </el-form-item>
-                <el-form-item label="课程视频" prop="video">
-                  <el-upload
-                    :action="videoUrl"
-                    :auto-upload="false"
-                    :before-upload="beforeUpload"
-                    :file-list="identityVideo"
-                    :limit="100"
-                    :on-exceed="handleExceed"
-                    :on-remove="handleRemove"
-                    :on-success="videoSuccess"
-                    class="upload-demo"
-                    drag
-                    ref="upload"
-                    v-bind:name="uploadVideoForm.userId"
-                  >
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">
-                      将视频拖到此处，或
-                      <em>点击添加视频</em>
-                    </div>
-                  </el-upload>
-                </el-form-item>
-                <el-form-item>
-                  <el-button @click="submitVideo" type="primary">上传</el-button>
-                </el-form-item>
-              </el-form>
+  <div class="All">
+    <el-row>
+      <el-steps
+        style="margin-top:-30px;;margin-left:15%;width:70%"
+        :active="page"
+        align-center
+        finish-status="success"
+      >
+        <el-step icon="el-icon-edit" title="视频上传"></el-step>
+        <el-step icon="el-icon-upload2" title="上传成功"></el-step>
+      </el-steps>
+    </el-row>
+    <el-row>
+      <el-col :offset="3" :span="18">
+        <div class="grid-content bg-white">
+          <el-tabs type="border-card">
+            <el-form
+              :model="ruleForm"
+              :rules="rules"
+              label-width="120px"
+              ref="ruleForm"
+              v-if="page===0"
+              enctype="multipart/form-data"
+              style="width: 80%;"
+            >
+              <el-form-item label="视频标题" prop="videoTitle">
+                <el-input v-model="ruleForm.videoTitle"></el-input>
+              </el-form-item>
+              <el-form-item label="视频简介" prop="videoIntro">
+                <el-input v-model="ruleForm.videoIntro"></el-input>
+              </el-form-item>
+              <el-form-item label="课程视频" prop="video">
+                <el-upload
+                  :action="videoUrl"
+                  :auto-upload="false"
+                  :before-upload="beforeUpload"
+                  :file-list="identityVideo"
+                  :limit="100"
+                  :on-exceed="handleExceed"
+                  :on-remove="handleRemove"
+                  :on-success="videoSuccess"
+                  class="upload-demo"
+                  style="width:200px"
+                  accept=".mp4"
+                  drag
+                  ref="upload"
+                  v-bind:name="uploadVideoForm.userId"
+                >
+                  <i class="el-icon-upload"></i>
+                  <div class="el-upload__text">
+                    将视频拖到此处，或
+                    <em>点击添加视频</em>
+                  </div>
+                  <div slot="tip" style="margin-top:-20px;margin-bottom:-10px" class="el-upload__tip">只能上传mp4文件，且小于500MB</div>
+                </el-upload>
+              </el-form-item>
 
-              <transition name="el-zoom-in-top">
-                //动态效果
-                <div style="text-align: center; margin-top:80px;" v-show="show">
-                  <span style="font-size: 40px; color: #409EFF;">
-                    {{showMsg}}
-                    <br />
-                  </span>
-                  <i
-                    class="el-icon-circle-check"
-                    style="margin-top:15px; margin-bottom:100px;font-size: 40px; color: #409EFF;"
-                  ></i>
-                </div>
-              </transition>
-            </el-tabs>
-          </div>
-        </el-col>
-      </el-row>
-    </el-card>
+              <el-form-item>
+                <el-button @click="submitVideo" style="margin-top:10px" type="primary">上传</el-button>
+              </el-form-item>
+            </el-form>
 
-    <Footer />
-  </el-card>
+            <transition name="el-zoom-in-top">
+              //动态效果
+              <div style="text-align: center; margin-top:80px;" v-show="show">
+                <span style="font-size: 40px; color: #409EFF;">
+                  {{showMsg}}
+                  <br />
+                </span>
+                <i
+                  class="el-icon-circle-check"
+                  style="margin-top:10px; margin-bottom:40px;font-size: 40px; color: #409EFF;"
+                ></i>
+              </div>
+            </transition>
+          </el-tabs>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
-import * as applyAPI from "../APIs/apply";
-import Navigator from "@/components/Navigator";
-import Footer from "@/components/Footer";
+import * as courseAPI from "@/APIs/course";
+// import Navigator from "@/components/Navigator";
 import moment from "moment";
 
 export default {
   name: "upload_video",
-  components: {
-    Navigator,
-    Footer,
-  },
+  //   components: {
+  //     Navigator,
+  //   },
   data() {
     const checkVideo = (rule, value, callback) => {
       if (this.ifIdentityVideo) {
@@ -113,11 +108,11 @@ export default {
       identityVideo: [],
       ifIdentityVideo: false,
       uploadVideoForm: {
+        course: "",
         userId: this.$store.state.userId,
         title: "",
         introduction: "",
         upload_time: "",
-        course: "",
       },
       ruleForm: {
         videoTitle: "",
@@ -202,7 +197,7 @@ export default {
       try {
         window.console.log(this.uploadVideoForm.userId);
         window.console.log(this.uploadVideoForm);
-        const temp = await applyAPI.uploadApply(this.uploadVideoForm);
+        const temp = await courseAPI.uploadVideo(this.uploadVideoForm);
         window.console.log(temp.data["msg"]);
         if (temp.data["msg"] === "ok") {
           this.success();
@@ -220,6 +215,7 @@ export default {
 <style scoped>
 .All {
   text-align: left;
+  padding: 0;
 }
 
 .el-row {

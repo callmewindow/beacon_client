@@ -6,7 +6,7 @@ import {
   QS
 } from './../tools/apiTool'
 
-export const addUser = (username, user_password, user_nickname, school, school_id, email) => {
+export const register = (username, user_password, user_nickname, school, school_id, email) => {
   return axios({
     method: 'POST',
     url: `/addUser`,
@@ -50,18 +50,18 @@ export const login = (username, user_password) => {
 //如果post出错，特别是500 Internet serve error有以下解决方案
 //例：将data: QS({ paper })换成data: { paper }   或反向操作（加上QS）
 //（obj的转化是自动的，不是代码）
-export const register = (username, nickname, password, userEmail) => {
-  return axios({
-    method: 'POST',
-    url: `/api/user/register`,
-    data: QS({
-      username,
-      nickname,
-      password,
-      userEmail
-    }),
-  })
-}
+// export const register = (username, nickname, password, userEmail) => {
+//   return axios({
+//     method: 'POST',
+//     url: `/api/user/register`,
+//     data: QS({
+//       username,
+//       nickname,
+//       password,
+//       userEmail
+//     }),
+//   })
+// }
 
 export const getUserInfo = (userId) => {
   return axios({

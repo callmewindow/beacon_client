@@ -4,10 +4,17 @@ import axios from 'axios'
 //     QS
 // } from './../tools/apiTool'
 
-export const getCourseInfo = (courseId) => {
+export const getCourseBasicInfo = (courseId) => {
     return axios({
         method: 'GET',
-        url: `/course/?getCourseInfo=${courseId}`
+        url: `/info/basic/class/?class_id=${courseId}`
+    })
+}
+
+export const getCourseVideoUrlArray = (courseId) => {
+    return axios({
+        method: 'GET',
+        url: `/video/play/?class_id=${courseId}`
     })
 }
 
@@ -17,3 +24,19 @@ export const courseQuery = () => {
         url: `/courseQuery`,
     })
 }
+
+export const addCourse = (courseEntity) => {
+    return axios({
+        method: 'POST',
+        url: `/course/createCourse`,
+        data: { courseEntity }
+    })
+}
+
+ export const uploadVideo = (videoEntity) => {
+     return axios({
+         method: 'POST',
+         url: `/course/createCourse`,
+         data: { videoEntity }
+     })
+ }
