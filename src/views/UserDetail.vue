@@ -1,22 +1,22 @@
 <template>
     <div >
         <Navigator active-func="UserDetail"/>
-        <div style="width: 100%;clear:both ;background-color: #FFFAFA;opacity: 30%;height: 700px">
+        <div class="back">
             <el-card class="card align-center text-align: center;">
-                <el-row :gutter="20" style="margin-top:5%;" >
+                <el-row :gutter="20" class="row-bg">
                     <el-col :span="8" :offset="2" >
-                        <div class="info">
-                            <div class="info-title" >
-                                <i class="el-icon-user-solid"></i>
-                                <b style="margin-left: 5%">{{users.username}}</b></div>
-                            <div class="info-content">
-                                {{users.identity}}
-                                <b style="margin-left: 5px; margin-right:5px">|</b>
-                                {{users.school}}
-                            </div>
-                            <div class="info-content" style="margin-top: 10px">{{users.major}}</div>
+                        <div class="info-title" >
+                            <i class="el-icon-user-solid"></i>
+                            <b style="margin-left: 5%">
+                                {{users.username}}</b>
                         </div>
-                        <template v-if="users.identity==='学生'">
+                        <div class="info-content" v-show="users.identity===0">
+                            学生
+                            <b style="margin-left: 5px; margin-right:5px">|</b>
+                            {{users.school}}
+                        </div>
+                        <div class="info-content" style="margin-top: 10px">{{users.major}}</div>
+                        <template v-if="users.identity===0">
                             <el-button class="button" @click="authentication">教师认证</el-button>
                         </template>
                     </el-col>
@@ -50,9 +50,15 @@
                                 <div style="min-width: 200px ;margin-bottom: 30px" >
                                     <div v-on: @mouseover="show(index)" @mouseleave="i=-1" @click="FT.building()">
                                         <el-card :body-style="{padding:'2px'}"   shadow="hover" class="courseCard" >
-                                            <div class="className" >{{o.course_name}}</div>
-                                            <el-tag  class="tag" type="warning" style="width: 60px" v-show="o.profession">{{o.profession}}</el-tag>
-                                            <div class="classFrom info-content ">{{o.teachername}}</div>
+                                            <div class="className" >
+                                                {{o.course_name}}
+                                            </div>
+                                            <el-tag  class="tag" type="warning" style="width: 60px" v-show="o.profession">
+                                                {{o.profession}}
+                                            </el-tag>
+                                            <div class="classFrom info-content ">
+                                                {{o.teachername}}
+                                            </div>
                                             <div v-show="index !==i" class="startime info-content">
                                                 <i class="el-icon-date"></i>
                                                 {{time(o.start_time)}}
@@ -61,7 +67,9 @@
                                                 <i class="el-icon-user"></i>
                                                 {{o.studentnum}}
                                             </div>
-                                            <div v-show="index === i" class="classIntro"  >{{ o.course_intro}} </div>
+                                            <div v-show="index === i" class="classIntro"  >
+                                                {{o.course_intro }}
+                                            </div>
                                             <div v-show="index === i" class=" info-content" style=" color: #797b80;float: left;margin-left: 5%;font-size: 12px"  >
                                                 <i class="el-icon-date"></i>
                                                 {{time(o.start_time)}}
@@ -97,23 +105,20 @@
     export default {
         name: "UserDetail",
         components: {Navigator,Footer},
-        el:'#user',
         data(){
             return{
                 FT,
-
                 circleUrl:require("@/assets/useravatar.jpg"),
                 users:{
                     "username":"烽火",
                     "userId":"BH17373109",
-                    "identity":"学生",
+                    "identity":0,
                     "school":"北京航空航天大学",
                     "major":"软件工程",
                     "circle":"5",
                     "score": 99,
                     "time": "13时26分"
                 },
-                boxshow:false,
                 activeName: 'first',
                 seen:false,
                 current:0,
@@ -162,8 +167,6 @@
                     this.users.major=res.data.user.profession;
                     this.users.score=res.data.user.score;
                     this.users.time=res.data.user.coursetime;
-
-
                 })
 
             },
@@ -173,13 +176,11 @@
                     // console.log("11", typeof res.data);
                      console.log("11", res);
                     this.course=res.data.courses;
-
-
-                    // this.user.username=tmp.data.user.username;
                 })
             },
             time(s){
                     //  将截取后的时间return出来
+                if(s)
                     return s.substring(0,10)
             }
         }
@@ -188,18 +189,20 @@
 </script>
 
 <style scoped >
+    .back{
+        width: 100%;clear:both ;background-color: #FFFAFA;height: 700px
+    }
     .card{
         margin-left: 6%;
         margin-right: 6%;
-        /*background-image: linear-gradient(to left,rgba(64,158,255,0.6),rgba(135,206,250,0.8));*/
         background-image: linear-gradient(to left,rgba(255,0,0,0.6),rgba(255,165,0,0.5));
     }
-    .info{
-        margin-top: 20px;
-
+    .row-bg{
+        margin-top:5%;
     }
     .info-title{
         font-size: 20px;
+        margin-top: 20px;
         font-family: 微软雅黑;
         font-weight:bold;
         color: white;
@@ -284,19 +287,11 @@
         margin-top: 14%;
         margin-left: 5%;
         display: block;}
-
-
-    .el-col-8{
+    /deep/.el-col-8{
         width: 20%;
     }
-    .el-card{
+    /deep/.el-card{
         border: 0px white;
-    }
-    /deep/.fade-enter-active, .fade-leave-active {
-        transition: opacity 0.5s;
-    }
-    /deep/.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-        opacity: 0;
     }
     .courseCard{
         background-image: linear-gradient(180deg,rgba(255,255,255,0.6),rgba(244,164,96,0));
@@ -321,11 +316,4 @@
         padding: 0 5px;
         margin-top: -24%;
     }
-    .card-bottoms{
-
-    }
-    .card-bottom{
-        margin-bottom: 50px;
-    }
-
 </style>
