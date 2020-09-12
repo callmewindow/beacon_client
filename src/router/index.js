@@ -43,9 +43,12 @@ const routes = [{
     component: () => import('@/components/AddCourse.vue'),
   },
   {
-    path: '/course',
+    path: '/course/:courseId',
     name: 'Course',
     component: () => import('@/views/Course.vue'),
+    children: [
+      {path: 'intro/:postId'},
+    ]
   },
   {
     path: '/sendPost',

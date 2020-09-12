@@ -4,6 +4,17 @@ import {
     QS
 } from './../tools/apiTool'
 
+export const setForumRule = (forumId, forumCon) => {
+    return axios({
+        method: 'POST',
+        url: `/setCourseRule`,
+        data: QS({
+            id: forumId,
+            rule: forumCon
+        })
+    })
+}
+
 export const postDetail = (postId) => {
     return axios({
         method: 'POST',
@@ -14,7 +25,7 @@ export const postDetail = (postId) => {
     })
 }
 
-export const createPost = (post) => {
+export const sendPost = (post) => {
     return axios({
         method: 'POST',
         url: `/createPost`,
@@ -24,17 +35,6 @@ export const createPost = (post) => {
             owner: post.senderId,
             tag: post.value,
             content: post.content
-        })
-    })
-}
-
-export const setForumRule = (forumId, forumCon) => {
-    return axios({
-        method: 'POST',
-        url: `/setCourseRule`,
-        data: QS({
-            id: forumId,
-            rule: forumCon
         })
     })
 }

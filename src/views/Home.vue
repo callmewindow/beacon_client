@@ -68,7 +68,7 @@
             <el-card>
               <div slot="header">
                 <span>热门分类</span>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="queryTest">刷新</el-button>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="FT.building">刷新</el-button>
               </div>
               <el-row type="flex" class="row-bg" justify="start" :gutter="10">
                 <el-col :span="2" v-for="o in 8" :key="o">
@@ -137,7 +137,7 @@ export default {
         school_id: "17373109",
         email: "847590417@qq.com",
       };
-      const temp = await UserAPI.addUser(
+      const temp = await UserAPI.register(
         tempU.username,
         tempU.user_password,
         tempU.user_nickname,
@@ -151,7 +151,7 @@ export default {
     },
     async loginTest() {
       const tempU = {
-        username: "张泰威3",
+        username: "张泰威",
         user_password: "张泰威",
       };
       const temp = await UserAPI.login(tempU.username, tempU.user_password);
@@ -160,11 +160,6 @@ export default {
       // 获取其中需要的内容，也就是后端给的result
       let userData = temp.data;
       console.log(userData);
-    },
-    async queryTest() {
-      const temp = await UserAPI.queryTest();
-      console.log(temp);
-      console.log(temp.data);
     },
   },
 };
