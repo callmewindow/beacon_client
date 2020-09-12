@@ -5,11 +5,11 @@
       <el-button type="primary" round style="margin-top: 80px; float: right" @click="showAddCourse = true">创建课程</el-button>
     </el-row>
     <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px">
-      <el-col :span="6" v-for="(course,index) in course_list" :key="index" style="margin-top: 20px">
-        <el-card style="padding: 0">
+      <el-col :span="6" v-for="(course,index) in course_list" :key="index" style="margin-top: 20px;">
+        <el-card>
           <img src="@/assets/course-cover.png" style="width: 100%">
           <el-row style="margin-top: 5px">
-            <el-link type="primary" :underline="false" style="font-size: 20px"
+            <el-link type="primary" :underline="false" style="font-size: 20px;height: 20px"
                      @click="frontTool.toPath('/course/'+course.id)">
               {{ course.course_name }}
             </el-link>
@@ -65,7 +65,7 @@ export default {
     async get_course_list() {
       try {
         const list = await courseAPI.courseQuery();
-        //window.console.log(list.data.courses);
+        window.console.log(list.data.courses);
         this.course_list = list.data.courses
       } catch (e) {
         this.$message.error('请求超时');

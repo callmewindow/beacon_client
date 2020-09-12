@@ -4,33 +4,36 @@
       <div slot="header">
         圈子规则
         <el-button
-          style="float: right; padding: 3px 0"
-          type="text"
-          v-if="rule_edit===false"
-          @click="edit_rule"
-        >编辑规则</el-button>
+            style="float: right; padding: 3px 0"
+            type="text"
+            v-if="rule_edit===false"
+            @click="edit_rule"
+        >编辑规则
+        </el-button>
         <el-button
-          style="float: right; padding: 3px 3px"
-          type="text"
-          v-if="rule_edit"
-          @click="rule_edit=false"
-        >取消</el-button>
+            style="float: right; padding: 3px 3px"
+            type="text"
+            v-if="rule_edit"
+            @click="edit_rule"
+        >取消
+        </el-button>
         <el-button
-          style="float: right; padding: 3px 0"
-          type="text"
-          v-if="rule_edit"
-          @click="send_edit"
-        >保存</el-button>
+            style="float: right; padding: 3px 0"
+            type="text"
+            v-if="rule_edit"
+            @click="send_edit"
+        >保存
+        </el-button>
       </div>
       <el-row :gutter="10">
         <el-col :span="16" :offset="3">
           <div v-if="rule_edit===false">{{ rule_content }}</div>
           <el-input
-            v-if="rule_edit"
-            type="textarea"
-            maxlength="200"
-            show-word-limit
-            v-model="rule_content"
+              v-if="rule_edit"
+              type="textarea"
+              maxlength="200"
+              show-word-limit
+              v-model="rule_content_bk"
           ></el-input>
         </el-col>
         <!-- <el-col :span="2">
@@ -38,7 +41,9 @@
           <el-button type="primary" plain v-if="rule_edit" @click="send_edit">完成</el-button>
         </el-col>-->
       </el-row>
-      <el-button v-if="rule_edit===false" id="sendBtn" type="primary" icon="el-icon-edit" @click="showSendUp = true">发帖</el-button>
+      <el-button v-if="rule_edit===false" id="sendBtn" type="primary" icon="el-icon-edit" @click="showSendUp = true">
+        发帖
+      </el-button>
     </el-card>
 
     <el-card v-for="post in post_list" :key="post.id" style="margin-top: 20px;">
@@ -51,17 +56,18 @@
           <el-row style="margin-bottom: 10px">
             <el-col :span="12">
               <el-link
-                type="primary"
-                :underline="false"
-                style="font-size: 18px"
-                @click="showDetail(post.id)"
-              >{{ post.title }}</el-link>
+                  type="primary"
+                  :underline="false"
+                  style="font-size: 18px"
+                  @click="showDetail(post.id)"
+              >{{ post.title }}
+              </el-link>
             </el-col>
             <el-col :span="7">
               <div style="float: right;">
                 {{ post.nickname }}
                 <el-divider direction="vertical"></el-divider>
-                {{ post.datetime ? post.datetime.substring(5,16) : "notime" }}
+                {{ post.datetime ? post.datetime.substring(5, 16) : "notime" }}
               </div>
             </el-col>
             <el-col :span="4">
@@ -80,11 +86,11 @@
     </el-card>
 
     <el-dialog title="发布帖子" id="sendUp" :visible.sync="showSendUp" width="30%">
-      <SendPost />
+      <SendPost/>
     </el-dialog>
 
     <el-dialog id="detailUp" :visible.sync="showDetailUp" width="50%">
-      <PostDetail :postId="detailId" />
+      <PostDetail :postId="detailId"/>
     </el-dialog>
 
   </div>
@@ -110,8 +116,8 @@ export default {
       showSendUp: false,
       showDetailUp: false,
       rule_edit: false,
-      rule_content:
-        "叙述原初。开天辟地之时，虚无亦为此献上祝贺。以吾之乖离剑撕裂世界。环绕众星之臼，天上的地狱乃创世前夜的祝福。以你的死来平息一切吧。天地乖离开辟之星！",
+      rule_content: "",
+      rule_content_bk: ""
     };
   },
   created() {
@@ -131,26 +137,25 @@ export default {
       this.detailId = postId;
       this.showDetailUp = true;
     },
-    edit_rule(e) {
+    edit_rule() {
       this.rule_edit = !this.rule_edit;
-      let target = e.target;
-      if (target.nodeName === "SPAN" || target.nodeName === "I")
-        target = e.target.parentNode;
-      target.blur();
+      this.rule_content_bk = this.rule_content;
     },
-    async send_edit(e) {
-      this.edit_rule(e);
+    async send_edit() {
+      this.rule_edit = !this.rule_edit;
+      this.rule_content = this.rule_content_bk;
       try {
-        await postAPI.setForumRule(1, this.rule_content); //------------圈子id
+        await postAPI.setForumRule(parseInt(this.$route.params.courseId), this.rule_content); //------------圈子id
       } catch (e) {
         this.$message.error("请求超时");
       }
     },
     async get_post_list() {
       let courseId = this.$route.params.courseId;
+      console.log(courseId);
       try {
-        const list = await postAPI.postList(courseId); //------------------------------圈子id
-        //window.console.log(list.data);
+        const list = await postAPI.postList(parseInt(courseId)); //------------------------------圈子id
+        window.console.log(list.data);
         this.post_list = list.data;
       } catch (e) {
         this.$message.error("请求超时");
