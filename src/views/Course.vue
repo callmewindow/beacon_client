@@ -85,10 +85,10 @@
                       @change="changeVideo"
                     >
                       <el-option
-                        v-for="item in videoUrlArray"
-                        :key="item.id"
+                        v-for="(item, index) in videoUrlArray"
+                        :key="index"
                         :label="item.title"
-                        :value="item.id"
+                        :value="index"
                       ></el-option>
                     </el-select>
 
@@ -108,7 +108,10 @@
                     </el-select>-->
                   </el-row>
                   <el-row style="margin-top: 10px; text-align: center;">
-                    <span style="font-size: 20px;">{{videoUrlArray[videoIndex - 1].title}}</span>
+                    <span
+                      style="font-size: 20px;"
+                      v-if="videoExact"
+                    >{{videoUrlArray[videoIndex].title}}</span>
                   </el-row>
                   <el-row>
                     <VideoPlayer style=" margin-top: 20px; width: 100%; border-radius: 2px;"></VideoPlayer>
@@ -204,28 +207,16 @@ export default {
       showSendUp: false,
       tabNames: ["intro", "direct", "video", "forum"],
 
-      courseInfo: {
-        course_name: "233",
-        profession: "233",
-        course_intro: "233",
-      },
+      courseInfo: {},
 
-      videoUrlArray: [
-        {
-          id: 0,
-          course_id: 0,
-          title: "233",
-          introduction: "233",
-          local_address: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
-        },
-      ],
-
-      videoIndex: 1,
+      videoExact: false,
+      videoIndex: null,
+      videoUrlArray: null,
 
       fileList: [],
     };
   },
-  async mounted() {
+  async created() {
     this.courseId = this.$route.params.courseId;
     await this.getCourseBasicInfo();
     await this.getCourseVideoUrlArray();
@@ -237,7 +228,6 @@ export default {
       });
       this.tabPos = this.tabNames[0];
     }
-    this.changeVideo();
   },
   methods: {
     handleStuClose(done) {
@@ -259,19 +249,34 @@ export default {
         });
     },
     async getCourseBasicInfo() {
-      const temp = await CourseAPI.getCourseBasicInfo(this.$route.params.courseId);
+      const temp = await CourseAPI.getCourseBasicInfo(
+        this.$route.params.courseId
+      );
       this.courseInfo = temp.data.course;
-      console.log(this.courseInfo);
     },
 
     async getCourseVideoUrlArray() {
-      const temp = await CourseAPI.getCourseVideoUrlArray(this.$route.params.courseId);
-      this.videoUrlArray = temp.data.videos;
+      const temp = await CourseAPI.getCourseVideoUrlArray(
+        this.$route.params.courseId
+      );
+      if (temp.data.videos == undefined) {
+        this.videoUrlArray = [];
+        this.videoExact = false;
+      } else {
+        this.videoUrlArray = temp.data.videos;
+        this.videoExact = true;
+        this.videoIndex = 0;
+      }
       console.log(this.videoUrlArray);
     },
     changeVideo: function () {
+      if (this.videoExact == false) {
+        return;
+      }
       let e = document.getElementById("video-player");
-      e.src = this.videoUrlArray[this.videoIndex - 1].local_address;
+      e.src =
+        "http://101.200.219.50" +
+        this.videoUrlArray[this.videoIndex].local_address;
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -294,6 +299,10 @@ export default {
       this.$router.push({
         path: "/course/" + this.$route.params.courseId + "/" + target.name,
       });
+      if (target.name == "video") {
+        this.changeVideo();
+        return;
+      }
       if (target.name == "forum") {
         console.log(this.courseInfo.is_open);
         if (this.courseInfo.is_open == 0) {
