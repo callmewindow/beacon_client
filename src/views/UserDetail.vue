@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <div >
     <Navigator active-func="UserDetail"/>
     <div style="width: 100%;clear:both ;background-color: #FFFAFA;opacity: 30%;">
     <el-card class="card align-center text-align: center;">
         <el-row :gutter="20" style="margin-top:5%;" >
-            <el-col :span="8" offset="2" >
+            <el-col :span="8" :offset="2" >
                 <div class="info">
                     <div class="info-title" >
                         <i class="el-icon-user-solid"></i>
@@ -20,7 +20,7 @@
                     <el-button class="button" @click="authentication">教师认证</el-button>
                 </template>
             </el-col>
-            <el-col :span="1" offset="4"><i class="el-icon-edit-outline el-icon"></i></el-col>
+            <el-col :span="1" :offset="4"><i class="el-icon-edit-outline el-icon"></i></el-col>
             <el-col :span="2" >
                 <div class="icon-content" style="margin-top: 45px">课程/圈子</div>
                 <div class="icon-content" style="margin-top: 7px; font-size: medium" >{{user.circle}}个</div>
@@ -44,54 +44,55 @@
     </el-card>
     <el-tabs v-model="activeName" @tab-click="handleClick" class="tab" style="size: 40px">
         <el-tab-pane label="课程" name="first" >
-            <div >
-                <el-row gutter="30"  >
-                    <el-col :span="5" v-for="o in course" :key="o" >
-                        <div style="min-width: 200px">
-                        <el-card :body-style="{padding:'2px'}" style="width:100%;height: 120px;text-align: center;margin-bottom: 15%" shadow="hover" class="courseCard">
-                            <div class="className" >{{o.name}}</div>
-                            <el-tag  class="tag" type="warning">{{o.profession}}</el-tag>
-                                <div class="classFrom info-content ">北京航空航天大学-X老师</div>
-                                <div class="startime info-content">2020-09-01</div>
-                                <div class="studentNum info-content">163人</div>
-<!--                                <div class="classIntro">{{ classIntro | filterIntro }}</div>-->
-                        </el-card>
+            <div style="margin-left: 5%">
+                <el-row :gutter="100"  style="margin-top: 2px ">
+                    <el-col :span="5" :offset="0" v-for="(o,index) in course" :key="index" >
+                        <div style="min-width: 200px ;margin-bottom: 30px" >
+                            <div v-on: @mouseover="show(index)" @mouseleave="i=-1" @click="FT.building()">
+                                <el-card :body-style="{padding:'2px'}"   shadow="hover" class="courseCard" >
+                                    <div class="className" >{{o.name}}</div>
+                                    <el-tag  class="tag" type="warning">{{o.profession}}</el-tag>
+                                    <div class="classFrom info-content ">{{o.teacher}}</div>
+                                    <div v-show="index !==i" class="startime info-content">
+                                        <i class="el-icon-date"></i>
+                                        2020-09-01
+                                    </div>
+                                    <div v-show="index!==i" class="studentNum info-content">160人</div>
+                                    <div v-show="index === i" class="classIntro"  >{{ o.classIntro}} </div>
+                                    <div v-show="index === i" class=" info-content" style=" color: #797b80;float: left;margin-left: 5%;font-size: 12px"  >
+                                        <i class="el-icon-date"></i>
+                                        2020-09-01
+                                    </div>
+                                    <div v-show="index === i" class=" info-content" style="color: #797b80;float: right ;font-size: 12px">160人</div>
+                                </el-card>
+                            </div>
                         </div>
                     </el-col>
                 </el-row>
-
-<!--&lt;!&ndash;                过渡&ndash;&gt;-->
-<!--                <div v-on:mouseleave="show = !show" @mouseover="show= !show" style="margin-top: 100px">-->
-<!--                    <el-card shadow="hover">-->
-<!--                        鼠标悬浮时显示-->
-<!--                    </el-card>-->
-<!--                </div>-->
-<!--                <transition name="fade">-->
-<!--                    <p v-if="show">hello</p>-->
-<!--                </transition>-->
-
             </div>
         </el-tab-pane>
-        <el-tab-pane label="帖子" name="second"></el-tab-pane>
-            <div>
+        <el-tab-pane label="帖子" name="second" ></el-tab-pane>
 
-            </div>
-        <el-tab-pane label="消息中心" name="third"></el-tab-pane>
-            <div>
+        <el-tab-pane label="消息中心" name="third" ></el-tab-pane>
 
-            </div>
     </el-tabs>
     </div>
+    <Footer/>
     </div>
 </template>
 
 <script>
     import Navigator from "../components/Navigator";
+    import Footer from "@/components/Footer";
+    import * as FT from "@/tools/frontTool";
     export default {
         name: "UserDetail",
         components: {Navigator},
+        el:'#user',
         data(){
             return{
+                FT,
+                Footer,
                 circleUrl:require("@/assets/useravatar.jpg"),
                 user:{
                     "username":"烽火",
@@ -111,56 +112,61 @@
                 course:[
                     {
                         name: "软件工程实践",
-                        profession:"软件工程"
+                        profession:"软件工程",
+                        teacher:"吕云翔",
+                        classIntro: "《软件工程实践》是软件工程本科专业的一门专业...",
                     },
                     {
                         name:"数据库",
-                        profession: "计算机"
-                    },   {
+                        profession: "计算机",
+                        teacher:"黄坚",
+                       classIntro: "《数据库》是计算机本科专业的一门专业必修课。它是..."
+                    },
+                    {
                         name: "软件工程实践",
-                        profession:"软件工程"
+                        profession:"软件工程",
+                        teacher:"王宇轩",
+                        classIntro: " 《数据库》是计算机本科专业的一门专业必修课。它是..."
                     },
                     {
                         name:"数据库",
-                        profession: "计算机"
+                        profession: "计算机",
+                        teacher:"王宇轩",
+                        classIntro: " 《数据库》是计算机本科专业的一门专业必修课。它是..."
                     } , {
                         name: "软件工程实践",
-                        profession:"软件工程"
+                        profession:"软件工程",
+                        teacher:"王宇轩",
+                        classIntro: " 《数据库》是计算机本科专业的一门专业必修课。它是..."
                     },
                     {
                         name:"数据库",
-                        profession: "计算机"
-                    }
+                        profession: "计算机",
+                        classIntro: ""
+                    },{
+                        name:"数据库", profession: "计算机",
+                        classIntro: ""} , {name: "软件工程实践", profession:"软件工程"}, {name:"数据库", profession: "计算机"}
+
                 ],
-                show: true,
-                classIntro:
-                    "《软件工程实践》是软件工程本科专业的一门专业必修课。它是集软件、硬件、程序语言开发、数据库设计、软件过程管理和交互设计为一体的重要实践课程。",
+                i:-1
             }
         },
         filters: {
             filterIntro(value) {
-                return value.substring(0, 15) + "...";
+                return value.substring(0, 30) + "...";
             },
         },
-        methods:{
-            authentication(){
-                this.$router.push({ path: "/authentication" });
+        methods: {
+            authentication() {
+                this.$router.push({path: "/authentication"});
             },
             handleClick(tab, event) {
                 console.log(tab, event);
             },
-            mouseOver(){
-                this.active="backgroud-color:black";
-                var acps = this.$refs.acp
-                acps.style.color = "red"
-                this.boxshow=false;
+            show(index){
+               this.i=index
             },
-            mouseLeave(){
-                this.active="backgroud-color:red";
-                this.$refs.acp.style='';
-                this.boxshow=true;
-            }
-        },
+        }
 
     }
 </script>
@@ -233,7 +239,7 @@
     background-color: #FF7256;
 }
 .className {
-    margin-top: 10%;
+    margin-top: 12%;
     font-size: 15px;
     font-family: 微软雅黑;
     font-weight: bold;
@@ -241,7 +247,7 @@
 }
 
 .classFrom {
-    margin-top: 2%;
+    margin-top: 5%;
     clear: both;
     font-size: 12px;
     height: 20px;
@@ -249,31 +255,46 @@
     color: #797b80;
 }
 .studentNum {
-    font-size: 13px;
+    font-size: 12px;
     color: #797b80;
     float: right;
-    margin-top: 15%;
+    margin-right: 5%;
+    margin-top: 14%;
 }
-.startime{
-    font-size: 13px;
+.startime {
+    font-size: 12px;
     color: #797b80;
     float: left;
-    margin-top: 15%;
-}
+    margin-top: 14%;
+    margin-left: 5%;
+    display: block;}
+
+
 .el-col-8{
     width: 20%;
 }
 .el-card{
     border: 0px white;
 }
-.fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
+/deep/.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+/deep/.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
     opacity: 0;
 }
 .courseCard{
     background-image: linear-gradient(180deg,rgba(255,255,255,0.6),rgba(244,164,96,0));
+    width:100%;text-align: center;
+    height: 150px;
+}
+.classIntro{
+    font-size: 12px;
+    color: #797b80;
+    float: left;
+    margin-top: 8%;
+    margin-left: 5%;
+    margin-right: 5%;
+    width:180px; height:29px
 }
 .tag{
     background-color: #FF7256;;
@@ -284,5 +305,12 @@
     padding: 0 5px;
     margin-top: -24%;
 }
+.card-bottoms{
+
+}
+.card-bottom{
+    margin-bottom: 50px;
+}
+
 </style>
 

@@ -1,6 +1,6 @@
-// import axios from 'axios'
+ import axios from 'axios'
 
-import Axios from "axios"
+// import Axios from "axios"
 
 // import {
 //   QS
