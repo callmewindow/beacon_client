@@ -56,21 +56,7 @@ export default {
   name: "PostList",
   data() {
     return {
-      //帖子列表规范，前端传参：forumId
-      post_list: [      //某个圈子下面的所有帖子（即帖子基本信息和一楼内容），列表，元素是字典
-        {
-          id:"帖子id",
-          title: "标题",
-          author: "作者",
-          datetime: "发帖时间",
-          content: "内容",
-          read: "阅读数，int",
-          like: "点赞数，int",
-          reply_num: "回复数，即最大楼层-1",
-          top: "是否置顶，bool",
-          highlight: "是否精华，bool"
-        },
-      ],
+      post_list: [],
     };
   },
   created() {
@@ -85,8 +71,9 @@ export default {
   methods: {
     async get_post_list(){
       try {
-        const detail_dict = await postAPI;//<-----------------------------------------NEED API
-        window.console.log(detail_dict);
+        const list = await postAPI.postList(1);
+        window.console.log(list);
+        this.post_list = list.data
       }
       catch (e) {
         this.$message.error('请求超时');

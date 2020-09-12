@@ -72,9 +72,9 @@
         </el-col>
         <el-col :span="12">
           <div style="float: right; margin-right: 20px">
-            {{ reply.id }}楼
+            {{ reply.floor }}楼
             <el-divider direction="vertical"></el-divider>
-            <el-button type="text" @click="reply_reply(reply.id)">回复</el-button>
+            <el-button type="text" @click="reply_reply(reply.floor)">回复</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button type="text" @click="report">举报</el-button>
           </div>
@@ -94,28 +94,19 @@ export default {
     return {
       reply_button_clicked: false,
       reply_text: "",
-      //帖子详情页规范，前端传递参数：postId
-      post: {                            //帖子主要内容，字典
-        id: "帖子id，后端是int就int，是str就str",
-        title: "帖子标题str",
-        author: "发帖人str",
-        author_tag: "发帖人身份，区分教师",
-        datetime: "发帖时间，str，月.日 时:分",
-        content: "帖子内容str",
-        read: "阅读数，int",
-        like: "点赞数，int",
-        top: "是否置顶，bool",
-        highlight: "是否精华，bool"
+      post: {
+        id: 0,
+        title: "帖子标题",
+        author: "发帖人",
+        author_tag: "发帖人身份",
+        datetime: "发帖时间",
+        content: "帖子内容",
+        read: 0,
+        like: 0,
+        top: "是否置顶",
+        star: "是否精华"
       },
-      reply_list: [            //帖子下面的回复，列表，列表元素是字典
-        {
-          id: "回复的id，没有则提供楼层号",
-          content: "回复内容str",
-          author: "回复作者str",
-          datetime: "回复时间str",
-          floor: "回复的楼层号, int str 随意"
-        },
-      ]
+      reply_list: []
     };
   },
   created() {
@@ -147,7 +138,7 @@ export default {
       target.blur();
     },
     reply_reply(id) {
-      this.reply_text = "回复" + id + "楼:\n";
+      this.reply_text = "回复" + id + "楼: ";
       this.reply_button_clicked = true;
       document.scrollingElement.scrollTop = 0;
     },
@@ -161,8 +152,27 @@ export default {
     },
     async get_post_detail() {
       try {
-        const detail_dict = await postAPI;//<-----------------------------------------NEED API
-        window.console.log(detail_dict);
+        const detail_dict = await postAPI.postDetail(1);//-----------------------------postid
+        window.console.log(detail_dict.data);
+        this.post.id = detail_dict.data.post.id;
+        this.post.title = detail_dict.data.post.title;
+        this.post.author = detail_dict.data.post.owner.user_nickname;
+        this.post.author_tag = detail_dict.data.post.owner.teacher_identity;
+        this.post.datetime = detail_dict.data.floors[0].post_time.slice(5, 16);
+        this.post.content = detail_dict.data.floors[0].content;
+        this.post.read = detail_dict.data.post.watches;
+        this.post.like = detail_dict.data.floors[0].like_num;
+        this.post.top = detail_dict.data.post.topped;
+        this.post.star = detail_dict.data.post.stared;
+        for (let i = 1; i < detail_dict.data.floors.length; i++) {
+          let reply = {
+            content: detail_dict.data.floors[i].content,
+            author: detail_dict.data.floors[i].owner.user_nickname,
+            datetime: detail_dict.data.floors[i].post_time.slice(5, 16),
+            floor: detail_dict.data.floors[i].floor_num
+          };
+          this.reply_list.push(reply);
+        }
       } catch (e) {
         this.$message.error('请求超时');
       }
@@ -172,16 +182,24 @@ export default {
         this.$message.error("不能回复空内容");
         return;
       }
+      let date = new Date();
+      let mon = (date.getMonth() + 1).toString();
+      if (mon.length < 2) mon = "0" + mon;
+      let day = (date.getDate()).toString();
+      if (day.length < 2) day = "0" + day;
+      let hor = (date.getHours()).toString();
+      if (hor.length < 2) hor = "0" + hor;
+      let min = (date.getMinutes()).toString();
+      if (min.length < 2) min = "0" + min;
       let reply_dict = {
-        id: this.reply_list.length + 2,
+        floor: this.reply_list.length + 2,
         content: this.reply_text,
-        author: "田所浩一一四五一四",
-        datetime: "9.9 19:59"
+        author: "zym4", //------------------------------------------------------------------store.nickname
+        datetime: mon + "-" + day + " " + hor + ":" + min
       };
       this.reply_list.push(reply_dict);
       try {
-        const result = await postAPI;//<-----------------------------------------NEED API
-        window.console.log(result);
+        await postAPI.replyPost(this.post.id, 5, this.reply_text);  //-------------store.userid
       } catch (e) {
         this.$message.error('请求超时');
       }
@@ -191,8 +209,7 @@ export default {
       });
       this.reply_button_clicked = false
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I')
-        target = e.target.parentNode;
+      if (target.nodeName === 'SPAN' || target.nodeName === 'I') target = e.target.parentNode;
       target.blur();
     },
   }
