@@ -196,6 +196,7 @@ export default {
       if (this.page === 0) {
         this.page = 3;
         this.show = true;
+        setTimeout("location.reload()",2000);
       }
     },
 

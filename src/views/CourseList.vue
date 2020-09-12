@@ -66,7 +66,8 @@ export default {
       try {
         const list = await courseAPI.courseQuery();
         window.console.log(list.data.courses);
-        this.course_list = list.data.courses
+        this.course_list = list.data.courses;
+        this.course_list.reverse();
       } catch (e) {
         this.$message.error('请求超时');
       }

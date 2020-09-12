@@ -165,6 +165,7 @@ export default {
       try {
         const list = await postAPI.postList(parseInt(courseId)); //------------------------------圈子id
         this.post_list = list.data;
+        this.post_list.reverse.reverse();
         if (this.post_list != "该圈子id不存在") {
           this.havePost = true;
         }

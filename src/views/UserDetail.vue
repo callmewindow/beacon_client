@@ -263,16 +263,16 @@ export default {
   margin-left: 90px;
   margin-right: 90px;
 }
-/deep/ .el-tabs__item.is-active {
+.el-tabs /deep/ .el-tabs__item.is-active {
   color: #ff7f00;
 }
-/deep/ .el-tabs__item {
+.el-tabs /deep/ .el-tabs__item {
   color: #363636;
   font-size: 16px;
   font-weight: 500;
   padding: 0 30px;
 }
-/deep/.el-tabs__active-bar {
+.el-tabs /deep/.el-tabs__active-bar {
   background-color: #ff7256;
 }
 .className {
