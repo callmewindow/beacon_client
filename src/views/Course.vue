@@ -119,9 +119,9 @@
               <el-tab-pane :name="tabNames[3]">
                 <div class="tab_left_part" slot="label">圈子社区</div>
                 <el-row>
-                  <el-col class="tab_right_title">圈子社区</el-col>
+                  <el-col class="tab_right_title" v-if="courseInfo.is_open">圈子社区</el-col>
                 </el-row>
-                <div id="postList">
+                <div id="postList" v-if="courseInfo.is_open">
                   <PostList />
                 </div>
                 <!-- <el-card class="tab_right_body">
@@ -215,7 +215,8 @@ export default {
           course_id: 0,
           title: "233",
           introduction: "233",
-        }
+          local_address: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
+        },
       ],
 
       videoIndex: 1,
@@ -234,6 +235,7 @@ export default {
       });
       this.tabPos = this.tabNames[0];
     }
+    this.changeVideo();
   },
   methods: {
     handleStuClose(done) {
@@ -268,7 +270,6 @@ export default {
     changeVideo: function () {
       let e = document.getElementById("video-player");
       e.src = this.videoUrlArray[this.videoIndex - 1].local_address;
-      e.play();
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -291,20 +292,24 @@ export default {
       this.$router.push({
         path: "/course/" + this.$route.params.courseId + "/" + target.name,
       });
-      if (target.label == "圈子社区") {
-        this.$alert(
-          "该课程现在还未创建圈子社区，现在要创建圈子社区吗？",
-          "创建圈子社区",
-          {
-            confirmButtonText: "确定",
-            callback: (action) => {
-              this.$message({
-                type: "info",
-                message: `action: ${action}`,
-              });
-            },
-          }
-        );
+      if (target.name == "forum") {
+        console.log(this.courseInfo.is_open);
+        if (this.courseInfo.is_open == 0) {
+          this.$alert(
+            "该课程现在还未创建圈子社区，现在要创建圈子社区吗？",
+            "创建圈子社区",
+            {
+              confirmButtonText: "确定",
+              callback: (/*action*/) => {
+                // this.$message({
+                //   type: "info",
+                //   message: `action: ${action}`,
+                // });
+                this.courseInfo.is_open = 1;
+              },
+            }
+          );
+        }
       }
     },
   },
