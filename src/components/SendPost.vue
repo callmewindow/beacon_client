@@ -37,7 +37,7 @@
         ></el-option>
       </el-select>
     </div>
-    <el-button id="sendBtn" type="primary" size="small" @click="sendPost">发布</el-button>
+    <el-button id="sendBtn" type="primary" size="small" @click="SendPost">发布</el-button>
   </div>
 </template>
 
