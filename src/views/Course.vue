@@ -311,13 +311,12 @@ export default {
             "创建圈子社区",
             {
               confirmButtonText: "确定",
-              callback: (/*action*/) => {
-                // this.$message({
-                //   type: "info",
-                //   message: `action: ${action}`,
-                // });
-                CourseAPI.openCourseForum(this.courseId);
-                this.courseInfo.is_open = 1;
+              callback: async (action) => {
+                if (action == "confirm") {
+                  // 同步保证请求发送成功
+                  await CourseAPI.openCourseForum(this.courseId);
+                  location.reload();
+                }
               },
             }
           );

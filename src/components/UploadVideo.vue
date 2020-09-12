@@ -52,7 +52,11 @@
                     将视频拖到此处，或
                     <em>点击添加视频</em>
                   </div>
-                  <div slot="tip" style="margin-top:-20px;margin-bottom:-10px" class="el-upload__tip">只能上传mp4文件，且小于500MB</div>
+                  <div
+                    slot="tip"
+                    style="margin-top:-20px;margin-bottom:-10px"
+                    class="el-upload__tip"
+                  >只能上传mp4文件，且小于500MB</div>
                 </el-upload>
               </el-form-item>
 
@@ -189,6 +193,7 @@ export default {
       //负责切换状态栏状态
       this.page = 2;
       this.show = true;
+      setTimeout("location.reload()", 2000);
     },
 
     async upload() {
