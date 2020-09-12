@@ -197,6 +197,7 @@ export default {
   data() {
     return {
       FT,
+      courseId: 1,
       tabPos: "intro",
       showMemberUp: false,
       showVideoUp: false,
@@ -224,9 +225,10 @@ export default {
       fileList: [],
     };
   },
-  mounted() {
-    this.getCourseBasicInfo();
-    this.getCourseVideoUrlArray();
+  async mounted() {
+    this.courseId = this.$route.params.courseId;
+    await this.getCourseBasicInfo();
+    await this.getCourseVideoUrlArray();
     // 切换tab位置
     this.tabPos = this.$route.params.coursePos;
     if (this.tabNames.indexOf(this.tabPos) == -1) {
@@ -257,13 +259,13 @@ export default {
         });
     },
     async getCourseBasicInfo() {
-      const temp = await CourseAPI.getCourseBasicInfo(1);
+      const temp = await CourseAPI.getCourseBasicInfo(this.$route.params.courseId);
       this.courseInfo = temp.data.course;
       console.log(this.courseInfo);
     },
 
     async getCourseVideoUrlArray() {
-      const temp = await CourseAPI.getCourseVideoUrlArray(1);
+      const temp = await CourseAPI.getCourseVideoUrlArray(this.$route.params.courseId);
       this.videoUrlArray = temp.data.videos;
       console.log(this.videoUrlArray);
     },
@@ -305,6 +307,7 @@ export default {
                 //   type: "info",
                 //   message: `action: ${action}`,
                 // });
+                CourseAPI.openCourseForum(this.courseId);
                 this.courseInfo.is_open = 1;
               },
             }

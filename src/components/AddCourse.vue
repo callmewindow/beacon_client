@@ -98,8 +98,7 @@
 </template>
 
 <script>
-import * as courseAPI from "../APIs/course";
-//import * as expertAPI from "../APIs/expert";
+import * as courseAPI from "@/APIs/course";
 import moment from "moment";
 // import Navigator from "@/components/Navigator";
 // import Footer from "@/components/Footer";
@@ -118,7 +117,7 @@ export default {
       dialogTableVisible: false,
 
       courseEntity: {
-        userId: this.$store.state.userId,
+        // userId: this.$store.state.userId,
         course_name: "",
         profession: "",
         course_intro: "",
@@ -227,13 +226,10 @@ export default {
 
     async uploadPaper() {
       try {
-        window.console.log(this.userId);
         window.console.log(this.courseEntity);
         const temp = await courseAPI.addCourse(this.courseEntity);
         window.console.log(temp);
         const ifSuc = temp.data.msg;
-        this.courseEntity.courseId = temp.data.id;
-        window.console.log(this.courseEntity.courseId);
         if (ifSuc === "success") {
           this.success();
         } else {

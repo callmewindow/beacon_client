@@ -101,18 +101,18 @@ export default {
     return {
       FT,
       centerLogo: require("@/assets/logo-horizon-complex.png"),
-      username: "暂未登录",
-      // classes: [
-      //   "软件系统分析-软件工程",
-      //   "软件过程质量-软件工程",
-      //   "软件测试-软件工程",
-      // ],
+      username: "稼轩",
       classes: [
-        "临时路由引导：",
-        "/uploadvideo上传视频，/sendPost发布帖子",
-        "/course课程信息，/user个人信息（还没更新）",
-        "/addcourse新增课程，/postdetail帖子",
+        "软件系统分析-软件工程",
+        "软件过程质量-软件工程",
+        "软件测试-软件工程",
       ],
+      // classes: [
+      //   "临时路由引导：",
+      //   "/uploadvideo上传视频，/sendPost发布帖子",
+      //   "/course课程信息，/user个人信息（还没更新）",
+      //   "/addcourse新增课程，/postdetail帖子",
+      // ],
       classIntro:
         "《软件工程实践》是软件工程本科专业的一门专业必修课。它是集软件、硬件、程序语言开发、数据库设计、软件过程管理和交互设计为一体的重要实践课程。",
     };

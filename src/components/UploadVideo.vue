@@ -101,18 +101,18 @@ export default {
     };
 
     return {
-      videoUrl: "https://jsonplaceholder.typicode.com/posts/", //http://101.200.219.50:8000/api/expert/uploadImage
+      videoUrl: "/api/uploadVideo1",
       page: 0,
       showMsg: "视频已上传",
       show: false,
       identityVideo: [],
       ifIdentityVideo: false,
       uploadVideoForm: {
-        course: "",
-        userId: this.$store.state.userId,
+        course_id: "5",
         title: "",
         introduction: "",
         upload_time: "",
+        video_id: "",
       },
       ruleForm: {
         videoTitle: "",
@@ -155,8 +155,8 @@ export default {
 
     videoSuccess(res) {
       //, file, fileList
-      window.console.log(res); // 这里可以获得上传成功的相关信息
-      if (res === "ok") {
+      this.uploadVideoForm.video_id = res.video_id;
+      if (res.msg === "success") {
         this.submitForm("ruleForm");
       }
     },
@@ -166,7 +166,6 @@ export default {
     },
 
     submitVideo() {
-      this.submitForm("ruleForm");
       this.$refs.upload.submit();
     },
 
@@ -178,8 +177,7 @@ export default {
           );
           this.uploadVideoForm.title = this.ruleForm.videoTitle;
           this.uploadVideoForm.introduction = this.ruleForm.videoIntro;
-          //this.uploadVideoForm.course = ;
-          this.uploadVideo();
+          this.upload();
         } else {
           window.console.log("error submit!!");
           return false;
@@ -193,13 +191,12 @@ export default {
       this.show = true;
     },
 
-    async uploadVideo() {
+    async upload() {
       try {
-        window.console.log(this.uploadVideoForm.userId);
         window.console.log(this.uploadVideoForm);
         const temp = await courseAPI.uploadVideo(this.uploadVideoForm);
         window.console.log(temp.data["msg"]);
-        if (temp.data["msg"] === "ok") {
+        if (temp.data["msg"] === "success") {
           this.success();
         } else {
           this.$message.error("上传失败，请联系管理员");
