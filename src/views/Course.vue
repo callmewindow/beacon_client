@@ -29,123 +29,148 @@
       <el-col>
         <el-card>
           <el-tabs tab-position="left" style="width: 100%;" @tab-click="clickCommunity">
-            <el-tab-pane>
+            <el-tab-pane label="课程信息">
               <div class="left_tab" slot="label">课程信息</div>
               <el-row>
-                <el-col style="font-size: 22px;">课程信息</el-col>
+                <el-col style="font-size: 22px; text-align: center;">课程信息</el-col>
               </el-row>
-              <el-row type="flex" class="row-bg">
-                <el-col :span="8" :offset="3">
-                  <el-card
-                    style="height: 600px; margin-top: 10px; color: #909399; font-size: 18px;"
-                  >
-                    <el-row style="margin-bottom: 20px; color: #303133; font-size: 20px;">课程简介</el-row>
-                    <el-row>{{courseDescription}}</el-row>
-                  </el-card>
-                </el-col>
+              <div style="width: 80%; margin: 0 10%;">
+                <el-row type="flex" class="row-bg">
+                  <el-col :span="11">
+                    <el-card
+                      style="height: 600px; margin-top: 10px; color: #909399; font-size: 16px;"
+                    >
+                      <el-row
+                        style="margin-bottom: 20px; color: #303133; font-size: 20px; text-align: center;"
+                      >课程简介</el-row>
+                      <el-row style="text-align: left;">{{courseDescription}}</el-row>
+                    </el-card>
+                  </el-col>
 
-                <el-col :span="8" :offset="2">
-                  <el-card
-                    style="height: 45%; margin-top: 10px; color: #909399; font-size: 18px; display: flex; justify-content: center; align-items: center;"
-                  >
-                    <el-row style="margin-bottom: 30px; color: #303133; font-size: 20px;">人员导入</el-row>
+                  <el-col :span="11" :offset="2">
+                    <el-card
+                      style="height: 45%; margin-top: 10px; color: #909399; font-size: 18px; display: flex; justify-content: center; align-items: center;"
+                    >
+                      <el-row
+                        style="margin-bottom: 30px; color: #303133; font-size: 20px; text-align: center;"
+                      >人员导入</el-row>
 
-                    <el-row>
-                      <el-upload
-                        class="upload-demo"
-                        action
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :before-remove="beforeRemove"
-                        multiple
-                        :limit="3"
-                        :on-exceed="handleExceed"
-                        :file-list="fileList"
-                      >
-                        <el-button type="primary" icon="el-icon-upload2" circle></el-button>
-                        <div slot="tip" class="el-upload__tip">只能上传xls/xlsx/csv文件，且不超过500kb</div>
-                      </el-upload>
-                    </el-row>
-                  </el-card>
+                      <el-row>
+                        <el-upload
+                          class="upload-demo"
+                          action
+                          :on-preview="handlePreview"
+                          :on-remove="handleRemove"
+                          :before-remove="beforeRemove"
+                          multiple
+                          :limit="3"
+                          :on-exceed="handleExceed"
+                          :file-list="fileList"
+                          style="text-align: center;"
+                        >
+                          <el-button type="primary" icon="el-icon-upload2" circle></el-button>
+                          <div slot="tip" class="el-upload__tip">只能上传xls/xlsx/csv文件，且不超过500kb</div>
+                        </el-upload>
+                      </el-row>
+                    </el-card>
 
-                  <el-card
-                    style="height: 45%; margin-top: 10%; color: #909399; font-size: 18px; display: flex; justify-content: center; align-items: center;"
-                  >
-                    <el-row style="margin-bottom: 30px; color: #303133; font-size: 20px;">视频上传</el-row>
+                    <el-card
+                      style="height: 45%; margin-top: 10%; color: #909399; font-size: 18px; display: flex; justify-content: center; align-items: center;"
+                    >
+                      <el-row
+                        style="margin-bottom: 30px; color: #303133; font-size: 20px; text-align: center;"
+                      >视频上传</el-row>
 
-                    <el-row>
-                      <el-upload
-                        class="upload-demo"
-                        action
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :before-remove="beforeRemove"
-                        multiple
-                        :limit="3"
-                        :on-exceed="handleExceed"
-                        :file-list="fileList"
-                      >
-                        <el-button type="primary" icon="el-icon-upload2" circle></el-button>
-                        <div slot="tip" class="el-upload__tip">只能上传xls/xlsx/csv文件，且不超过500kb</div>
-                      </el-upload>
-                    </el-row>
-                  </el-card>
-                </el-col>
+                      <el-row>
+                        <el-upload
+                          class="upload-demo"
+                          action
+                          :on-preview="handlePreview"
+                          :on-remove="handleRemove"
+                          :before-remove="beforeRemove"
+                          multiple
+                          :limit="3"
+                          :on-exceed="handleExceed"
+                          :file-list="fileList"
+                          style="text-align: center;"
+                        >
+                          <el-button type="primary" icon="el-icon-upload2" circle></el-button>
+                          <div slot="tip" class="el-upload__tip">只能上传xls/xlsx/csv文件，且不超过500kb</div>
+                        </el-upload>
+                      </el-row>
+                    </el-card>
+                  </el-col>
+                </el-row>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="课程直播">
+              <div class="left_tab" slot="label">课程直播</div>
+              <el-row>
+                <el-col style="font-size: 22px; text-align: center;">课程直播</el-col>
+              </el-row>
+              <el-row style="display: flex; justify-content: center;">
+                <el-card
+                  style="width: 80%; height: 600px; margin-top: 10px; color: #909399; font-size: 18px;"
+                ></el-card>
               </el-row>
             </el-tab-pane>
             <el-tab-pane label="视频课程">
               <div class="left_tab" slot="label">视频资源</div>
               <el-row>
-                <el-col style="font-size: 22px;">视频资源</el-col>
+                <el-col style="font-size: 22px; text-align: center;">视频资源</el-col>
               </el-row>
               <el-row>
-                <el-card style="margin-top: 10px;">
-                  <el-row id="course-selector">
-                    <span id="course-selector-title">请选择章节：</span>
+                <div style="width: 80%; margin: 0 10%;">
+                  <el-card style="margin-top: 10px;">
+                    <el-row id="course-selector">
+                      <span id="course-selector-title">请选择章节：</span>
 
-                    <div style="margin-left: 14%">
-                      <el-select v-model="courseIndex" placeholder="请选择" @change="getCourseIndex">
-                        <el-option
-                          v-for="item in courseArray"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        ></el-option>
-                      </el-select>
+                      <div style="margin-left: 14%">
+                        <el-select v-model="courseIndex" placeholder="请选择" @change="getCourseIndex">
+                          <el-option
+                            v-for="item in courseArray"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          ></el-option>
+                        </el-select>
 
-                      <el-select
-                        v-model="videoIndex"
-                        style="margin-left: 20px;"
-                        placeholder="请选择"
-                        @change="getVideoIndex"
-                      >
-                        <el-option
-                          v-for="item in urlArray"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        ></el-option>
-                      </el-select>
-                    </div>
-                  </el-row>
-                  <el-row style="margin-top: 20px;">
-                    <span id="video-title-part">{{videoTitle}}</span>
-                  </el-row>
-                  <el-row>
-                    <VideoPlayer style=" margin-top: 20px; width: 80%; border-radius: 5px;"></VideoPlayer>
-                  </el-row>
-                </el-card>
+                        <el-select
+                          v-model="videoIndex"
+                          style="margin-left: 20px;"
+                          placeholder="请选择"
+                          @change="getVideoIndex"
+                        >
+                          <el-option
+                            v-for="item in urlArray"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          ></el-option>
+                        </el-select>
+                      </div>
+                    </el-row>
+                    <el-row style="margin-top: 20px; text-align: center;">
+                      <span id="video-title-part">{{videoTitle}}</span>
+                    </el-row>
+                    <el-row>
+                      <VideoPlayer style=" margin-top: 20px; width: 100%; border-radius: 5px;"></VideoPlayer>
+                    </el-row>
+                  </el-card>
+                </div>
               </el-row>
             </el-tab-pane>
             <el-tab-pane label="圈子社区">
               <div class="left_tab" slot="label">圈子社区</div>
               <el-row>
-                <el-col style="font-size: 22px;">圈子社区</el-col>
+                <el-col style="font-size: 22px; text-align: center;">圈子社区</el-col>
               </el-row>
               <el-row>
-                <el-card
-                  style="height: 500px; margin-top: 10px; color: #909399; font-size: 18px;"
-                >{{courseDescription}}</el-card>
+                <div style="width: 80%; margin: 0 10%;">
+                  <el-card
+                    style="height: 600px; margin-top: 10px; color: #909399; font-size: 16px;"
+                  ></el-card>
+                </div>
               </el-row>
             </el-tab-pane>
           </el-tabs>
@@ -220,10 +245,7 @@ export default {
     this.getCourseInfo();
   },
   methods: {
-    getCourseInfo() {
-
-      
-    },
+    getCourseInfo() {},
 
     getCourseIndex() {
       this.urlArray = this.courseArray[this.courseIndex - 1].urlArray;
@@ -275,7 +297,7 @@ export default {
 
 <style scoped>
 .course {
-  text-align: center;
+  text-align: left;
 }
 
 #university-card {
