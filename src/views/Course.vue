@@ -121,7 +121,10 @@
                 <el-row>
                   <el-col class="tab_right_title">圈子社区</el-col>
                 </el-row>
-                <el-card class="tab_right_body">
+                <div id="postList">
+                  <PostList />
+                </div>
+                <!-- <el-card class="tab_right_body">
                   <div style="display: flex; justify-content: center;">
                     <el-card id="option_btn_part">
                       <div class="option_btn_area">
@@ -151,7 +154,7 @@
                       <el-button id="rule_change_btn" type="primary" icon="el-icon-edit" circle></el-button>
                     </el-card>
                   </div>
-                </el-card>
+                </el-card>-->
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -170,10 +173,6 @@
     <el-dialog id="videoUp" :visible.sync="showVideoUp" width="50%">
       <UploadVideo />
     </el-dialog>
-
-    <el-dialog title="发布帖子" id="sendUp" :visible.sync="showSendUp" width="30%">
-      <SendPost />
-    </el-dialog>
   </div>
 </template>
 
@@ -181,8 +180,8 @@
 import VideoPlayer from "@/components/VideoPlayer";
 import UploadVideo from "@/components/UploadVideo";
 import UploadMember from "@/components/UploadMember";
+import PostList from "@/components/PostList";
 import Navigator from "@/components/Navigator";
-import SendPost from "@/components/SendPost";
 import * as FT from "@/tools/frontTool";
 import * as CourseAPI from "@/APIs/course";
 
@@ -193,7 +192,7 @@ export default {
     Navigator,
     UploadVideo,
     UploadMember,
-    SendPost,
+    PostList,
   },
   data() {
     return {
@@ -204,8 +203,20 @@ export default {
       showSendUp: false,
       tabNames: ["intro", "direct", "video", "forum"],
 
-      courseInfo: null,
-      videoUrlArray: null,
+      courseInfo: {
+        course_name: "233",
+        profession: "233",
+        course_intro: "233",
+      },
+
+      videoUrlArray: [
+        {
+          id: 0,
+          course_id: 0,
+          title: "233",
+          introduction: "233",
+        }
+      ],
 
       videoIndex: 1,
 
@@ -422,6 +433,11 @@ export default {
   position: absolute;
   top: 10px;
   right: 10px;
+}
+
+#postList {
+  width: 80%;
+  margin-left: 10%;
 }
 
 .el-button {

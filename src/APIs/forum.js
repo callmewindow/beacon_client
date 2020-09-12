@@ -55,7 +55,7 @@ export const sendPost = (post) => {
       title: post.title,
       course: post.courseId,
       owner: post.senderId,
-      tag: post.value,
+      tag: post.tags,
       content: post.content
     })
   })
