@@ -123,6 +123,7 @@ export default {
   data() {
     return {
       FT,
+      userId: this.$store.state.userId,
       circleUrl: require("@/assets/useravatar.jpg"),
       users: {
         username: "烽火",
@@ -175,7 +176,7 @@ export default {
       this.i = index;
     },
     get_userdetail() {
-      userAPI.getUserDetail(7).then((res) => {
+      userAPI.getUserDetail(this.userId).then((res) => {
         console.log("1111", res.data.user);
         this.users.username = res.data.user.nickname;
         this.users.school = res.data.user.school;
@@ -185,7 +186,7 @@ export default {
       });
     },
     get_usercourse() {
-      courseAPI.getUserCourse(7).then((res) => {
+      courseAPI.getUserCourse(this.userId).then((res) => {
         // let str = '{"message": "OK", "courses": [{"course_name": "科技写作", "course_intro": "Ian", "start_time": datetime.datetime(2020, 9, 11, 5, 3, 33), "profession": "Ian", "studentnum": 2, "teachername": null}, {"course_name": "软工23", "course_intro": "没什么用23", "start_time": datetime.datetime(2020, 9, 11, 5, 3, 33), "profession": null, "studentnum": 1, "teachername": null}]}'
         // console.log("11", typeof res.data);
         console.log("11", res);
@@ -212,8 +213,8 @@ export default {
   margin-right: 6%;
   background-image: linear-gradient(
     to left,
-    rgba(255, 0, 0, 0.6),
-    rgba(255, 165, 0, 0.5)
+    rgba(255, 0, 0, 0.5),
+    rgba(255, 165, 0, 0.65)
   );
 }
 .row-bg {

@@ -70,7 +70,7 @@ export default {
       let tempP = {
         title: this.post.title,
         content: this.post.content,
-        senderId: 10,
+        senderId: this.$store.state.userId,
         tags: '',
         courseId: this.$route.params.courseId,
       }
