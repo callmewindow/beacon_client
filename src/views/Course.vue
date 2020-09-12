@@ -122,7 +122,7 @@
                   <el-col class="tab_right_title">圈子社区</el-col>
                 </el-row>
                 <div id="postList">
-                <PostList />
+                  <PostList />
                 </div>
                 <!-- <el-card class="tab_right_body">
                   <div style="display: flex; justify-content: center;">
@@ -154,7 +154,7 @@
                       <el-button id="rule_change_btn" type="primary" icon="el-icon-edit" circle></el-button>
                     </el-card>
                   </div>
-                </el-card> -->
+                </el-card>-->
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -173,7 +173,6 @@
     <el-dialog id="videoUp" :visible.sync="showVideoUp" width="50%">
       <UploadVideo />
     </el-dialog>
-
   </div>
 </template>
 
@@ -193,7 +192,7 @@ export default {
     Navigator,
     UploadVideo,
     UploadMember,
-    PostList
+    PostList,
   },
   data() {
     return {
@@ -204,8 +203,20 @@ export default {
       showSendUp: false,
       tabNames: ["intro", "direct", "video", "forum"],
 
-      courseInfo: null,
-      videoUrlArray: null,
+      courseInfo: {
+        course_name: "233",
+        profession: "233",
+        course_intro: "233",
+      },
+
+      videoUrlArray: [
+        {
+          id: 0,
+          course_id: 0,
+          title: "233",
+          introduction: "233",
+        }
+      ],
 
       videoIndex: 1,
 
@@ -424,7 +435,7 @@ export default {
   right: 10px;
 }
 
-#postList{
+#postList {
   width: 80%;
   margin-left: 10%;
 }

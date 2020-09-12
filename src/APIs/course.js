@@ -40,3 +40,9 @@ export const addCourse = (courseEntity) => {
          data: { videoEntity }
      })
  }
+export const getUserCourse = (userid) => {
+    return axios({
+        method: 'GET',
+        url: `/usercourse?userid=${userid}`
+    })
+}

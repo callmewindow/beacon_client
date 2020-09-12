@@ -32,7 +32,7 @@
     <el-row style="margin-top: 20px; margin-bottom: 30px;">
       <div style="float: right; margin-right: 30px">
         1楼
-        <el-divider direction="vertical"></el-divider>
+        <el-divider v-if="test" direction="vertical"></el-divider>
         <el-button type="primary" icon="el-icon-caret-top" size="mini" plain circle @click="like"></el-button>
         喜欢：{{ post.like }}
         <el-button type="primary" icon="el-icon-caret-bottom" size="mini" plain circle @click="dislike"></el-button>
@@ -95,6 +95,7 @@ export default {
   },
   data() {
     return {
+      test: true,
       reply_button_clicked: false,
       reply_text: "",
       post: {},//id,title,author,author_tag,datetime,content,read,like,top,star
@@ -111,10 +112,6 @@ export default {
     let numPID = parseInt(this.postId)
     this.get_post_detail(numPID);
   },
-  updated() {
-    let a = localStorage.getItem("postId");
-    console.log(a);
-  },
   filters: {
     cut(str) {
       if (str) str = str.slice(0, 10);
@@ -124,6 +121,8 @@ export default {
   methods: {
     like(e) {
       this.post.like += 1;
+      this.test = false;
+      this.test = true;
       let target = e.target;
       if (target.nodeName === 'SPAN' || target.nodeName === 'I')
         target = e.target.parentNode;
@@ -131,6 +130,8 @@ export default {
     },
     dislike(e) {
       if (this.post.like > 0) this.post.like -= 1;
+      this.test = false;
+      this.test = true;
       let target = e.target;
       if (target.nodeName === 'SPAN' || target.nodeName === 'I')
         target = e.target.parentNode;
@@ -161,8 +162,8 @@ export default {
     },
     async get_post_detail(pid) {
       try {
-        const detail_dict = await postAPI.postDetail(pid);//-----------------------------postid
-        //window.console.log(detail_dict.data);
+        const detail_dict = await postAPI.postDetail(pid);
+        window.console.log(detail_dict.data);
         this.post.id = detail_dict.data.post.id;
         this.post.title = detail_dict.data.post.title;
         this.post.author = detail_dict.data.post.owner.user_nickname;
@@ -196,10 +197,10 @@ export default {
       let min = (date.getMinutes()).toString();
       if (min.length < 2) min = "0" + min;
       let reply_dict = {
-        floor: this.reply_list.length + 2,
+        floor_num: this.reply_list.length + 2,
         content: this.reply_text,
-        author: "zym4", //------------------------------------------------------------------store.nickname
-        datetime: mon + "-" + day + " " + hor + ":" + min
+        owner: {user_nickname: "zym4"}, //------------------------------------------------------------------store.nickname
+        post_time: mon + "-" + day + " " + hor + ":" + min
       };
       this.reply_list.push(reply_dict);
       try {

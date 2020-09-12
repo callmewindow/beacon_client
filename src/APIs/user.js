@@ -112,3 +112,9 @@ export const editPassword = (userId, newPassword) => {
     })
   })
 }
+export const getUserDetail = (userid) => {
+  return axios({
+    method: 'GET',
+    url: `/userdetail?userid=${userid}`
+  })
+}
