@@ -65,6 +65,7 @@ export default {
     async get_course_list() {
       try {
         const list = await courseAPI.courseQuery();
+        console.log(list)
         window.console.log(list.data.courses);
         this.course_list = list.data.courses;
         this.course_list.reverse();

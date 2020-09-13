@@ -98,7 +98,8 @@
 </template>
 
 <script>
-import * as courseAPI from "@/APIs/course";
+// import * as courseAPI from "@/APIs/course";
+import * as FT from"@/tools/frontTool"
 import moment from "moment";
 // import Navigator from "@/components/Navigator";
 // import Footer from "@/components/Footer";
@@ -228,14 +229,20 @@ export default {
     async uploadPaper() {
       try {
         window.console.log(this.courseEntity);
-        const temp = await courseAPI.addCourse(this.courseEntity);
-        window.console.log(temp);
-        const ifSuc = temp.data.msg;
-        if (ifSuc === "success") {
-          this.success();
-        } else {
-          this.$message.error("添加课程失败，请联系管理员");
+        if(!FT.CS(this.courseEntity.course_name)){
+          this.$message.error("内容包含非法字符！")
+          return
         }
+        console.log('111');
+        return
+        // const temp = await courseAPI.addCourse(this.courseEntity);
+        // window.console.log(temp);
+        // const ifSuc = temp.data.msg;
+        // if (ifSuc === "success") {
+        //   this.success();
+        // } else {
+        //   this.$message.error("添加课程失败，请联系管理员");
+        // }
       } catch (e) {
         this.$message.error("添加课程失败，请联系管理员");
       }

@@ -114,7 +114,7 @@
                     >{{videoUrlArray[videoIndex].title}}</span>
                   </el-row>
                   <el-row>
-                    <VideoPlayer style=" margin-top: 20px; width: 100%; border-radius: 2px;"></VideoPlayer>
+                    <VideoPlayer v-if="videoUrlArray != []" style=" margin-top: 20px; width: 100%; border-radius: 2px;"></VideoPlayer>
                   </el-row>
                 </el-card>
               </el-tab-pane>

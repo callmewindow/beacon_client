@@ -13,16 +13,6 @@ const routes = [{
     component: () => import('@/views/Home.vue'),
   },
   {
-    path: '/postdetail',
-    name: 'PostDetail',
-    component: () => import('@/components/PostDetail.vue'),
-  },
-  {
-    path: '/postlist',
-    name: 'PostList',
-    component: () => import('@/components/PostList.vue'),
-  },
-  {
     path: '/courselist',
     name: 'CourseList',
     component: () => import('@/views/CourseList.vue'),
@@ -31,11 +21,6 @@ const routes = [{
     path: '/user',
     name: 'UserDetail',
     component: () => import('@/views/UserDetail.vue'),
-  },
-  {
-    path: '/AddCourse',
-    name: 'AddCourse',
-    component: () => import('@/components/AddCourse.vue'),
   },
   {
     path: '/course/:courseId',
