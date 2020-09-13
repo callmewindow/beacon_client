@@ -22,7 +22,9 @@
                         multiple
                         :limit="1"
                         :on-exceed="handleExceed"
+                        :before-upload="beforeUpload"
                         :file-list="fileList"
+                        accept=".xls, .xlsx"
                         style="margin-top: 10px">
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">将excel拖到此处，或<em>点击上传</em></div>
@@ -55,7 +57,9 @@
                             multiple
                             :limit="1"
                             :on-exceed="handleExceed"
+                            :before-upload="beforeUpload"
                             :file-list="fileList"
+                            accept=".xls, .xlsx"
                             style="margin-top: 10px">
                         <i class="el-icon-upload"></i>
                         <div class="el-upload__text">将excel拖到此处，或<em>点击上传</em></div>
