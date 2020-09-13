@@ -2,13 +2,17 @@
   <div id="sendPA">
     <!-- <div slot="header">
       发布帖子
-    </div> -->
+    </div>-->
     <div class="sendItem">
-      <div class="itemTitle"><span style="color:red">*</span>帖子标题</div>
+      <div class="itemTitle">
+        <span style="color:red">*</span>帖子标题
+      </div>
       <el-input v-model="post.title" placeholder="请输入内容" maxlength="30" show-word-limit></el-input>
     </div>
     <div class="sendItem">
-      <div class="itemTitle"><span style="color:red">*</span>帖子内容</div>
+      <div class="itemTitle">
+        <span style="color:red">*</span>帖子内容
+      </div>
       <el-input
         type="textarea"
         :rows="5"
@@ -43,7 +47,8 @@
 </template>
 
 <script>
-import * as forumAPI from "@/APIs/forum"
+import * as forumAPI from "@/APIs/forum";
+import * as FT from "@/tools/frontTool";
 export default {
   name: "SendPost",
   data() {
@@ -65,35 +70,39 @@ export default {
       value: [],
     };
   },
-  methods:{
-    async sendPost(){
+  methods: {
+    async sendPost() {
+      if (!FT.CS(this.post.title + this.post.content)) {
+        this.$message.error("内容包含非法字符，仅允许输入汉字英文数字！");
+        return;
+      }
       let tempP = {
         title: this.post.title,
         content: this.post.content,
         senderId: this.$store.state.userId,
-        tags: '',
+        tags: "",
         courseId: this.$route.params.courseId,
-      }
+      };
       try {
         await forumAPI.sendPost(tempP);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-      location.reload()
-    }
-  }
+      location.reload();
+    },
+  },
 };
 </script>
 
 <style scoped>
-.sendItem{
+.sendItem {
   width: 80%;
   margin: 20px 0;
 }
-.sendItem:nth-child(1){
+.sendItem:nth-child(1) {
   margin-top: 0;
 }
-.itemTitle{
+.itemTitle {
   font-size: 14px;
   font-weight: bold;
   margin: 5px 0;

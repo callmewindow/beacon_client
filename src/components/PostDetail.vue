@@ -1,11 +1,11 @@
 <template>
-
   <div style="margin-bottom: 20px;">
     <div
-        style="color: rgb(0,102,204); margin-top: 20px; margin-left: 20px; margin-bottom: 20px; font-family: 微软雅黑; font-size: 30px; font-weight: bold">
+      style="color: rgb(0,102,204); margin-top: 20px; margin-left: 20px; margin-bottom: 20px; font-family: 微软雅黑; font-size: 30px; font-weight: bold"
+    >
       {{ post.title }}
       <!-- <el-tag type="success" effect="dark">置顶</el-tag>
-      <el-tag type="warning" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;">精华</el-tag> -->
+      <el-tag type="warning" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;">精华</el-tag>-->
     </div>
 
     <el-row style="font-size: 18px; margin-bottom: 20px;">
@@ -17,16 +17,12 @@
         </div>
       </el-col>
       <el-col :span="12">
-        <div style="float: right; margin-right: 50px; color: rgb(120,120,120)">
-          阅读量：{{ post.read }}
-        </div>
+        <div style="float: right; margin-right: 50px; color: rgb(120,120,120)">阅读量：{{ post.read }}</div>
       </el-col>
     </el-row>
 
     <el-row class="col-row">
-      <div style="font-size: 20px; margin-left: 20px; margin-right: 20px">
-        {{ post.content }}
-      </div>
+      <div style="font-size: 20px; margin-left: 20px; margin-right: 20px">{{ post.content }}</div>
     </el-row>
 
     <el-row style="margin-top: 20px; margin-bottom: 30px;">
@@ -35,7 +31,14 @@
         <el-divider v-if="test" direction="vertical"></el-divider>
         <el-button type="primary" icon="el-icon-caret-top" size="mini" plain circle @click="like"></el-button>
         喜欢：{{ post.like }}
-        <el-button type="primary" icon="el-icon-caret-bottom" size="mini" plain circle @click="dislike"></el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-caret-bottom"
+          size="mini"
+          plain
+          circle
+          @click="dislike"
+        ></el-button>
         <el-divider direction="vertical"></el-divider>
         <el-button type="primary" plain @click="show_reply_box">回复</el-button>
         <el-divider direction="vertical"></el-divider>
@@ -45,22 +48,25 @@
 
     <el-card v-if="reply_button_clicked" style="margin-bottom: 20px;">
       <el-input
-          type="textarea"
-          :rows="5"
-          placeholder="请输入回复内容"
-          v-model="reply_text"
-          maxlength="500"
-          show-word-limit
-          style="font-size: 20px; margin-bottom: 20px">
-      </el-input>
-      <el-button type="primary" plain @click="send_reply" style="float: right; margin-bottom: 20px">发送</el-button>
+        type="textarea"
+        :rows="5"
+        placeholder="请输入回复内容"
+        v-model="reply_text"
+        maxlength="500"
+        show-word-limit
+        style="font-size: 20px; margin-bottom: 20px"
+      ></el-input>
+      <el-button
+        type="primary"
+        plain
+        @click="send_reply"
+        style="float: right; margin-bottom: 20px"
+      >发送</el-button>
     </el-card>
 
     <el-card v-for="reply in reply_list" :key="reply.id" style="margin-bottom: 20px;">
       <el-row style="margin-top: 10px; margin-bottom: 20px; margin-left: 5px">
-        <div style="font-size: 20px;">
-          {{ reply.content }}
-        </div>
+        <div style="font-size: 20px;">{{ reply.content }}</div>
       </el-row>
       <el-row style="margin-left: 5px">
         <el-col :span="12">
@@ -82,41 +88,41 @@
       </el-row>
     </el-card>
   </div>
-
 </template>
 
 <script>
 import * as postAPI from "@/APIs/forum.js";
+import * as FT from "@/tools/frontTool";
 
 export default {
   name: "PostDetail",
-  props:{
-    postId: String
+  props: {
+    postId: String,
   },
   data() {
     return {
       test: true,
       reply_button_clicked: false,
       reply_text: "",
-      post: {},//id,title,author,author_tag,datetime,content,read,like,top,star
-      reply_list: []
+      post: {}, //id,title,author,author_tag,datetime,content,read,like,top,star
+      reply_list: [],
     };
   },
   watch: {
-    postId(newID){
-      let numPID = parseInt(newID)
-      this.get_post_detail(numPID)
-    }
+    postId(newID) {
+      let numPID = parseInt(newID);
+      this.get_post_detail(numPID);
+    },
   },
   created() {
-    let numPID = parseInt(this.postId)
+    let numPID = parseInt(this.postId);
     this.get_post_detail(numPID);
   },
   filters: {
     cut(str) {
       if (str) str = str.slice(0, 10);
       return str;
-    }
+    },
   },
   methods: {
     like(e) {
@@ -124,7 +130,7 @@ export default {
       this.test = false;
       this.test = true;
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I')
+      if (target.nodeName === "SPAN" || target.nodeName === "I")
         target = e.target.parentNode;
       target.blur();
     },
@@ -133,17 +139,17 @@ export default {
       this.test = false;
       this.test = true;
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I')
+      if (target.nodeName === "SPAN" || target.nodeName === "I")
         target = e.target.parentNode;
       target.blur();
     },
     report(e) {
       this.$message({
         message: "已举报",
-        type: "success"
+        type: "success",
       });
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I')
+      if (target.nodeName === "SPAN" || target.nodeName === "I")
         target = e.target.parentNode;
       target.blur();
     },
@@ -156,7 +162,7 @@ export default {
       this.reply_text = "";
       this.reply_button_clicked = !this.reply_button_clicked;
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I')
+      if (target.nodeName === "SPAN" || target.nodeName === "I")
         target = e.target.parentNode;
       target.blur();
     },
@@ -179,7 +185,7 @@ export default {
           this.reply_list.push(detail_dict.data.floors[i]);
         }
       } catch (e) {
-        this.$message.error('请求超时');
+        this.$message.error("请求超时");
       }
     },
     async send_reply(e) {
@@ -187,36 +193,41 @@ export default {
         this.$message.error("不能回复空内容");
         return;
       }
+      if (!FT.CS(this.reply_text)) {
+        this.$message.error("内容包含非法字符，仅允许输入汉字英文数字！");
+        return;
+      }
       let date = new Date();
       let mon = (date.getMonth() + 1).toString();
       if (mon.length < 2) mon = "0" + mon;
-      let day = (date.getDate()).toString();
+      let day = date.getDate().toString();
       if (day.length < 2) day = "0" + day;
-      let hor = (date.getHours()).toString();
+      let hor = date.getHours().toString();
       if (hor.length < 2) hor = "0" + hor;
-      let min = (date.getMinutes()).toString();
+      let min = date.getMinutes().toString();
       if (min.length < 2) min = "0" + min;
       let reply_dict = {
         floor_num: this.reply_list.length + 2,
         content: this.reply_text,
-        owner: {user_nickname: "zym4"}, //------------------------------------------------------------------store.nickname
-        post_time: mon + "-" + day + " " + hor + ":" + min
+        owner: { user_nickname: "zym4" }, //------------------------------------------------------------------store.nickname
+        post_time: mon + "-" + day + " " + hor + ":" + min,
       };
       this.reply_list.push(reply_dict);
       try {
-        await postAPI.replyPost(this.post.id, 5, this.reply_text);  //-------------store.userid
+        await postAPI.replyPost(this.post.id, 5, this.reply_text); //-------------store.userid
       } catch (e) {
-        this.$message.error('请求超时');
+        this.$message.error("请求超时");
       }
       this.$message({
         message: "回复成功",
-        type: "success"
+        type: "success",
       });
-      this.reply_button_clicked = false
+      this.reply_button_clicked = false;
       let target = e.target;
-      if (target.nodeName === 'SPAN' || target.nodeName === 'I') target = e.target.parentNode;
+      if (target.nodeName === "SPAN" || target.nodeName === "I")
+        target = e.target.parentNode;
       target.blur();
     },
-  }
+  },
 };
 </script>

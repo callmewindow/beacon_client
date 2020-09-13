@@ -102,7 +102,7 @@
 <script>
 import * as postAPI from "@/APIs/forum.js";
 import * as CourseAPI from "@/APIs/course";
-import * as frontTool from "@/tools/frontTool";
+import * as FT from "@/tools/frontTool";
 import SendPost from "@/components/SendPost";
 import PostDetail from "@/components/PostDetail";
 
@@ -114,7 +114,7 @@ export default {
   },
   data() {
     return {
-      frontTool,
+      FT,
       detailId: 0,
       havePost: false,
       post_list: [],
@@ -148,6 +148,10 @@ export default {
       this.rule_content_bk = this.rule_content;
     },
     async send_edit() {
+      if (!FT.CS(this.rule_content_bk)) {
+        this.$message.error("内容包含非法字符，仅允许输入汉字英文数字！");
+        return;
+      }
       this.rule_edit = !this.rule_edit;
       this.rule_content = this.rule_content_bk;
       try {

@@ -87,6 +87,7 @@
 
 <script>
 import * as courseAPI from "@/APIs/course";
+import * as FT from "@/tools/frontTool";
 // import Navigator from "@/components/Navigator";
 import moment from "moment";
 
@@ -199,6 +200,12 @@ export default {
     async upload() {
       try {
         window.console.log(this.uploadVideoForm);
+        if (
+          !FT.CS(this.uploadVideoForm.title + this.uploadVideoForm.introduction)
+        ) {
+          this.$message.error("内容包含非法字符，仅允许输入汉字英文数字！");
+          return;
+        }
         const temp = await courseAPI.uploadVideo(this.uploadVideoForm);
         window.console.log(temp.data["msg"]);
         if (temp.data["msg"] === "success") {
