@@ -35,7 +35,7 @@
                   :action="videoUrl"
                   :auto-upload="false"
                   :before-upload="beforeUpload"
-                  :file-list="identityVideo"
+                  :file-list="VideoList"
                   :limit="100"
                   :on-exceed="handleExceed"
                   :on-remove="handleRemove"
@@ -97,21 +97,13 @@ export default {
   //     Navigator,
   //   },
   data() {
-    const checkVideo = (rule, value, callback) => {
-      if (this.ifIdentityVideo) {
-        callback();
-      } else {
-        callback(new Error("请添加视频"));
-      }
-    };
-
     return {
       videoUrl: "/api/uploadVideo1",
       page: 0,
       showMsg: "视频已上传",
       show: false,
-      identityVideo: [],
-      ifIdentityVideo: false,
+      VideoList: [],
+      ifVideoList: false,
       uploadVideoForm: {
         course_id: this.$route.params.courseId,
         title: "",
@@ -129,8 +121,7 @@ export default {
         ],
         videoIntro: [
           { required: true, message: "请输入视频的简介", trigger: "blur" },
-        ],
-        video: [{ required: true, validator: checkVideo, trigger: "blur" }],
+        ]
       },
     };
   },
@@ -149,7 +140,7 @@ export default {
         this.$message.error("上传视频大小不能超过 500MB!");
       }
       if (isMP4 && isLt500MB) {
-        this.ifIdentityVideo = true;
+        this.ifVideoList = true;
       }
       return isMP4 && isLt500MB;
     },
@@ -167,11 +158,19 @@ export default {
     },
 
     handleRemove() {
-      this.ifIdentityVideo = false;
+      this.ifVideoList = false;
     },
 
     submitVideo() {
-      this.$refs.upload.submit();
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          this.$refs.upload.submit();
+          if(this.ifVideoList===false)
+          {
+            this.$message.error("请添加视频后点击上传按钮");
+          }
+        }
+      });
     },
 
     async submitForm(formName) {
