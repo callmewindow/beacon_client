@@ -16,6 +16,7 @@
         multiple
         :limit="1"
         :on-exceed="handleExceed"
+        :before-upload="beforeUpload"
         :file-list="fileList"
         accept=".xls, .xlsx"
         style="margin-top: 10px;margin-bottom:10px"

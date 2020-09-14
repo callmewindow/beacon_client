@@ -72,8 +72,8 @@ export default {
   },
   methods: {
     async sendPost() {
-      if (!FT.CS(this.post.title + this.post.content)) {
-        this.$message.error("内容包含非法字符，仅允许输入汉字英文数字！");
+      if (FT.CS(this.post.title + this.post.content)) {
+        this.$message.error("为了社区和谐，请勿输入英文引号，感谢支持");
         return;
       }
       let tempP = {

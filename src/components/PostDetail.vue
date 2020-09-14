@@ -193,8 +193,8 @@ export default {
         this.$message.error("不能回复空内容");
         return;
       }
-      if (!FT.CS(this.reply_text)) {
-        this.$message.error("内容包含非法字符，仅允许输入汉字英文数字！");
+      if (FT.CS(this.reply_text)) {
+        this.$message.error("为了社区和谐，请勿输入英文引号，感谢支持");
         return;
       }
       let date = new Date();

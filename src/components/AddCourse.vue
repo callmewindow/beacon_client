@@ -98,7 +98,7 @@
 </template>
 
 <script>
- import * as courseAPI from "@/APIs/course";
+import * as courseAPI from "@/APIs/course";
 import * as FT from "@/tools/frontTool";
 import moment from "moment";
 // import Navigator from "@/components/Navigator";
@@ -229,15 +229,16 @@ export default {
     async uploadPaper() {
       try {
         window.console.log(this.courseEntity);
+        // 拼接后判断是否有英文单双引号，有的话弹报错消息并需要重新输入
         if (
-          !FT.CS(
+          FT.CS(
             this.courseEntity.course_name +
               this.courseEntity.course_intro +
               this.courseEntity.profession
           )
         ) {
-          this.$message.error("内容包含非法字符，仅允许输入汉字英文数字！");
-          return ;
+          this.$message.error("为了社区和谐，请勿输入英文引号，感谢支持");
+          return;
         }
         const temp = await courseAPI.addCourse(this.courseEntity);
         const ifSuc = temp.data.msg;

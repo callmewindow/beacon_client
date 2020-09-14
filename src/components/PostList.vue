@@ -148,8 +148,8 @@ export default {
       this.rule_content_bk = this.rule_content;
     },
     async send_edit() {
-      if (!FT.CS(this.rule_content_bk)) {
-        this.$message.error("内容包含非法字符，仅允许输入汉字英文数字！");
+      if (FT.CS(this.rule_content_bk)) {
+        this.$message.error("为了社区和谐，请勿输入英文引号，感谢支持");
         return;
       }
       this.rule_edit = !this.rule_edit;
