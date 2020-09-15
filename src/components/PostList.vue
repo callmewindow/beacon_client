@@ -49,7 +49,7 @@
           <el-button type="primary" v-if="display_search_result" @click="display_search_result=false">返回</el-button>
         </el-col>
         <el-col :span="2">
-          <el-button id="sendBtn" type="primary" icon="el-icon-edit" @click="showSendUp = true" >发帖</el-button>
+          <el-button id="sendBtn" type="primary" icon="el-icon-edit" @click="showSendUp = true">发帖</el-button>
         </el-col>
       </el-row>
     </el-card>
@@ -73,6 +73,8 @@
                     @click="showDetail(post.id)"
                 >{{ post.title }}
                 </el-link>
+                <el-tag type="primary" effect="dark" style="margin-left: 5px;" v-if="post.topped === 1">置顶</el-tag>
+                <el-tag type="warning" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;" v-if="post.stared === 1">精华</el-tag>
               </el-col>
               <el-col :span="7">
                 <div style="float: right;">
@@ -96,6 +98,7 @@
         </el-row>
       </el-card>
     </div>
+    <!--搜索结果列表-->
     <div v-if="display_search_result">
       <el-card v-for="post in search_list" :key="post.id" style="margin-top: 20px;">
         <el-row style="margin-top: 10px; margin-bottom: 20px; margin-left: 5px">
@@ -217,9 +220,9 @@ export default {
     },
     async get_post_list() {
       let courseId = this.$route.params.courseId;
-      //console.log(courseId);
       try {
         const list = await postAPI.postList(parseInt(courseId));
+        window.console.log(list.data);
         this.post_list = list.data;
         this.post_list.reverse();
         if (this.post_list !== "该圈子id不存在") {
@@ -238,7 +241,6 @@ export default {
     async search_post(e) {
       try {
         const list = await postAPI.searchPost(this.search_keyword, this.$route.params.courseId);
-        window.console.log(list);
         this.search_list = list.data;
         this.display_search_result = true;
       } catch (e) {
