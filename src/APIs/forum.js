@@ -80,3 +80,23 @@ export const starPost = (postId) => {
     })
   })
 }
+
+export const cancelTopPost = (postId) => {
+  return axios({
+    method: 'POST',
+    url: `/cancelTopPost`,
+    data: QS({
+      postId: postId
+    })
+  })
+}
+
+export const cancelStarPost = (postId) => {
+  return axios({
+    method: 'POST',
+    url: `/cancelStarPost`,
+    data: QS({
+      postId: postId
+    })
+  })
+}

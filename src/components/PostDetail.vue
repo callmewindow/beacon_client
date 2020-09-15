@@ -1,15 +1,17 @@
 <template>
   <div style="margin-bottom: 20px;">
-    <div
-        style="color: rgb(0,102,204); margin-top: 20px; margin-left: 20px; margin-bottom: 20px; font-family: 微软雅黑; font-size: 30px; font-weight: bold"
-    >
-      {{ post.title }}
-      <el-tag type="success" effect="dark" v-if="post.top === 1">置顶</el-tag>
+    <!--帖子标题、置顶精华标签-->
+    <el-row style="margin-left: 20px; margin-bottom: 20px">
+      <div
+          style="font-family: 微软雅黑; color: rgb(0,102,204); float: left; font-size: 26px; font-weight: bold">
+        {{ post.title }}
+      </div>
+      <el-tag type="primary" effect="dark" style="margin-left: 5px;" v-if="post.top === 1">置顶</el-tag>
       <el-tag type="warning" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;" v-if="post.star === 1">
         精华
       </el-tag>
-    </div>
-
+    </el-row>
+    <!--帖子作者、时间、阅读量-->
     <el-row style="font-size: 18px; margin-bottom: 20px;">
       <el-col :span="12">
         <div style="margin-left: 20px; color: rgb(120,120,120)">
@@ -22,11 +24,11 @@
         <div style="float: right; margin-right: 50px; color: rgb(120,120,120)">阅读量：{{ post.read }}</div>
       </el-col>
     </el-row>
-
+    <!--帖子内容-->
     <el-row>
       <div style="font-size: 20px; margin-left: 20px; margin-right: 20px">{{ post.content }}</div>
     </el-row>
-
+    <!--置顶加精按钮、点赞按钮、回复按钮、举报按钮-->
     <el-row style="margin-top: 20px; margin-bottom: 20px">
       <div style="float: right; margin-right: 30px">
         <el-button type="text" v-if="post.top === 0" @click="top_post">设为置顶</el-button>
@@ -53,7 +55,7 @@
         <el-button type="text" @click="report">举报</el-button>
       </div>
     </el-row>
-
+    <!--回复文本框、发送-->
     <el-card v-if="reply_button_clicked" style="margin-bottom: 20px;">
       <el-input
           type="textarea"
@@ -72,7 +74,7 @@
       >发送
       </el-button>
     </el-card>
-
+    <!--帖子回复列表-->
     <el-card v-for="reply in reply_list" :key="reply.id" style="margin-bottom: 20px;">
       <el-row style="margin-top: 10px; margin-bottom: 20px; margin-left: 5px">
         <div style="font-size: 20px;">{{ reply.content }}</div>
@@ -257,7 +259,11 @@ export default {
           this.$message.error("置顶请求超时");
         }
       } else {
-
+        try {
+          await postAPI.cancelTopPost(this.post.id);
+        } catch (e) {
+          this.$message.error("置顶请求超时");
+        }
       }
       this.post.top = 1 - this.post.top;
     },
@@ -270,7 +276,11 @@ export default {
           this.$message.error("加精请求超时");
         }
       } else {
-
+        try {
+          await postAPI.cancelStarPost(this.post.id);
+        } catch (e) {
+          this.$message.error("加精请求超时");
+        }
       }
       this.post.star = 1 - this.post.star;
     },
