@@ -7,9 +7,10 @@
       </el-col>
       <el-col :span="4" style="margin-top: 80px;">
         <el-button type="primary" @click="search_course">搜索课程</el-button>
+        <el-button type="primary" v-if="display_search_result" @click="display_search_result=false">返回</el-button>
       </el-col>
       <el-col :span="3" style="margin-top: 80px;">
-        <el-button type="primary" @click="showAddCourse = true">
+        <el-button type="primary" style="float: right" @click="showAddCourse = true">
           创建课程
           <i class="el-icon-arrow-right"></i>
         </el-button>
@@ -34,7 +35,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px" v-if="display_search_result">
-      <el-col :span="6" v-for="(course,index) in course_list" :key="index" style="margin-top: 20px;">
+      <el-col :span="6" v-for="(course,index) in search_list" :key="index" style="margin-top: 20px;">
         <el-card>
           <img src="@/assets/course-cover.png" style="width: 100%">
           <el-row style="margin-top: 5px">
@@ -103,15 +104,19 @@ export default {
         this.$message.error('请求超时');
       }
     },
-    async search_course() {
+    async search_course(e) {
       try {
-        const list = await courseAPI;//-----------------搜索课程的api
-        window.console.log(list);
+        const list = await courseAPI.searchCourse(this.search_keyword);
+        //window.console.log(list);
         this.search_list = list.data;
         this.display_search_result = true;
       } catch (e) {
         this.$message.error('请求超时');
       }
+      let target = e.target;
+      if (target.nodeName === "SPAN" || target.nodeName === "I")
+        target = e.target.parentNode;
+      target.blur();
     },
   }
 };
