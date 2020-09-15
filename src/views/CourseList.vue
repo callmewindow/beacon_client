@@ -1,10 +1,39 @@
 <template>
   <div>
     <Navigator active-func="home"/>
-    <el-row style="margin-left: 15%; margin-right: 15%">
-      <el-button type="primary" round style="margin-top: 80px; float: right" @click="showAddCourse = true">创建课程</el-button>
+    <el-row :gutter="10" style="margin-left: 15%; margin-right: 15%">
+      <el-col :span="17" style="margin-top: 80px;">
+        <el-input placeholder="搜索课程" prefix-icon="el-icon-search" v-model="search_keyword" clearable></el-input>
+      </el-col>
+      <el-col :span="4" style="margin-top: 80px;">
+        <el-button type="primary" @click="search_course">搜索课程</el-button>
+      </el-col>
+      <el-col :span="3" style="margin-top: 80px;">
+        <el-button type="primary" @click="showAddCourse = true">
+          创建课程
+          <i class="el-icon-arrow-right"></i>
+        </el-button>
+      </el-col>
     </el-row>
-    <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px">
+    <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px" v-if="!display_search_result">
+      <el-col :span="6" v-for="(course,index) in course_list" :key="index" style="margin-top: 20px;">
+        <el-card>
+          <img src="@/assets/course-cover.png" style="width: 100%">
+          <el-row style="margin-top: 5px">
+            <el-link type="primary" :underline="false" style="font-size: 20px;height: 20px"
+                     @click="frontTool.toPath('/course/'+course.id)">
+              {{ course.course_name }}
+            </el-link>
+          </el-row>
+          <el-row style="margin-top: 5px">
+            <div>
+              开课：{{ course.start_time|cut }} 至 {{ course.end_time|cut }}
+            </div>
+          </el-row>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px" v-if="display_search_result">
       <el-col :span="6" v-for="(course,index) in course_list" :key="index" style="margin-top: 20px;">
         <el-card>
           <img src="@/assets/course-cover.png" style="width: 100%">
@@ -23,7 +52,7 @@
       </el-col>
     </el-row>
     <el-dialog :visible.sync="showAddCourse" width="50%">
-      <AddCourse />
+      <AddCourse/>
     </el-dialog>
     <Footer/>
   </div>
@@ -46,10 +75,13 @@ export default {
     //Username,
   },
   data() {
-    return {// course_intro,course_name,end_time,id,is_open,profession,rule,start_time
+    return {
       frontTool,
       showAddCourse: false,
-      course_list: [],
+      course_list: [],// course_intro,course_name,end_time,id,is_open,profession,rule,start_time
+      search_keyword: "",
+      search_list: [],
+      display_search_result: false
     };
   },
   created() {
@@ -65,10 +97,18 @@ export default {
     async get_course_list() {
       try {
         const list = await courseAPI.courseQuery();
-        console.log(list)
-        window.console.log(list.data.courses);
         this.course_list = list.data.courses;
         this.course_list.reverse();
+      } catch (e) {
+        this.$message.error('请求超时');
+      }
+    },
+    async search_course() {
+      try {
+        const list = await courseAPI;//-----------------搜索课程的api
+        window.console.log(list);
+        this.search_list = list.data;
+        this.display_search_result = true;
       } catch (e) {
         this.$message.error('请求超时');
       }
