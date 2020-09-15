@@ -60,3 +60,23 @@ export const sendPost = (post) => {
     })
   })
 }
+
+export const topPost = (postId) => {
+  return axios({
+    method: 'POST',
+    url: `/topPost`,
+    data: QS({
+      postId: postId
+    })
+  })
+}
+
+export const starPost = (postId) => {
+  return axios({
+    method: 'POST',
+    url: `/starPost`,
+    data: QS({
+      postId: postId
+    })
+  })
+}

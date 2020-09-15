@@ -236,7 +236,7 @@ export default {
       try {
         await postAPI.replyPost(this.post.id, 5, this.reply_text); //-------------store.userid
       } catch (e) {
-        this.$message.error("请求超时");
+        this.$message.error("回复请求超时");
       }
       this.$message({
         message: "回复成功",
@@ -250,11 +250,11 @@ export default {
     },
     //（取消）置顶帖子，通过当前post.top状态决定
     async top_post() {
-      if (this.post.top === 1) {
+      if (this.post.top === 0) {
         try {
-          await postAPI.replyPost(this.post.id, 5, this.reply_text); //-------------store.userid
+          await postAPI.topPost(this.post.id);
         } catch (e) {
-          this.$message.error("请求超时");
+          this.$message.error("置顶请求超时");
         }
       } else {
 
@@ -263,13 +263,16 @@ export default {
     },
     //（取消）加精帖子，通过当前post.star状态决定
     async star_post() {
-      if (this.post.star === 1) {
-
+      if (this.post.star === 0) {
+        try {
+          await postAPI.starPost(this.post.id);
+        } catch (e) {
+          this.$message.error("加精请求超时");
+        }
       } else {
 
       }
       this.post.star = 1 - this.post.star;
-
     },
   },
 };
