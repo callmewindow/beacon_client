@@ -54,6 +54,7 @@
           >学习时长将会隔天进行更新</div>
         </el-row>
       </el-card>
+
       <el-tabs v-model="activeName" @tab-click="handleClick" class="tab" style="size: 40px">
         <el-tab-pane label="课程" name="first">
           <div style="margin-left: 5%">
@@ -102,9 +103,40 @@
             </el-row>
           </div>
         </el-tab-pane>
+
+
         <el-tab-pane label="帖子" name="second"></el-tab-pane>
 
-        <el-tab-pane label="消息中心" name="third"></el-tab-pane>
+
+        <el-tab-pane label="好友" name="third">
+          <div class="message">
+            <el-row :gutter="30">
+              <el-col :span="10">
+                <el-card class="message_card">好友申请</el-card>
+              </el-col>
+              <el-col :span="14">
+                <el-card class="message_card">好友列表</el-card>
+              </el-col>
+            </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="消息中心" name="forth">
+             <div class="message">
+                <el-row :gutter="20">
+                   <el-col :span="11">
+                      <el-card class="message_card">系统消息</el-card>
+                     <el-card class="message_detail">dsf</el-card>
+                   </el-col>
+                  <el-col :span="2"><div class="line">|</div></el-col>
+                  <el-col :span="11">
+                    <el-card class="message_card">课程申请</el-card>
+                    <el-card class="message_detail"></el-card>
+                  </el-col>
+                </el-row>
+             </div>
+
+        </el-tab-pane>
+
       </el-tabs>
       <Footer />
     </div>
@@ -135,7 +167,7 @@ export default {
         score: 99,
         time: "13时26分",
       },
-      activeName: "first",
+      activeName: "forth",
       seen: false,
       current: 0,
       currentDate: new Date(),
@@ -206,7 +238,7 @@ export default {
   width: 100%;
   clear: both;
   background-color: #fffafa;
-  height: 700px;
+  height: 1000px;
 }
 .card {
   margin-left: 6%;
@@ -270,7 +302,7 @@ export default {
   color: #363636;
   font-size: 16px;
   font-weight: 500;
-  padding: 0 30px;
+  padding: 0 20px;
 }
 .el-tabs /deep/.el-tabs__active-bar {
   background-color: #ff7256;
@@ -340,5 +372,24 @@ export default {
   float: right;
   padding: 0 5px;
   margin-top: -24%;
+}
+.message{
+  width: 1083px;
+  height: 60px;
+}
+.message_card{
+  color: #797b80;
+}
+.message_detail{
+   height: 550px;
+  margin-top: 20px;
+}
+.line{
+  margin-left: 46%;
+  width: 2px;
+  height: 400px;
+  background-color: #E4E7ED;
+  font-size: xx-small;
+  color: #e4e7ed;
 }
 </style>
