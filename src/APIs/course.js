@@ -9,12 +9,12 @@ export const addCourse = (courseEntity) => {
         method: 'POST',
         url: `/createCourse`,
         data: QS({
-            course_name:courseEntity.course_name,
-            course_intro:courseEntity.course_intro,
-            start_time:courseEntity.start_time,
-            end_time:courseEntity.end_time,
-            profession:courseEntity.profession,
-            rule:''
+            course_name: courseEntity.course_name,
+            course_intro: courseEntity.course_intro,
+            start_time: courseEntity.start_time,
+            end_time: courseEntity.end_time,
+            profession: courseEntity.profession,
+            rule: ''
         })
     })
 }
@@ -24,14 +24,26 @@ export const uploadVideo = (videoEntity) => {
         method: 'POST',
         url: `/uploadVideo2`,
         data: QS({
-            course_id:videoEntity.course_id,
-            title:videoEntity.title,
-            introduction:videoEntity.introduction,
-            upload_time:videoEntity.upload_time,
-            video_id:videoEntity.video_id
+            course_id: videoEntity.course_id,
+            title: videoEntity.title,
+            introduction: videoEntity.introduction,
+            upload_time: videoEntity.upload_time,
+            video_id: videoEntity.video_id
         })
     })
 }
+
+export const uploadExcel = (excelEntity) => {
+    return axios({
+        method: 'POST',
+        url: `uploadUserCourse2`,
+        data: QS({
+            course_id: excelEntity.courseId,
+            excel_name: excelEntity.excel_name
+        })
+    })
+}
+
 export const getCourseBasicInfo = (courseId) => {
     return axios({
         method: 'GET',

@@ -92,6 +92,7 @@
             return {
                 dialogVisible: false,
                 fileList: [],
+
             };
         },
         created() {

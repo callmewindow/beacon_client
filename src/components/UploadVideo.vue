@@ -164,7 +164,7 @@ export default {
     submitVideo() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          this.$refs.upload.submit();
+          this.$refs.upload.submit();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   this.$refs.upload.submit();
           if(this.ifVideoList===false)
           {
             this.$message.error("请添加视频后点击上传按钮");
