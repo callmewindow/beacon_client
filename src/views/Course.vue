@@ -107,7 +107,7 @@
                   <el-row style="margin-top: 10px; text-align: center;">
                     <span
                       style="font-size: 20px;"
-                      v-if="videoExact"
+                      v-if="videoExist"
                     >{{videoUrlArray[videoIndex].title}}</span>
                   </el-row>
                   <el-row>
@@ -179,10 +179,10 @@
 
     <el-dialog title="学生名单" :visible.sync="showStudentUp" width="60%">
       <span>学生列表</span>
-      <el-table :data="tableData" border style="width: 100%">
-        <el-table-column prop="student_id" label="学号"></el-table-column>
-        <el-table-column prop="student_name" label="姓名"></el-table-column>
-        <el-table-column prop="student_school" label="学校"></el-table-column>
+      <el-table :data="studentList" border style="width: 100%">
+        <el-table-column prop="user_id" label="学号"></el-table-column>
+        <el-table-column prop="id" label="姓名"></el-table-column>
+        <el-table-column prop="user_identity" label="学校"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
@@ -202,6 +202,7 @@ import PostList from "@/components/PostList";
 import Navigator from "@/components/Navigator";
 import * as FT from "@/tools/frontTool";
 import * as CourseAPI from "@/APIs/course";
+import { getCourseStudentList, getCourseVideoUrlArray } from "../APIs/course";
 
 export default {
   name: "Course",
@@ -221,36 +222,19 @@ export default {
       showVideoUp: false,
       showStudentUp: false,
       tabNames: ["intro", "direct", "video", "forum"],
-
       courseInfo: {},
-
-      videoExact: false,
+      videoExist: false,
       videoIndex: null,
       videoUrlArray: null,
-
-      tableData: [
-        {
-          student_id: "17373549",
-          student_name: "黄昌周",
-          student_school: "北京航空航天大学",
-        },
-        {
-          student_id: "17373109",
-          student_name: "王宇轩",
-          student_school: "北京航空航天大学",
-        },
-        {
-          student_id: "114514",
-          student_name: "田所浩二",
-          student_school: "黑色高级轿车后座",
-        },
-      ],
+      studentList: [],
     };
   },
+  
   async created() {
     this.courseId = this.$route.params.courseId;
     await this.getCourseBasicInfo();
     await this.getCourseVideoUrlArray();
+    await this.getCourseStudentList();
     // 切换tab位置
     this.tabPos = this.$route.params.coursePos;
     if (this.tabNames.indexOf(this.tabPos) == -1) {
@@ -261,7 +245,6 @@ export default {
     }
   },
   methods: {
-
     handleStuClose(done) {
       this.$confirm("确认关闭？")
         .then(() => {
@@ -293,19 +276,29 @@ export default {
       const temp = await CourseAPI.getCourseVideoUrlArray(
         this.$route.params.courseId
       );
-      if (temp.data.videos == undefined) {
-        this.videoUrlArray = [];
-        this.videoExact = false;
-      } else {
+      if (temp.data.message === "success") {
         this.videoUrlArray = temp.data.videos;
-        this.videoExact = true;
+        this.videoExist = true;
         this.videoIndex = 0;
+      } else {
+        this.videoUrlArray = [];
+        this.videoExist = false;
       }
-      console.log(this.videoUrlArray);
+    },
+
+    async getCourseStudentList() {
+      const temp = await CourseAPI.getCourseStudentList(
+        this.$route.params.courseId
+      );
+      if (temp.data.message === "success") {
+        this.studentList = temp.data.students;
+      } else {
+        this.studentList = [];
+      }
     },
 
     changeVideo: function () {
-      if (this.videoExact == false) {
+      if (this.videoExist == false) {
         return;
       }
       let e = document.getElementById("video-player");
@@ -338,8 +331,7 @@ export default {
         return;
       }
       if (target.name == "forum") {
-        console.log(this.courseInfo.is_open);
-        if (this.courseInfo.is_open == 0) {
+        if (this.courseInfo.is_open === 0) {
           this.$alert(
             "该课程现在还未创建圈子社区，现在要创建圈子社区吗？",
             "创建圈子社区",
