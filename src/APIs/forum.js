@@ -100,3 +100,14 @@ export const cancelStarPost = (postId) => {
     })
   })
 }
+
+export const searchPost = (keyword, forumId) => {
+  return axios({
+    method: 'POST',
+    url: `/searchPost`,
+    data: QS({
+      keyWord: keyword,
+      forumId: forumId
+    })
+  })
+}
