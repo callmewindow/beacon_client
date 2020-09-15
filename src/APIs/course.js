@@ -47,6 +47,13 @@ export const getCourseVideoUrlArray = (courseId) => {
     })
 }
 
+export const getCourseStudentList = (courseId) => {
+    return axios({
+        method: 'GET',
+        url: `api/student/manage/search?class_id=${courseId}`
+    })
+}
+
 export const courseQuery = () => {
     return axios({
         method: 'POST',
