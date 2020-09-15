@@ -32,6 +32,7 @@ export const uploadVideo = (videoEntity) => {
         })
     })
 }
+
 export const getCourseBasicInfo = (courseId) => {
     return axios({
         method: 'GET',
