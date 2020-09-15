@@ -25,6 +25,18 @@
               :underline="false"
               @click="FT.building"
             >{{courseInfo.profession}}</el-link>
+
+            <el-dropdown id="teacher_manage_entrance" @command="handleCommand">
+              <span class="el-dropdown-link">
+                教师管理入口
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="导入名单">导入名单</el-dropdown-item>
+                <el-dropdown-item command="视频上传">视频上传</el-dropdown-item>
+                <el-dropdown-item command="管理学生">管理学生</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </el-card>
         </el-col>
       </el-row>
@@ -38,24 +50,9 @@
                 <el-row>
                   <el-col class="tab_right_title">课程信息</el-col>
                 </el-row>
-                <div class="tab_right_body">
-                  <el-row type="flex" class="row-bg">
-                    <el-col :span="11">
-                      <el-card id="intro_block" header="课程简介">
-                        <span
-                          style="color: #303133; font-size: 18px; float: left;"
-                        >{{courseInfo.course_intro}}</span>
-                      </el-card>
-                    </el-col>
-
-                    <el-col :span="11" :offset="2">
-                      <el-card id="control_block" header="管理功能">
-                        <el-tag class="conFunc" effect="dark" @click="showMemberUp = true">人员导入</el-tag>
-                        <el-tag class="conFunc" effect="dark" @click="showVideoUp = true">视频上传</el-tag>
-                      </el-card>
-                    </el-col>
-                  </el-row>
-                </div>
+                <el-card class="tab_right_body">
+                  <span style="color: #303133; font-size: 18px;">{{courseInfo.course_intro}}</span>
+                </el-card>
               </el-tab-pane>
 
               <el-tab-pane :name="tabNames[1]">
@@ -110,11 +107,14 @@
                   <el-row style="margin-top: 10px; text-align: center;">
                     <span
                       style="font-size: 20px;"
-                      v-if="videoExact"
+                      v-if="videoExist"
                     >{{videoUrlArray[videoIndex].title}}</span>
                   </el-row>
                   <el-row>
-                    <VideoPlayer v-if="videoUrlArray != []" style=" margin-top: 20px; width: 100%; border-radius: 2px;"></VideoPlayer>
+                    <VideoPlayer
+                      v-if="videoUrlArray != []"
+                      style=" margin-top: 20px; width: 100%; border-radius: 2px;"
+                    ></VideoPlayer>
                   </el-row>
                 </el-card>
               </el-tab-pane>
@@ -176,6 +176,21 @@
     <el-dialog id="videoUp" :visible.sync="showVideoUp" width="50%">
       <UploadVideo />
     </el-dialog>
+
+    <el-dialog title="学生名单" :visible.sync="showStudentUp" width="60%">
+      <span>学生列表</span>
+      <el-table :data="studentList" border style="width: 100%">
+        <el-table-column prop="user_id" label="学号"></el-table-column>
+        <el-table-column prop="id" label="姓名"></el-table-column>
+        <el-table-column prop="user_identity" label="学校"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+            <el-button type="text" size="small">编辑</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -187,6 +202,7 @@ import PostList from "@/components/PostList";
 import Navigator from "@/components/Navigator";
 import * as FT from "@/tools/frontTool";
 import * as CourseAPI from "@/APIs/course";
+import { getCourseStudentList, getCourseVideoUrlArray } from "../APIs/course";
 
 export default {
   name: "Course",
@@ -204,22 +220,21 @@ export default {
       tabPos: "intro",
       showMemberUp: false,
       showVideoUp: false,
-      showSendUp: false,
+      showStudentUp: false,
       tabNames: ["intro", "direct", "video", "forum"],
-
       courseInfo: {},
-
-      videoExact: false,
+      videoExist: false,
       videoIndex: null,
       videoUrlArray: null,
-
-      fileList: [],
+      studentList: [],
     };
   },
+  
   async created() {
     this.courseId = this.$route.params.courseId;
     await this.getCourseBasicInfo();
     await this.getCourseVideoUrlArray();
+    await this.getCourseStudentList();
     // 切换tab位置
     this.tabPos = this.$route.params.coursePos;
     if (this.tabNames.indexOf(this.tabPos) == -1) {
@@ -239,6 +254,7 @@ export default {
           alert("我取消啦");
         });
     },
+
     handleVideoClose(done) {
       this.$confirm("确认关闭？")
         .then(() => {
@@ -248,6 +264,7 @@ export default {
           alert("我取消啦");
         });
     },
+
     async getCourseBasicInfo() {
       const temp = await CourseAPI.getCourseBasicInfo(
         this.$route.params.courseId
@@ -259,18 +276,29 @@ export default {
       const temp = await CourseAPI.getCourseVideoUrlArray(
         this.$route.params.courseId
       );
-      if (temp.data.videos == undefined) {
-        this.videoUrlArray = [];
-        this.videoExact = false;
-      } else {
+      if (temp.data.message === "success") {
         this.videoUrlArray = temp.data.videos;
-        this.videoExact = true;
+        this.videoExist = true;
         this.videoIndex = 0;
+      } else {
+        this.videoUrlArray = [];
+        this.videoExist = false;
       }
-      console.log(this.videoUrlArray);
     },
+
+    async getCourseStudentList() {
+      const temp = await CourseAPI.getCourseStudentList(
+        this.$route.params.courseId
+      );
+      if (temp.data.message === "success") {
+        this.studentList = temp.data.students;
+      } else {
+        this.studentList = [];
+      }
+    },
+
     changeVideo: function () {
-      if (this.videoExact == false) {
+      if (this.videoExist == false) {
         return;
       }
       let e = document.getElementById("video-player");
@@ -278,22 +306,21 @@ export default {
         "http://101.200.219.50" +
         this.videoUrlArray[this.videoIndex].local_address;
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+
+    handleCommand(command) {
+      if (command === "导入名单") {
+        this.showMemberUp = true;
+      } else if (command == "视频上传") {
+        this.showVideoUp = true;
+      } else if (command == "管理学生") {
+        this.showStudentUp = true;
+      }
     },
-    handlePreview(file) {
-      console.log(file);
+
+    handleClick(row) {
+      console.log(row);
     },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
-          files.length + fileList.length
-        } 个文件`
-      );
-    },
-    beforeRemove(file) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
+
     clickCommunity(target) {
       // 切换路由
       this.$router.push({
@@ -304,8 +331,7 @@ export default {
         return;
       }
       if (target.name == "forum") {
-        console.log(this.courseInfo.is_open);
-        if (this.courseInfo.is_open == 0) {
+        if (this.courseInfo.is_open === 0) {
           this.$alert(
             "该课程现在还未创建圈子社区，现在要创建圈子社区吗？",
             "创建圈子社区",
@@ -328,29 +354,10 @@ export default {
 </script>
 
 <style scoped>
-#intro_block {
-  color: #409eff;
-  font-size: 20px;
-  text-align: center;
-  height: 600px;
-}
-
-#control_block {
-  color: #409eff;
-  font-size: 20px;
-  text-align: center;
-}
-.conFunc {
-  cursor: pointer;
-  margin-left: 10px;
-}
-.conFunc:nth-child(1) {
-  margin-left: 0;
-}
-
 .course {
   text-align: left;
 }
+
 #course_body {
   width: 80%;
   margin-left: 10%;
@@ -373,6 +380,7 @@ export default {
 
 #up_right_part {
   height: 60px;
+  position: relative;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -388,6 +396,20 @@ export default {
 #teacher_name {
   font-size: 18px;
   padding-left: 15px;
+}
+
+#teacher_manage_entrance {
+  position: absolute;
+  left: 80%;
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+  font-size: 18px;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
 }
 
 #down_part {

@@ -60,3 +60,43 @@ export const sendPost = (post) => {
     })
   })
 }
+
+export const topPost = (postId) => {
+  return axios({
+    method: 'POST',
+    url: `/topPost`,
+    data: QS({
+      postId: postId
+    })
+  })
+}
+
+export const starPost = (postId) => {
+  return axios({
+    method: 'POST',
+    url: `/starPost`,
+    data: QS({
+      postId: postId
+    })
+  })
+}
+
+export const cancelTopPost = (postId) => {
+  return axios({
+    method: 'POST',
+    url: `/cancelTopPost`,
+    data: QS({
+      postId: postId
+    })
+  })
+}
+
+export const cancelStarPost = (postId) => {
+  return axios({
+    method: 'POST',
+    url: `/cancelStarPost`,
+    data: QS({
+      postId: postId
+    })
+  })
+}
