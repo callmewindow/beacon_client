@@ -33,7 +33,12 @@ const routes = [{
     children: [
       {path: 'post/:postId'},
     ]
-  }
+  },
+  {
+    path: '/test',
+    name: 'TeacherAuth',
+    component: () => import('@/components/TeacherAuth.vue'),
+  },
 
 ]
 

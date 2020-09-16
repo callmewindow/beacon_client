@@ -32,7 +32,7 @@
 
       <el-row type="flex" class="row-bg" justify="center">
         <el-col :span="18" class="divideBar">
-          <el-image class="barImg" :src="simpleLogo" fit="contain" />
+          <el-image @click="showAuthUp = true" class="barImg" :src="simpleLogo" fit="contain" />
           <div class="barCon">是烽火也是灯塔，指引你前进的方向</div>
         </el-col>
       </el-row>
@@ -83,6 +83,10 @@
       </div> -->
 
     </div>
+    <el-dialog title="教师认证申请" :visible.sync="showAuthUp" width="30%">
+      <TeacherAuth />
+    </el-dialog>
+
     <Footer position="left" />
   </div>
 </template>
@@ -94,16 +98,19 @@ import * as UserAPI from "@/APIs/user.js";
 import Navigator from "@/components/Navigator";
 import Footer from "@/components/Footer";
 import Username from "@/components/Username";
+import TeacherAuth from "@/components/TeacherAuth";
 export default {
   name: "Home",
   components: {
     Navigator,
     Footer,
     Username,
+    TeacherAuth,
   },
   data() {
     return {
       FT,
+      showAuthUp: false,
       timeTest :"",
       centerLogo: require("@/assets/logo-horizon-complex.png"),
       simpleLogo: require("@/assets/logo-horizon-simple.png"),
