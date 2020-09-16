@@ -26,7 +26,11 @@
               @click="FT.building"
             >{{courseInfo.profession}}</el-link>
 
-            <el-dropdown id="teacher_manage_entrance" @command="handleCommand">
+            <el-dropdown
+              id="teacher_manage_entrance"
+              v-if="identity === 2"
+              @command="handleCommand"
+            >
               <span class="el-dropdown-link">
                 教师管理入口
                 <i class="el-icon-arrow-down el-icon--right"></i>
@@ -37,6 +41,15 @@
                 <el-dropdown-item command="管理学生">管理学生</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
+
+            <el-link
+              id="join_entrance"
+              type="primary"
+              :underline="false"
+              v-if="identity === 3"
+              style="font-size: 18px;"
+              @click="joinCourse"
+            >加入课程</el-link>
           </el-card>
         </el-col>
       </el-row>
@@ -214,7 +227,10 @@ export default {
   data() {
     return {
       FT,
+      userId: null,
+      identity: null,
       courseId: null,
+      joinMessage: null,
       tabPos: "intro",
       showMemberUp: false,
       showVideoUp: false,
@@ -248,6 +264,8 @@ export default {
     if (this.$store.state.userId === -1) {
       FT.toPath("/Home");
     }
+    this.userId = this.$store.state.userId;
+    this.identity = this.$store.state.permission;
     // 从地址栏获得courseId
     this.courseId = this.$route.params.courseId;
     // 根据courseId获取相应的信息
@@ -271,10 +289,11 @@ export default {
     if (this.pauseTime === null) {
       this.getPauseTime(new Date());
     }
+    setTimeout(1000);
     // 用POST请求发送给后端
     const tempFormat = {
       video_id: this.videoId,
-      user_id: this.$store.state.userId,
+      user_id: this.userId,
       played_time: this.duration,
       start_play_time: this.firstStartTime,
     };
@@ -284,6 +303,8 @@ export default {
       tempFormat.played_time,
       tempFormat.start_play_time
     );
+    console.log(temp);
+    setTimeout(10000);
   },
 
   methods: {
@@ -400,6 +421,37 @@ export default {
       }
     },
 
+    async joinCourse() {
+      this.$confirm(
+        '确定申请加入课程"' + this.courseInfo.course_name + '"？',
+        "加入申请",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+        }
+      )
+        .then(async () => {
+          const temp = await CourseAPI.joinCourse(
+            this.courseId,
+            this.userId,
+            "233"
+          );
+          console.log(temp);
+          if (temp.data.message === "success") {
+            this.$message({
+              type: "success",
+              message: "申请成功",
+            });
+          } else {
+            this.$message({
+              type: "info",
+              message: "申请失败",
+            });
+          }
+        })
+        .catch(() => {});
+    },
+
     async authAssistant(user_id) {
       const temp = await CourseAPI.authAssistant(user_id, this.courseId);
       for (let i = 0; i < this.studentList.length; i++) {
@@ -506,6 +558,11 @@ export default {
 #teacher_name {
   font-size: 18px;
   padding-left: 15px;
+}
+
+#join_entrance {
+  position: absolute;
+  left: 80%;
 }
 
 #teacher_manage_entrance {
