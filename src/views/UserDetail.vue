@@ -2,29 +2,45 @@
     <div>
         <Navigator active-func="UserDetail"/>
         <div class="back">
-            <el-card class="card align-center text-align: center;">
+<!--            上层个人信息展示-->
+            <el-card
+                    class="card align-center text-align: center;"
+            >
                 <el-row :gutter="20" class="row-bg">
                     <el-col :span="8" :offset="2">
                         <div class="info-title">
                             <i class="el-icon-user-solid"></i>
-                            <b style="margin-left: 5%">{{users.username}}</b>
+                            <b style="margin-left: 5%">
+                                {{users.username}}
+                            </b>
                         </div>
                         <div class="info-content" v-show="users.identity===0">
                             教师
                             <b style="margin-left: 5px; margin-right:5px">|</b>
                             {{users.school}}
                         </div>
-                        <div class="info-content" style="margin-top: 10px">{{users.major}}</div>
+                        <div class="info-content"
+                             style="margin-top: 10px">
+                            {{users.major}}
+                        </div>
                         <template v-if="users.identity===0">
-                            <el-button class="button" @click="FT.building">教师认证</el-button>
+                            <el-button class="button" @click="FT.building">
+                                教师认证
+                            </el-button>
                         </template>
                     </el-col>
                     <el-col :span="1" :offset="4">
                         <i class="el-icon-edit-outline el-icon"></i>
                     </el-col>
                     <el-col :span="2">
-                        <div class="icon-content" style="margin-top: 30px">课程/圈子</div>
-                        <div class="icon-content" style="margin-top: 10px; font-size: medium">{{users.circle}}个</div>
+                        <div class="icon-content"
+                             style="margin-top: 30px">
+                            课程/圈子
+                        </div>
+                        <div class="icon-content"
+                             style="margin-top: 10px; font-size: medium">
+                            {{users.circle}}个
+                        </div>
                     </el-col>
                     <el-col :span="1">
                         <div style="font-size:30px; color: white;margin-top: 30px">|</div>
@@ -33,8 +49,14 @@
                         <i class="el-icon-lollipop el-icon"></i>
                     </el-col>
                     <el-col :span="2">
-                        <div class="icon-content" style="margin-top: 30px">圈子积分</div>
-                        <div class="icon-content" style="margin-top: 10px; font-size: medium">{{users.score}}分</div>
+                        <div class="icon-content"
+                             style="margin-top: 30px">
+                            圈子积分
+                        </div>
+                        <div class="icon-content"
+                             style="margin-top: 10px; font-size: medium">
+                            {{users.score}}分
+                        </div>
                     </el-col>
                     <el-col :span="1">
                         <div style="font-size:30px; color: white;margin-top: 30px">|</div>
@@ -43,44 +65,87 @@
                         <i class="el-icon-time el-icon"></i>
                     </el-col>
                     <el-col :span="2">
-                        <div class="icon-content" style="margin-top: 30px">学习时长</div>
-                        <div class="icon-content" style="margin-top: 10px; font-size: medium">{{users.time}}</div>
+                        <div class="icon-content"
+                            style="margin-top: 30px">
+                            学习时长
+                        </div>
+                        <div class="icon-content"
+                            style="margin-top: 10px; font-size: medium">
+                            {{users.time}}
+                        </div>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
                     <div
                             class="info-content"
-                            style="float: right;margin-right:30%;margin-top: -2%"
-                    >学习时长将会隔天进行更新
+                            style="float: right;margin-right:30%;margin-top: -2%">
+                        学习时长将会隔天进行更新
                     </div>
                 </el-row>
             </el-card>
-            <el-tabs v-model="activeName" @tab-click="handleClick" class="tab" style="size: 40px">
-                <el-tab-pane label="课程" name="first">
+            <el-tabs v-model="activeName"
+                    @tab-click="handleClick()"
+                    class="tab"
+                    style="size: 40px">
+                <el-tab-pane label="课程"
+                        name="first">
                     <div style="margin-left: 5%">
-                        <el-row :gutter="100" style="margin-top: 2px ">
-                            <el-col :span="5" :offset="0" v-for="(o,index) in course" :key="index">
+                        <el-row :gutter="100"
+                                style="margin-top: 2px ">
+                            <el-col :span="5"
+                                    :offset="0"
+                                    v-for="(o,index) in course"
+                                    :key="index">
                                 <div style="min-width: 200px ;margin-bottom: 30px">
-                                    <div v-on: @mouseover="show(index)" @mouseleave="i=-1" @click="FT.building()">
-                                        <el-card :body-style="{padding:'2px'}" shadow="hover" class="courseCard">
-                                            <div class="className">{{o.course_name}}</div>
+                                    <div v-on: @mouseover="show(index)"
+                                         @mouseleave="i=-1"
+                                         @click="jumpCourse()">
+                                        <el-card :body-style="{padding:'2px'}"
+                                                 shadow="hover"
+                                                 class="courseCard">
+                                            <!-- 退出课程按钮-->
+                                            <div v-show="index === i"
+                                                 @click.stop="clicktry()"
+                                                 style="float: left;margin-left: 10px">
+                                                <el-dropdown @command="handleCommand">
+                                                      <span class="el-dropdown-link" style="font-weight: bold">
+                                                        ...
+                                                      </span>
+                                                    <el-dropdown-menu slot="dropdown">
+                                                        <el-dropdown-item command="a">
+                                                            退出课程
+                                                        </el-dropdown-item>
+                                                    </el-dropdown-menu>
+                                                </el-dropdown>
+                                            </div>
+<!--                                            课程信息详情-->
+                                            <div class="className">
+                                                {{o.course_name}}
+                                            </div>
                                             <el-tag
                                                     class="tag"
                                                     type="warning"
                                                     style="width: 60px"
-                                                    v-show="o.profession"
-                                            >{{o.profession}}
+                                                    v-show="o.profession">
+                                            {{o.profession}}
                                             </el-tag>
-                                            <div class="classFrom info-content">{{o.teachername}}</div>
-                                            <div v-show="index !==i" class="startime info-content">
+                                            <div class="classFrom info-content">
+                                                {{o.teachername}}
+                                            </div>
+                                            <div v-show="index !==i"
+                                                 class="startime info-content">
                                                 <i class="el-icon-date"></i>
                                                 {{time(o.start_time)}}
                                             </div>
-                                            <div v-show="index!==i" class="studentNum info-content">
+                                            <div v-show="index!==i"
+                                                 class="studentNum info-content">
                                                 <i class="el-icon-user"></i>
                                                 {{o.studentnum}}
                                             </div>
-                                            <div v-show="index === i" class="classIntro">{{o.course_intro }}</div>
+                                            <div v-show="index === i"
+                                                 class="classIntro">
+                                                {{o.course_intro }}
+                                            </div>
                                             <div
                                                     v-show="index === i"
                                                     class="info-content"
@@ -110,6 +175,50 @@
                         <el-row :gutter="30">
                             <el-col :span="10">
                                 <el-card class="message_card">好友申请</el-card>
+                                <div style="overflow-y: scroll; height: 500px">
+                                    <div class="message_detail">
+                                        <div v-for="(p,index) in friendMessages"
+                                             :key="index">
+                                            <el-card class="message_detail">
+                                                <div class="message_title">
+                                            <span
+                                                  class="message_title">
+                                                <b style="color: #409eff">
+                                                    {{p.application}}
+                                                </b>
+                                                申请加你为好友
+                                                 <div style="float: right;color: #797b80;font-weight: bold;font-size: 13px">
+                                                 {{p.application_time}}
+                                                 </div>
+                                                <div class="message_content">
+                                                    {{p.application_content}}
+                                                </div>
+                                                <el-button-group>
+                                                 <el-button class="confirm_button"
+                                                            @click="confirmFriend(),p.app_result=1"
+                                                            v-show="p.app_result===0">
+                                                     同意
+                                                 </el-button>
+                                                 <el-button class="confirm_button"
+                                                            @click="rejectFriend(),p.app_result=2"
+                                                            v-show="p.app_result===0">
+                                                     拒绝
+                                                 </el-button>
+                                                </el-button-group>
+                                                 <el-button class="confirmed_button"
+                                                            v-show="p.app_result===1">
+                                                     已同意
+                                                 </el-button>
+                                                <el-button class="confirmed_button"
+                                                           v-show="p.app_result===2">
+                                                     已拒绝
+                                                 </el-button>
+                                            </span>
+                                                </div>
+                                            </el-card>
+                                        </div>
+                                    </div>
+                                </div>
                             </el-col>
                             <el-col :span="14">
                                 <el-card class="message_card">好友列表</el-card>
@@ -118,73 +227,92 @@
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="消息中心" name="forth">
-                        <el-row :gutter="20">
-                            <el-col :span="11">
-                                <el-card class="message_card">系统消息</el-card>
-                                <div  style="overflow-y: scroll; height: 500px">
-                                    <div v-for="(m,index) in sortmessages" :key="index" >
-                                        <el-card class="message_detail">
-                                            <el-row>
-                                                <el-col :span="1">
-                                                    <el-badge is-dot class="dot_item" v-show="m.is_read===0"></el-badge>
-                                                </el-col>
-                                                <el-col :span="23">
-                                                    <div class="message_title">
-                                                        {{m.message_title}};
-                                                    </div>
-                                                </el-col>
-                                            </el-row>
-                                            <div class="message_content">
-                                                {{m.message_content}}
-                                            </div>
-                                            <div class="message_time">
-                                                {{m.send_time}}
-                                                <el-button
-                                                        @click="open2(),m.is_read=1"
-                                                        class="button "
-                                                        :class="{ read_button:m.is_read===0,unread_button:m.is_read===1}"
-                                                >标为已读
-                                                </el-button>
-                                            </div>
-                                            <!--                                        :class="{  read_button: readMes}"-->
-
-                                        </el-card>
-                                    </div>
+                    <el-row :gutter="20">
+                        <el-col :span="11">
+                            <el-card class="message_card">系统消息</el-card>
+                            <div style="overflow-y: scroll; height: 500px">
+                                <div v-for="(m,index) in sortmessages"
+                                     :key="index">
+                                    <el-card class="message_detail">
+                                        <el-row>
+                                            <el-col :span="1">
+                                                <el-badge is-dot class="dot_item"
+                                                          v-show="m.is_read===0">
+                                                </el-badge>
+                                            </el-col>
+                                            <el-col :span="23">
+                                                <div class="message_title">
+                                                    {{m.message_title}};
+                                                </div>
+                                            </el-col>
+                                        </el-row>
+                                        <div class="message_content">
+                                            {{m.message_content}}
+                                        </div>
+                                        <div class="message_time">
+                                            {{m.send_time}}
+                                            <el-button
+                                                    @click="open2(),m.is_read=1"
+                                                    class="button "
+                                                    :class="{ read_button:m.is_read===0,unread_button:m.is_read===1}"
+                                            >标为已读
+                                            </el-button>
+                                        </div>
+                                    </el-card>
                                 </div>
-
-                            </el-col>
-                            <el-col :span="2">
-                                <div class="line">|</div>
-                            </el-col>
-                            <el-col :span="11">
-                                <el-card class="message_card">课程申请</el-card>
-                                <div class="message_detail" >
-                                    <div v-for="(n,index) in courseMessages" :key="index" >
-                                        <el-card class="message_detail" style="height: 70px">
-                                            <div class="message_title" >
-                                                您{{n.application_time}}申请加入的
-                                            <span v-show="n.result===1" class="message_title">
-                                                <b style="color: #409eff">{{n.courses}}</b>
-                                                ，老师已经通过了!
-                                                 <el-button class=" button course_button" @click="entercourse">查看课程</el-button>
+                            </div>
+                        </el-col>
+                        <el-col :span="2">
+                            <div class="line">|</div>
+                        </el-col>
+                        <el-col :span="11">
+                            <el-card class="message_card">课程申请</el-card>
+                            <div class="message_detail">
+                                <div v-for="(n,index) in courseMessages"
+                                     :key="index">
+                                    <el-card class="message_detail">
+                                        <div class="message_title">
+                                            <span
+                                                  class="message_title">
+                                                <b style="color: #409eff">
+                                                    {{n.user}}
+                                                </b>
+                                                申请加入
+                                                <b style="color: #409eff">
+                                                    {{n.courses}}
+                                                </b>
+                                                课程
+                                                <div style="float: right;color: #797b80;font-weight: bold;font-size: 13px">
+                                                 {{n.application_time}}
+                                                 </div>
+                                                <div class="message_content">
+                                                    {{n.content}}
+                                                </div>
+                                                <el-button-group v-show="n.result===0">
+                                                 <el-button class="reject_button"
+                                                            @click="confirmCourse(),n.result=1">
+                                                     同意
+                                                 </el-button>
+                                                 <el-button class="reject_button"
+                                                            @click="rejectCourse(),n.result=2">
+                                                     拒绝
+                                                 </el-button>
+                                                </el-button-group>
+                                                 <el-button class="rejected_button"
+                                                            v-show="n.result===1">
+                                                     已同意
+                                                 </el-button>
+                                                <el-button class="rejected_button"
+                                                           v-show="n.result===2">
+                                                     已拒绝
+                                                 </el-button>
                                             </span>
-                                            <span v-show="n.result===0" class="message_title">
-                                                <b style="color:#797b80">{{n.courses}}</b>
-
-                                            ，老师正在审核中!
-                                                <i class="el-icon-loading" style="margin-left: 40px;font-size: larger;margin-top: 00px"></i>
-                                            </span>
-                                            <span v-show="n.result===2" class="message_title">
-                                                <b style="color: #ff7256">{{n.courses}}</b>
-                                            ，老师拒绝了你的申请!
-                                                 <i class="el-icon-warning" style="font-size: larger;color: #ff7256;margin-left:40px;margin-top: 0px"></i>
-                                            </span>
-                                            </div>
-                                        </el-card>
-                                    </div>
+                                        </div>
+                                    </el-card>
                                 </div>
-                            </el-col>
-                        </el-row>
+                            </div>
+                        </el-col>
+                    </el-row>
                 </el-tab-pane>
 
             </el-tabs>
@@ -200,6 +328,7 @@
     import * as userAPI from "../APIs/user.js";
     import * as courseAPI from "../APIs/course.js";
     import elTableInfiniteScroll from 'el-table-infinite-scroll';
+
     export default {
         name: "UserDetail",
         components: {Navigator, Footer},
@@ -221,7 +350,7 @@
                     score: 99,
                     time: "13时26分",
                 },
-                activeName: "forth",
+                activeName: "third",
                 seen: false,
                 current: 0,
                 currentDate: new Date(),
@@ -240,37 +369,74 @@
                     },
                 ],
                 messages: [
-                    {message_title: "今晚5：30，WYX带你参观绿园", message_content: "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！", send_time: "2020-09-05 10:06:44", is_read: 0,
-                    }, {message_title: "明早8：00，F111，每日站会", message_content: "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目", send_time: "2020-09-06 11:06:44", is_read: 0,
-                    }, {message_title: "今晚5：30，WYX带你参观绿园", message_content: "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！", send_time: "2020-09-05 10:06:44", is_read: 0,
-                    }, {message_title: "明早8：00，F111，每日站会", message_content: "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目", send_time: "2020-09-06 11:06:44", is_read: 0,
-                    }, {message_title: "今晚5：30，WYX带你参观绿园", message_content: "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！", send_time: "2020-09-05 10:06:44", is_read: 0,}, {
-                        message_title: "明早8：00，F111，每日站会", message_content: "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目", send_time: "2020-09-06 11:06:44", is_read: 0,
+                    {
+                        message_title: "今晚5：30，WYX带你参观绿园",
+                        message_content: "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！",
+                        send_time: "2020-09-05 10:06:44",
+                        is_read: 0,
+                    }, {
+                        message_title: "明早8：00，F111，每日站会",
+                        message_content: "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目",
+                        send_time: "2020-09-06 11:06:44",
+                        is_read: 0,
+                    }, {
+                        message_title: "今晚5：30，WYX带你参观绿园",
+                        message_content: "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！",
+                        send_time: "2020-09-05 10:06:44",
+                        is_read: 0,
+                    }, {
+                        message_title: "明早8：00，F111，每日站会",
+                        message_content: "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目",
+                        send_time: "2020-09-06 11:06:44",
+                        is_read: 0,
+                    }, {
+                        message_title: "今晚5：30，WYX带你参观绿园",
+                        message_content: "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！",
+                        send_time: "2020-09-05 10:06:44",
+                        is_read: 0,
+                    }, {
+                        message_title: "明早8：00，F111，每日站会",
+                        message_content: "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目",
+                        send_time: "2020-09-06 11:06:44",
+                        is_read: 0,
                     }
                 ],
-                courseMessages:[
+                courseMessages: [
                     {
-                        courses:'软件工程实践',
-                        result:0,
+                        courses: '软件工程实践',
+                        user: 'LGY',
+                        result: 0,
+                        application_time: "2020-09-16",
+                        content: "233",
+                    },
+                    {
+                        courses: '数据库',
+                        user: 'THB',
+                        result: 0,
+                        application_time: "2020-09-13",
+                        content: '学习使我进步',
+                    },
+                ],
+                friendMessages:[
+                    {
+                        application:"WHQ",
+                        application_content:"加个好友",
                         application_time:"2020-09-16",
+                        app_result:0,
                     },
                     {
-                        courses:'数据库',
-                        result:1,
-                        application_time:"2020-09-13",
-                    },
-                    {
-                        courses:'科技写作',
-                        result:2,
-                        application_time:"2020-09-10",
+                        application:"YCZ",
+                        application_content:"感受原力吧",
+                        application_time:"2020-09-15",
+                        app_result:0,
                     }
                 ],
                 i: -1,
             };
         },
         created() {
-            this.get_userdetail();
-            this.get_usercourse();
+            this.get_userDetail();
+            this.get_userCourse();
         },
         filters: {
             filterIntro(value) {
@@ -281,16 +447,52 @@
             authentication() {
                 this.$router.push({path: "/authentication"});
             },
-            entercourse() {
-                this.$router.push({path: "/course"});
+
+            confirmCourse() {
+                this.$message({
+                    message: '已添加成员进入课程',
+                    type: 'success',
+
+                })
             },
+
+            rejectCourse(){
+                this.$message({
+                    message: '拒绝成员进入课程',
+                    type: 'success',
+
+                })
+            },
+
+            confirmFriend() {
+                this.$message({
+                    message: '成功添加好友',
+                    type: 'success',
+
+                })
+            },
+
+            rejectFriend(){
+                this.$message({
+                    message: '已拒绝好友',
+                    type: 'success',
+
+                })
+            },
+
+            jumpCourse(){
+
+            },
+
             handleClick(tab, event) {
                 console.log(tab, event);
             },
+
             show(index) {
                 this.i = index;
             },
-            get_userdetail() {
+
+            get_userDetail() {
                 userAPI.getUserDetail(this.userId).then((res) => {
                     console.log("1111", res.data.user);
                     this.users.username = res.data.user.nickname;
@@ -300,7 +502,10 @@
                     this.users.time = res.data.user.coursetime;
                 });
             },
-            get_usercourse() {
+
+            clicktry(){},
+
+            get_userCourse() {
                 courseAPI.getUserCourse(this.userId).then((res) => {
                     // let str = '{"message": "OK", "courses": [{"course_name": "科技写作", "course_intro": "Ian", "start_time": datetime.datetime(2020, 9, 11, 5, 3, 33), "profession": "Ian", "studentnum": 2, "teachername": null}, {"course_name": "软工23", "course_intro": "没什么用23", "start_time": datetime.datetime(2020, 9, 11, 5, 3, 33), "profession": null, "studentnum": 1, "teachername": null}]}'
                     // console.log("11", typeof res.data);
@@ -308,31 +513,53 @@
                     this.course = res.data.courses;
                 });
             },
+
             time(s) {
                 //  将截取后的时间return出来
                 if (s) return s.substring(0, 10);
             },
-            open2(index) {
-                    this.$message({
-                        message: '消息已标为已读',
-                        type: 'success',
 
-                    })
+            open2() {
+                this.$message({
+                    message: '消息已标为已读',
+                    type: 'success',
+
+                })
             },
+
+            handleCommand(command){
+                console.log("112");
+                if(command=="a"){
+
+                    this.$alert('确定退出该课程吗', '退出课程', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            // this.$message({
+                            //     type: 'info',
+                            //     message: `action: ${ action }`
+                            // });
+                            if(action=="confirm"){
+
+                            }
+                        }
+                    });
+                }
+            },
+
         },
         computed: {
             sortmessages: function () {
-                 return sortByTime(this.messages,"send_time","is_read");
+                return sortByTime(this.messages, "send_time", "is_read");
             },
+
         }
     };
-    function sortByTime(array,key1,key2) {
-        return array.sort(function(a, b) {
+    function sortByTime(array, key1, key2) {
+        return array.sort(function (a, b) {
             var x = a[key1];
             var y = b[key1];
             return x > y ? -1 : x < y ? 1 : 0;
         });
-
     }
 </script>
 
@@ -548,9 +775,11 @@
         color: #797b80;
         height: 10px;
     }
+
     /deep/ .el-badge__content {
         background-color: #409eff;
     }
+
     .read_button {
         background-color: #409eff;
         color: white;
@@ -564,13 +793,46 @@
         background-color: #797b80;
         color: white;
     }
-    .course_button{
-        margin-left: 390px;
-        margin-top: -30px;
+
+    .reject_button {
+        margin-left: 290px;
         background-color: #409eff;
+        padding-top: 8px;
+        padding-bottom: 8px;
         color: white;
     }
+
+    .rejected_button{
+        margin-left: 330px;
+        background-color: #797b80;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        color: white;
+    }
+
+    .confirm_button{
+        margin-left: 250px;
+        background-color: #409eff;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        color: white;
+    }
+
+    .confirmed_button{
+        margin-left: 280px;
+        background-color: #797b80;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        color: white;
+    }
+
     ::-webkit-scrollbar {
         width: 0px !important;
+    }
+
+    .delete_course {
+        margin-top: -150px;
+        margin-left: -200px;
+        border-radius: 2px;
     }
 </style>
