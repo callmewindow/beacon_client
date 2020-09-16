@@ -38,6 +38,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="导入名单">导入名单</el-dropdown-item>
                 <el-dropdown-item command="视频上传">视频上传</el-dropdown-item>
+                <el-dropdown-item command="管理视频">管理视频</el-dropdown-item>
                 <el-dropdown-item command="管理学生">管理学生</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -156,11 +157,45 @@
       </span>
     </el-dialog>
 
-    <el-dialog id="videoUp" :visible.sync="showVideoUp" width="50%">
+    <el-dialog :visible.sync="showVideoUp" width="50%">
       <UploadVideo />
     </el-dialog>
 
-    <el-dialog title="学生名单" :visible.sync="showStudentUp" width="60%">
+    <el-dialog :visible.sync="showManageVideo" width="50%">
+      <el-table :data="videoUrlArray" stripe width="100%">
+        <el-table-column prop="title" label="视频标题"></el-table-column>
+        <el-table-column prop="introduction" label="视频简介"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" size="medium" @click="updateVideoInfo(scope.row)">更改信息</el-button>
+            <el-divider direction="vertical"></el-divider>
+            <el-button
+              type="text"
+              size="medium"
+              @click="deleteVideo(scope.row)"
+              style="color: #F56C6C;"
+            >删除视频</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog :title="manageVideoTitle" :visible.sync="showSpecificVideoInfo">
+      <div style="font-size: 16px; margin-bottom: 10px;">视频标题</div>
+      <el-input v-model="newTitle" :placeholder="specificVideoInfo.title"></el-input>
+      <el-divider></el-divider>
+      <div style="font-size: 16px; margin-bottom: 10px;">视频简介</div>
+      <el-input
+        type="textarea"
+        :autosize="{ minRows: 3, maxRows: 7}"
+        :placeholder="specificVideoInfo.introduction"
+        v-model="newIntroduction"
+      ></el-input>
+      <el-button type="text" style="color: #909399; font-size: 17px; margin: 4% 7% 0 80%;">取消</el-button>
+      <el-button type="text" style="color: #409EFF; font-size: 17px;">更新</el-button>
+    </el-dialog>
+
+    <el-dialog title="人员名单" :visible.sync="showStudentList" width="80%">
       <el-table :data="studentList" border style="width: 100%">
         <el-table-column prop="school_id" label="学号"></el-table-column>
         <el-table-column prop="realname" label="姓名"></el-table-column>
@@ -176,26 +211,41 @@
             <el-button
               v-if="scope.row.user_identity == 1"
               type="text"
-              size="small"
+              size="medium"
               style="color: #E6A23C;"
               @click="cancelAssistant(scope.row.user_id)"
             >取消助教</el-button>
             <el-button
               v-if="scope.row.user_identity == 0"
               type="text"
-              size="small"
+              size="medium"
               @click="authAssistant(scope.row.user_id)"
             >设为助教</el-button>
             <el-divider v-if="scope.row.user_identity == 0" direction="vertical"></el-divider>
             <el-button
               v-if="scope.row.user_identity == 0"
               type="text"
-              size="small"
+              size="medium"
               style="color: #F56C6C;"
               @click="deleteStudent(scope.row.user_id)"
-            >剔除学生</el-button>
+            >删除</el-button>
+            <el-divider direction="vertical"></el-divider>
+            <el-button
+              type="text"
+              size="medium"
+              style="color: #67C23A;"
+              @click="viewRecord(scope.row.user_id, scope.row.realname)"
+            >学习记录</el-button>
           </template>
         </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog :title="recordTitle" :visible.sync="showStudentRecord">
+      <el-table :data="recordList" stripe style="width: 100%">
+        <el-table-column prop="id" label="视频ID"></el-table-column>
+        <el-table-column prop="title" label="视频标题"></el-table-column>
+        <el-table-column prop="duration" label="观看时常"></el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -227,20 +277,55 @@ export default {
   data() {
     return {
       FT,
+
       userId: null,
       identity: null,
       courseId: null,
-      joinMessage: null,
-      tabPos: "intro",
-      showMemberUp: false,
-      showVideoUp: false,
-      showStudentUp: false,
-      tabNames: ["intro", "direct", "video", "forum"],
+
       courseInfo: {},
       videoExist: false,
       videoIndex: null,
       videoUrlArray: null,
       studentList: [],
+      recordList: [
+        {
+          id: 1,
+          title: "夏露伊苏",
+          duration: 100,
+        },
+        {
+          id: 2,
+          title: "木吉手枪",
+          duration: 1000000,
+        },
+        {
+          id: 3,
+          title: "更衣室大战",
+          duration: 233,
+        },
+      ],
+
+      joinMessage: null,
+
+      showMemberUp: false,
+      showVideoUp: false,
+      showStudentList: false,
+      showManageVideo: false,
+      showSpecificVideoInfo: false,
+      manageVideoTitle: null,
+      specificVideoInfo: {
+        title: "加载中",
+        introduction: "加载中",
+      },
+      newTitle: null,
+      newIntroduction: null,
+
+      showStudentRecord: false,
+      recordTitle: null,
+
+      tabPos: "intro",
+      tabNames: ["intro", "direct", "video", "forum"],
+
       firstStartTime: null,
       startTime: null,
       pauseTime: null,
@@ -413,11 +498,13 @@ export default {
     async handleCommand(command) {
       if (command === "导入名单") {
         this.showMemberUp = true;
-      } else if (command == "视频上传") {
+      } else if (command === "视频上传") {
         this.showVideoUp = true;
-      } else if (command == "管理学生") {
+      } else if (command === "管理学生") {
         await this.getCourseStudentList();
-        this.showStudentUp = true;
+        this.showStudentList = true;
+      } else if (command === "管理视频") {
+        this.showManageVideo = true;
       }
     },
 
@@ -477,6 +564,18 @@ export default {
           this.studentList.pop(i);
         }
       }
+    },
+
+    updateVideoInfo(data) {
+      this.showSpecificVideoInfo = true;
+      this.manageVideoTitle = '"' + data.title + '"' + "的详细信息";
+      this.specificVideoInfo = data;
+      console.log(this.specificVideoInfo);
+    },
+
+    async viewRecord(user_id, realname) {
+      this.recordTitle = '"' + realname + '"' + "的观看记录";
+      this.showStudentRecord = true;
     },
 
     clickCommunity(target) {
