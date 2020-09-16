@@ -18,7 +18,7 @@ const routes = [{
     component: () => import('@/views/CourseList.vue'),
   },
   {
-    path: '/user',
+    path: '/user/:userId',
     name: 'UserDetail',
     component: () => import('@/views/UserDetail.vue'),
   },
@@ -36,8 +36,8 @@ const routes = [{
   },
   {
     path: '/test',
-    name: 'TeacherAuth',
-    component: () => import('@/components/TeacherAuth.vue'),
+    name: 'FriendList',
+    component: () => import('@/components/FriendList.vue'),
   },
 
 ]
