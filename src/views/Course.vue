@@ -236,7 +236,7 @@ export default {
   // 监听tabPos的变化，当侧边栏从“video”切换至非“video”时，暂停视频播放，通过内置的自定义时间触发getPauseTime方法
   watch: {
     tabPos(newPos, oldPos) {
-      if (oldPos == "video" && newPos != "video") {
+      if (oldPos === "video" && newPos !== "video") {
         let e = document.getElementById("video-player");
         e.pause();
       }
@@ -265,8 +265,12 @@ export default {
 
   // 切回其他页面，或直接关闭时的钩子函数
   async destroyed() {
-    // 手动调用getPauseTime方法，记录播放时常duration
-    this.getPauseTime(new Date());
+    if (this.firstStartTime === null) {
+      return;
+    }
+    if (this.pauseTime === null) {
+      this.getPauseTime(new Date());
+    }
     // 用POST请求发送给后端
     const tempFormat = {
       video_id: this.videoId,
@@ -360,13 +364,16 @@ export default {
         this.firstStartTime = data.Format("yyyy-MM-dd hh:mm:ss");
       }
       this.startTime = data;
+      this.pauseTime = null;
+      console.log("开始时间：" + this.startTime.Format("yyyy-MM-dd hh:mm:ss"));
     },
 
     // 视频暂停时触发的方法
     getPauseTime(data) {
       this.pauseTime = data;
+      console.log("暂停时间：" + this.pauseTime.Format("yyyy-MM-dd hh:mm:ss"));
       this.duration += (data.getTime() - this.startTime.getTime()) / 1000;
-      this.startTime = data;
+      this.startTime = null;
       console.log(this.duration);
     },
 
