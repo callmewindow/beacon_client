@@ -33,6 +33,17 @@ export const uploadVideo = (videoEntity) => {
   })
 }
 
+export const uploadExcel = (excelEntity) => {
+  return axios({
+    method: 'POST',
+    url: `uploadUserCourse2`,
+    data: QS({
+      course_id: excelEntity.courseId,
+      excel_name: excelEntity.excel_name
+    })
+  })
+}
+
 export const getCourseBasicInfo = (courseId) => {
   return axios({
     method: 'GET',
