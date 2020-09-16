@@ -27,18 +27,18 @@
         </el-button>
       </div>
       <!--规则内容-->
-      <el-row :gutter="10">
-        <el-col :span="16" :offset="3">
-          <div v-if="rule_edit===false">{{ rule_content }}</div>
-          <el-input
-              v-if="rule_edit"
-              type="textarea"
-              maxlength="200"
-              show-word-limit
-              v-model="rule_content_bk"
-          ></el-input>
-        </el-col>
-      </el-row>
+      <div style="margin-left: 15%;margin-right: 15%">
+        <div v-if="!rule_edit">
+          {{ rule_content }}
+        </div>
+        <el-input
+            v-if="rule_edit"
+            type="textarea"
+            maxlength="200"
+            show-word-limit
+            v-model="rule_content_bk"
+        ></el-input>
+      </div>
       <!--发帖按钮-->
       <el-row :gutter="10" style="margin-top: 20px" v-if="rule_edit===false">
         <el-col :span="15" :offset="1">
@@ -46,7 +46,7 @@
         </el-col>
         <el-col :span="5">
           <el-button type="primary" @click="search_post">搜索帖子</el-button>
-          <el-button type="primary" v-if="display_search_result" @click="back_from_search">返回</el-button>
+          <el-button type="primary" v-if="display_search_result" @click="display_search_result=false;">返回</el-button>
         </el-col>
         <el-col :span="2">
           <el-button id="sendBtn" type="primary" icon="el-icon-edit" @click="showSendUp = true">发帖</el-button>
@@ -56,12 +56,136 @@
     <!--没帖子-->
     <el-card v-if="!havePost" style="margin-top: 20px;">目前圈子暂无帖子或未开启</el-card>
     <!--帖子列表-->
-    <div v-if="havePost && !display_search_result">
-      <el-tabs v-model="tab_active_name">
-        <el-tab-pane label="全部" name="all"></el-tab-pane>
-        <el-tab-pane label="精华" name="star"></el-tab-pane>
+    <div v-if="havePost && !display_search_result" style="margin-top: 20px">
+      <!--      全部/精华标签栏-->
+      <el-tabs v-model="tab_active_name" type="card">
+        <el-tab-pane label="　全部　" name="all"></el-tab-pane>
+        <el-tab-pane label="　精华　" name="star"></el-tab-pane>
       </el-tabs>
-      <el-card v-for="post in post_list" :key="post.id" style="margin-top: 20px;">
+      <!--      全部帖子-->
+      <div v-if="tab_active_name==='all'">
+        <el-card v-for="post in post_list" :key="post.id" style="margin-bottom: 20px;">
+          <el-row style="margin-top: 10px; margin-left: 5px">
+            <el-col :span="2" style="text-align: center;">
+              <el-tag style="width: 50px; text-align: center; font-size: 16px">{{ post.reply_num }}</el-tag>
+            </el-col>
+
+            <el-col :span="22">
+              <el-row style="margin-bottom: 10px">
+                <el-col :span="12">
+                  <el-link
+                      type="primary"
+                      :underline="false"
+                      style="font-size: 20px;margin-bottom: 5px"
+                      @click="showDetail(post.id)"
+                  >{{ post.title }}
+                  </el-link>
+                  <el-tag type="primary" size="small" effect="dark" style="margin-left: 5px;" v-if="post.topped === 1">
+                    置顶
+                  </el-tag>
+                  <el-tag type="warning" size="small" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
+                          v-if="post.stared === 1">精华
+                  </el-tag>
+                </el-col>
+                <el-col :span="5">
+                  <div style="float: right;">
+                    {{ post.nickname }}
+                    <el-divider direction="vertical"></el-divider>
+                    {{ post.datetime ? post.datetime.substring(5, 16) : "notime" }}
+                  </div>
+                </el-col>
+                <el-col :span="4">
+                  <div style="float: right;">阅读数：{{ post.read }}</div>
+                </el-col>
+                <el-col :span="3">
+                  <div style="float: right">喜欢：{{ post.like }}</div>
+                </el-col>
+              </el-row>
+
+              <el-row style="margin-bottom: 10px">
+                <el-col :span="20">{{ post.content|cut }}</el-col>
+                <el-col :span="4">
+                  <el-button type="text" style="padding: 0" v-if="post.topped === 0" @click="top_post(post.id)">设为置顶
+                  </el-button>
+                  <el-button type="text" style="padding: 0" v-if="post.topped === 1" @click="cancel_top_post(post.id)">
+                    取消置顶
+                  </el-button>
+                  <el-divider direction="vertical"></el-divider>
+                  <el-button type="text" style="padding: 0" v-if="post.stared === 0" @click="star_post(post.id)">设为精华
+                  </el-button>
+                  <el-button type="text" style="padding: 0" v-if="post.stared === 1" @click="cancel_star_post(post.id)">
+                    取消精华
+                  </el-button>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </el-card>
+      </div>
+      <!--      精华帖子-->
+      <div v-if="tab_active_name==='star'">
+        <el-card v-for="post in star_list" :key="post.id" style="margin-bottom: 20px;">
+          <el-row style="margin-top: 10px; margin-left: 5px">
+            <el-col :span="2" style="text-align: center;">
+              <el-tag style="width: 50px; text-align: center; font-size: 16px">{{ post.reply_num }}</el-tag>
+            </el-col>
+
+            <el-col :span="22">
+              <el-row style="margin-bottom: 10px">
+                <el-col :span="12">
+                  <el-link
+                      type="primary"
+                      :underline="false"
+                      style="font-size: 20px;margin-bottom: 5px"
+                      @click="showDetail(post.id)"
+                  >{{ post.title }}
+                  </el-link>
+                  <el-tag type="primary" size="small" effect="dark" style="margin-left: 5px;" v-if="post.topped === 1">
+                    置顶
+                  </el-tag>
+                  <el-tag type="warning" size="small" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
+                          v-if="post.stared === 1">精华
+                  </el-tag>
+                </el-col>
+                <el-col :span="5">
+                  <div style="float: right;">
+                    {{ post.nickname }}
+                    <el-divider direction="vertical"></el-divider>
+                    {{ post.datetime ? post.datetime.substring(5, 16) : "notime" }}
+                  </div>
+                </el-col>
+                <el-col :span="4">
+                  <div style="float: right;">阅读数：{{ post.read }}</div>
+                </el-col>
+                <el-col :span="3">
+                  <div style="float: right">喜欢：{{ post.like }}</div>
+                </el-col>
+              </el-row>
+
+              <el-row style="margin-bottom: 10px">
+                <el-col :span="20">{{ post.content|cut }}</el-col>
+                <el-col :span="4">
+                  <el-button type="text" style="padding: 0" v-if="post.topped === 0" @click="top_post(post.id)">设为置顶
+                  </el-button>
+                  <el-button type="text" style="padding: 0" v-if="post.topped === 1" @click="cancel_top_post(post.id)">
+                    取消置顶
+                  </el-button>
+                  <el-divider direction="vertical"></el-divider>
+                  <el-button type="text" style="padding: 0" v-if="post.stared === 0" @click="star_post(post.id)">设为精华
+                  </el-button>
+                  <el-button type="text" style="padding: 0" v-if="post.stared === 1" @click="cancel_star_post(post.id)">
+                    取消精华
+                  </el-button>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </el-card>
+      </div>
+    </div>
+    <!--搜索结果列表-->
+    <div v-if="display_search_result">
+      <el-card v-for="post in search_list" :key="post.id" style="margin-top: 20px;">
         <el-row style="margin-top: 10px; margin-left: 5px">
           <el-col :span="2" style="text-align: center;">
             <el-tag style="width: 50px; text-align: center; font-size: 16px">{{ post.reply_num }}</el-tag>
@@ -106,75 +230,15 @@
                            @click="post.topped=1;top_post(post.id)">设为置顶
                 </el-button>
                 <el-button type="text" style="padding: 0" v-if="post.topped === 1"
-                           @click="post.topped=0;cancel_top_post(post.id)">取消置顶
+                           @click="post.topped=0;cancel_top_post(post.id)">
+                  取消置顶
                 </el-button>
                 <el-divider direction="vertical"></el-divider>
                 <el-button type="text" style="padding: 0" v-if="post.stared === 0"
                            @click="post.stared=1;star_post(post.id)">设为精华
                 </el-button>
                 <el-button type="text" style="padding: 0" v-if="post.stared === 1"
-                           @click="post.stared=0;cancel_star_post(post.id)">取消精华
-                </el-button>
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
-      </el-card>
-    </div>
-    <!--搜索结果列表-->
-    <div v-if="display_search_result">
-      <el-card v-for="(post, index) in search_list" :key="post.id" style="margin-top: 20px;">
-        <el-row style="margin-top: 10px; margin-left: 5px">
-          <el-col :span="2" style="text-align: center;">
-            <el-tag style="width: 50px; text-align: center; font-size: 16px">{{ post.reply_num }}</el-tag>
-          </el-col>
-
-          <el-col :span="22">
-            <el-row style="margin-bottom: 10px">
-              <el-col :span="12">
-                <el-link
-                    type="primary"
-                    :underline="false"
-                    style="font-size: 20px;margin-bottom: 5px"
-                    @click="showDetail(post.id)"
-                >{{ post.title }}
-                </el-link>
-                <el-tag type="primary" size="small" effect="dark" style="margin-left: 5px;" v-if="post.topped === 1">
-                  置顶
-                </el-tag>
-                <el-tag type="warning" size="small" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
-                        v-if="post.stared === 1">精华
-                </el-tag>
-              </el-col>
-              <el-col :span="5">
-                <div style="float: right;">
-                  {{ post.nickname }}
-                  <el-divider direction="vertical"></el-divider>
-                  {{ post.datetime ? post.datetime.substring(5, 16) : "notime" }}
-                </div>
-              </el-col>
-              <el-col :span="4">
-                <div style="float: right;">阅读数：{{ post.read }}</div>
-              </el-col>
-              <el-col :span="3">
-                <div style="float: right">喜欢：{{ post.like }}</div>
-              </el-col>
-            </el-row>
-
-            <el-row style="margin-bottom: 10px">
-              <el-col :span="20">{{ post.content|cut }}</el-col>
-              <el-col :span="4">
-                <el-button type="text" style="padding: 0" v-if="post.topped === 0" @click="search_top_post(index)">
-                  设为置顶
-                </el-button>
-                <el-button type="text" style="padding: 0" v-if="post.topped === 1" @click="search_top_post(index)">
-                  取消置顶
-                </el-button>
-                <el-divider direction="vertical"></el-divider>
-                <el-button type="text" style="padding: 0" v-if="post.stared === 0" @click="search_star_post(index)">
-                  设为精华
-                </el-button>
-                <el-button type="text" style="padding: 0" v-if="post.stared === 1" @click="search_star_post(index)">
+                           @click="post.stared=0;cancel_star_post(post.id)">
                   取消精华
                 </el-button>
               </el-col>
@@ -248,10 +312,6 @@ export default {
       this.rule_edit = !this.rule_edit;
       this.rule_content_bk = this.rule_content;
     },
-    back_from_search() {
-      this.get_post_list();
-      this.display_search_result = false;
-    },
     async send_edit() {
       if (FT.CS(this.rule_content_bk)) {
         this.$message.error("为了社区和谐，请勿输入英文引号，感谢支持");
@@ -273,12 +333,17 @@ export default {
       try {
         const list = await postAPI.postList(parseInt(courseId));
         //window.console.log(list.data);
-        for (let i = 0; i < list.data.length; i++)
+        this.post_list = [];
+        this.star_list = [];
+        for (let i = 0; i < list.data.length; i++) {
           if (list.data[i].topped === 1)
-            this.post_list.push(list.data[i])
+            this.post_list.push(list.data[i]);
+          if (list.data[i].stared === 1)
+            this.star_list.push(list.data[i]);
+        }
         for (let i = 0; i < list.data.length; i++)
           if (list.data[i].topped === 0)
-            this.post_list.push(list.data[i])
+            this.post_list.push(list.data[i]);
         if (this.post_list !== "该圈子id不存在") {
           this.havePost = true;
         }
@@ -309,13 +374,15 @@ export default {
     async top_post(id) {
       try {
         await postAPI.topPost(parseInt(id));
+        await this.get_post_list();
       } catch (e) {
         this.$message.error("置顶请求超时");
       }
     },
     async cancel_top_post(id) {
       try {
-        await postAPI.topPost(parseInt(id));
+        await postAPI.cancelTopPost(parseInt(id));
+        await this.get_post_list();
       } catch (e) {
         this.$message.error("取消置顶请求超时");
       }
@@ -324,6 +391,7 @@ export default {
     async star_post(id) {
       try {
         await postAPI.starPost(parseInt(id));
+        await this.get_post_list();
       } catch (e) {
         this.$message.error("加精请求超时");
       }
@@ -331,6 +399,7 @@ export default {
     async cancel_star_post(id) {
       try {
         await postAPI.cancelStarPost(parseInt(id));
+        await this.get_post_list();
       } catch (e) {
         this.$message.error("取消加精请求超时");
       }
