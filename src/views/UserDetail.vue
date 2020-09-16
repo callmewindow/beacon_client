@@ -89,9 +89,15 @@
                     style="size: 40px">
                 <el-tab-pane label="课程"
                         name="first">
-                    <div style="margin-left: 5%">
+                    <el-switch
+                            v-model="value1"
+                            active-text="创建的课程"
+                            inactive-text="加入的课程"
+                            >
+                    </el-switch>
+                    <div style="margin-left: 5%" v-show="!value1">
                         <el-row :gutter="100"
-                                style="margin-top: 2px ">
+                                style="margin-top: 20px ">
                             <el-col :span="5"
                                     :offset="0"
                                     v-for="(o,index) in course"
@@ -161,6 +167,85 @@
                                             >
                                                 <i class="el-icon-user"></i>
                                                 {{o.studentnum}}
+                                            </div>
+                                        </el-card>
+                                    </div>
+                                </div>
+                            </el-col>
+                        </el-row>
+                    </div>
+                    <div style="margin-left: 5%" v-show="value1">
+                        <el-row :gutter="100"
+                                style="margin-top: 20px ">
+                            <el-col :span="5"
+                                    :offset="0"
+                                    v-for="(w,index) in makeCourse"
+                                    :key="index">
+                                <div style="min-width: 200px ;margin-bottom: 30px">
+                                    <div v-on: @mouseover="show(index)"
+                                         @mouseleave="i=-1"
+                                         @click="jumpCourse()">
+                                        <el-card :body-style="{padding:'2px'}"
+                                                 shadow="hover"
+                                                 class="courseCard">
+                                            <!-- 退出课程按钮-->
+                                            <div v-show="index === i"
+                                                 @click.stop="clicktry()"
+                                                 style="float: left;margin-left: 10px">
+                                                <el-dropdown @command="handleCommand">
+                                                      <span class="el-dropdown-link" style="font-weight: bold">
+                                                        ...
+                                                      </span>
+                                                    <el-dropdown-menu slot="dropdown">
+                                                        <el-dropdown-item command="b">
+                                                            删除课程
+                                                        </el-dropdown-item>
+                                                    </el-dropdown-menu>
+                                                </el-dropdown>
+                                            </div>
+                                            <!--                                            课程信息详情-->
+                                            <div class="className">
+                                                {{w.course_name}}
+                                            </div>
+                                            <el-tag
+                                                    class="tag"
+                                                    type="warning"
+                                                    style="width: 60px"
+                                                    v-show="w.profession">
+                                                {{w.profession}}
+                                            </el-tag>
+                                            <div class="classFrom info-content">
+                                                {{w.teachername}}
+                                            </div>
+                                            <div v-show="index !==i"
+                                                 class="startime info-content">
+                                                <i class="el-icon-date"></i>
+                                                {{time(w.start_time)}}
+                                            </div>
+                                            <div v-show="index!==i"
+                                                 class="studentNum info-content">
+                                                <i class="el-icon-user"></i>
+                                                {{w.studentnum}}
+                                            </div>
+                                            <div v-show="index === i"
+                                                 class="classIntro">
+                                                {{w.course_intro }}
+                                            </div>
+                                            <div
+                                                    v-show="index === i"
+                                                    class="info-content"
+                                                    style=" color: #797b80;float: left;margin-left: 5%;font-size: 12px"
+                                            >
+                                                <i class="el-icon-date"></i>
+                                                {{time(w.start_time)}}
+                                            </div>
+                                            <div
+                                                    v-show="index === i"
+                                                    class="info-content"
+                                                    style="color: #797b80;float: right ;font-size: 12px"
+                                            >
+                                                <i class="el-icon-user"></i>
+                                                {{w.studentnum}}
                                             </div>
                                         </el-card>
                                     </div>
@@ -353,6 +438,7 @@
                 activeName: "third",
                 seen: false,
                 current: 0,
+                value1: true,
                 currentDate: new Date(),
                 course: [
                     {
@@ -366,6 +452,16 @@
                         profession: "计算机",
                         teacher: "黄坚",
                         classIntro: "《数据库》是计算机本科专业的一门专业必修课。它是...",
+                    },
+                ],
+                makeCourse:[
+                    {
+                        course_name: "数据库",
+                        profession: "计算机",
+                        teachername: "黄坚",
+                        start_time:"2020-10-01",
+                        studentnum:165,
+                        course_intro: "《数据库》是计算机本科专业的一门专业必修课。它是...",
                     },
                 ],
                 messages: [
@@ -532,6 +628,21 @@
                 if(command=="a"){
 
                     this.$alert('确定退出该课程吗', '退出课程', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            // this.$message({
+                            //     type: 'info',
+                            //     message: `action: ${ action }`
+                            // });
+                            if(action=="confirm"){
+
+                            }
+                        }
+                    });
+                }
+                if(command=="b"){
+
+                    this.$alert('确定删除该课程吗', '删除课程', {
                         confirmButtonText: '确定',
                         callback: action => {
                             // this.$message({
@@ -834,5 +945,20 @@
         margin-top: -150px;
         margin-left: -200px;
         border-radius: 2px;
+    }
+    /deep/ .el-switch__label{
+        color: #797b80 !important;
+        font-weight: bold;
+
+    }
+
+    /deep/ .el-switch__label.is-active{
+        color: #ff7256 !important;
+        font-weight: bold;
+
+    }
+    /deep/.el-switch.is-checked .el-switch__core {
+        border-color: #ff7256;
+        background-color: #ff7256;
     }
 </style>
