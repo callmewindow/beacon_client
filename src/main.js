@@ -6,6 +6,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import Router from 'vue-router';
+import elTableInfiniteScroll from 'el-table-infinite-scroll';
 
 Vue.config.productionTip = true
 
@@ -20,6 +21,7 @@ Router.prototype.push = function push(location) {
 
 
 Vue.use(ElementUI);
+Vue.use(elTableInfiniteScroll);
 
 new Vue({
   router,
