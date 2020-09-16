@@ -12,19 +12,13 @@
 
         <el-col :xs="20" :sm="20" :md="20" :lg="20">
           <el-card id="up_right_part">
-            <el-link
-              id="course_name"
-              type="primary"
-              :underline="false"
-              @click="FT.building"
-            >{{courseInfo.course_name}}</el-link>
+            <el-link id="course_name" type="primary" :underline="false" @click="FT.building">
+              {{courseInfo.course_name}}
+            </el-link>
 
-            <el-link
-              id="teacher_name"
-              type="success"
-              :underline="false"
-              @click="FT.building"
-            >{{courseInfo.profession}}</el-link>
+            <el-link id="teacher_name" type="success" :underline="false" @click="FT.building">
+              {{courseInfo.profession}}
+            </el-link>
 
             <el-dropdown id="teacher_manage_entrance" @command="handleCommand">
               <span class="el-dropdown-link">
@@ -51,7 +45,9 @@
                   <el-col class="tab_right_title">课程信息</el-col>
                 </el-row>
                 <el-card class="tab_right_body">
-                  <span style="color: #303133; font-size: 18px;">{{courseInfo.course_intro}}</span>
+                  <span style="color: #303133; font-size: 18px;">
+                    {{courseInfo.course_intro}}
+                  </span>
                 </el-card>
               </el-tab-pane>
 
@@ -114,6 +110,8 @@
                     <VideoPlayer
                       v-if="videoUrlArray != []"
                       style=" margin-top: 20px; width: 100%; border-radius: 2px;"
+                      @startTime="getStartTime"
+                      @pauseTime="getPauseTime"
                     ></VideoPlayer>
                   </el-row>
                 </el-card>
@@ -127,37 +125,6 @@
                 <div id="postList" v-if="courseInfo.is_open">
                   <PostList />
                 </div>
-                <!-- <el-card class="tab_right_body">
-                  <div style="display: flex; justify-content: center;">
-                    <el-card id="option_btn_part">
-                      <div class="option_btn_area">
-                        <span class="option_btn_description">发帖：</span>
-                        <el-button
-                          type="primary"
-                          icon="el-icon-edit"
-                          circle
-                          @click="showSendUp = true"
-                        ></el-button>
-                      </div>
-                      <el-divider></el-divider>
-                      <div class="option_btn_area">
-                        <span class="option_btn_description">回复：</span>
-                        <el-button type="primary" icon="el-icon-edit" circle></el-button>
-                      </div>
-                      <el-divider></el-divider>
-                      <div class="option_btn_area">
-                        <span class="option_btn_description">其他：</span>
-                        <el-button type="primary" icon="el-icon-edit" circle></el-button>
-                      </div>
-                    </el-card>
-                    <el-card
-                      style="width: 70%; height: 250px; text-align: center; font-size: 20px; position: relative;"
-                      header="社区规则"
-                    >
-                      <el-button id="rule_change_btn" type="primary" icon="el-icon-edit" circle></el-button>
-                    </el-card>
-                  </div>
-                </el-card>-->
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -169,7 +136,6 @@
       <UploadMember />
       <span slot="footer" class="dialog-footer">
         <el-button @click="showMemberUp = false">取 消</el-button>
-        <!-- <el-button type="primary" @click="showMemberUp = false">确 定</el-button> -->
       </span>
     </el-dialog>
 
@@ -178,11 +144,11 @@
     </el-dialog>
 
     <el-dialog title="学生名单" :visible.sync="showStudentUp" width="60%">
-      <span>学生列表</span>
       <el-table :data="studentList" border style="width: 100%">
         <el-table-column prop="user_id" label="学号"></el-table-column>
         <el-table-column prop="id" label="姓名"></el-table-column>
         <el-table-column prop="user_identity" label="学校"></el-table-column>
+        <el-table-column prop="user_identity" label="身份"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
@@ -227,10 +193,16 @@ export default {
       videoIndex: null,
       videoUrlArray: null,
       studentList: [],
+      startTime: null,
+      duration: 0,
     };
   },
-  
+
   async created() {
+    if (this.$store.state.userId === -1) {
+      FT.toPath("/Home");
+    }
+
     this.courseId = this.$route.params.courseId;
     await this.getCourseBasicInfo();
     await this.getCourseVideoUrlArray();
@@ -267,9 +239,14 @@ export default {
 
     async getCourseBasicInfo() {
       const temp = await CourseAPI.getCourseBasicInfo(
-        this.$route.params.courseId
+        this.$route.params.courseId,
+        this.$store.state.userId
       );
+      console.log(temp);
+      console.log(this.$store.state.userId);
       this.courseInfo = temp.data.course;
+      console.log("课程信息");
+      console.log(this.courseInfo);
     },
 
     async getCourseVideoUrlArray() {
@@ -280,6 +257,7 @@ export default {
         this.videoUrlArray = temp.data.videos;
         this.videoExist = true;
         this.videoIndex = 0;
+        this.changeVideo();
       } else {
         this.videoUrlArray = [];
         this.videoExist = false;
@@ -295,6 +273,18 @@ export default {
       } else {
         this.studentList = [];
       }
+      console.log("学生列表");
+      console.log(this.studentList);
+    },
+
+    getStartTime(data) {
+      console.log("开始播放");
+      console.log(data);
+    },
+
+    getPauseTime(data) {
+      console.log("暂停播放");
+      console.log(data);
     },
 
     changeVideo: function () {
@@ -361,6 +351,10 @@ export default {
 #course_body {
   width: 80%;
   margin-left: 10%;
+}
+
+.el-row {
+  margin-bottom: 0;
 }
 
 #up_part {
@@ -452,25 +446,6 @@ export default {
   width: 9vw;
   text-align: center;
   font-size: 16px;
-}
-
-#option_btn_part {
-  width: 20%;
-  height: 250px;
-  margin-right: 5%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.option_btn_area {
-  margin: 20px 0;
-}
-
-#rule_change_btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
 }
 
 #postList {
