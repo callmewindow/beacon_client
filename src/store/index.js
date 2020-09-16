@@ -12,6 +12,7 @@ export default new Vuex.Store({
     messageNum: 0,
     messages:[],
     identity: 'user',
+    permission: 1, //0=首陀罗，1=刹帝利，2=婆罗门
   },
   mutations: {
   },

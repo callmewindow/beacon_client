@@ -80,12 +80,13 @@
                       @click="showDetail(post.id)"
                   >{{ post.title }}
                   </el-link>
-                  <el-tag type="primary" size="small" effect="dark" style="margin-left: 5px;" v-if="post.topped === 1">
+                  <el-tag type="primary" size="medium" effect="dark" style="margin-left: 5px;" v-if="post.topped === 1">
                     置顶
                   </el-tag>
-                  <el-tag type="warning" size="small" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
+                  <el-tag type="warning" size="medium" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
                           v-if="post.stared === 1">精华
                   </el-tag>
+                  <el-tag type="info" size="small" v-if="post.tag!==''" style="margin-left: 5px;">{{ post.tag }}</el-tag>
                 </el-col>
                 <el-col :span="5">
                   <div style="float: right;">
@@ -140,12 +141,13 @@
                       @click="showDetail(post.id)"
                   >{{ post.title }}
                   </el-link>
-                  <el-tag type="primary" size="small" effect="dark" style="margin-left: 5px;" v-if="post.topped === 1">
+                  <el-tag type="primary" size="medium" effect="dark" style="margin-left: 5px;" v-if="post.topped === 1">
                     置顶
                   </el-tag>
-                  <el-tag type="warning" size="small" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
+                  <el-tag type="warning" size="medium" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
                           v-if="post.stared === 1">精华
                   </el-tag>
+                  <el-tag type="info" size="small" v-if="post.tag!==''" style="margin-left: 5px;">{{ post.tag }}</el-tag>
                 </el-col>
                 <el-col :span="5">
                   <div style="float: right;">
@@ -201,12 +203,13 @@
                     @click="showDetail(post.id)"
                 >{{ post.title }}
                 </el-link>
-                <el-tag type="primary" size="small" effect="dark" style="margin-left: 5px;" v-if="post.topped === 1">
+                <el-tag type="primary" size="medium" effect="dark" style="margin-left: 5px;" v-if="post.topped === 1">
                   置顶
                 </el-tag>
-                <el-tag type="warning" size="small" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
+                <el-tag type="warning" size="medium" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
                         v-if="post.stared === 1">精华
                 </el-tag>
+                <el-tag type="info" size="small" v-if="post.tag!==''" style="margin-left: 5px;">{{ post.tag }}</el-tag>
               </el-col>
               <el-col :span="5">
                 <div style="float: right;">
@@ -332,7 +335,7 @@ export default {
       let courseId = this.$route.params.courseId;
       try {
         const list = await postAPI.postList(parseInt(courseId));
-        //window.console.log(list.data);
+        window.console.log(list.data);
         this.post_list = [];
         this.star_list = [];
         for (let i = 0; i < list.data.length; i++) {
