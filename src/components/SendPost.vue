@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     async sendPost() {
-      if(this.value.length > 6) {
+      if(this.postTag.length > 6) {
         this.$message.error("标签长度请限制在六个字符以内");
         return ;
       }
@@ -92,7 +92,7 @@ export default {
       };
       try {
         await forumAPI.sendPost(tempP);
-        await forumAPI.addPoint(this.$store.state.userId,this.courseId)
+        await forumAPI.addPoint(this.$store.state.userId,this.$$route.params.courseId,100);
       } catch (error) {
         console.log(error);
       }
