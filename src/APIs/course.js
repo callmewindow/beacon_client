@@ -129,3 +129,24 @@ export const addWatchRecord = (video_id, user_id, played_time, start_play_time) 
     })
   })
 }
+
+export const authAssistant = (student_id, class_id) => {
+  return axios({
+    method: 'GET',
+    url: `/student/manage/authorize/?student_id=${student_id}&class_id=${class_id}&op=1`,
+  })
+}
+
+export const cancelAssistant = (student_id, class_id) => {
+  return axios({
+    method: 'GET',
+    url: `/student/manage/authorize/?student_id=${student_id}&class_id=${class_id}&op=0`,
+  })
+}
+
+export const deleteStudent = (student_id, class_id) => {
+  return axios({
+    method: 'GET',
+    url: `/student/manage/del/?student_id=${student_id}&class_id=${class_id}`,
+  })
+}

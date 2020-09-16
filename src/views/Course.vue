@@ -149,14 +149,38 @@
 
     <el-dialog title="学生名单" :visible.sync="showStudentUp" width="60%">
       <el-table :data="studentList" border style="width: 100%">
-        <el-table-column prop="user_id" label="学号"></el-table-column>
-        <el-table-column prop="id" label="姓名"></el-table-column>
-        <el-table-column prop="user_identity" label="学校"></el-table-column>
-        <el-table-column prop="user_identity" label="身份"></el-table-column>
+        <el-table-column prop="school_id" label="学号"></el-table-column>
+        <el-table-column prop="realname" label="姓名"></el-table-column>
+        <el-table-column prop="school" label="学校"></el-table-column>
+        <el-table-column prop="user_identity" label="身份">
+          <template slot-scope="scope">
+            <span v-if="scope.row.user_identity == 0">学生</span>
+            <span v-if="scope.row.user_identity == 1">助教</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+            <el-button
+              v-if="scope.row.user_identity == 1"
+              type="text"
+              size="small"
+              style="color: #E6A23C;"
+              @click="cancelAssistant(scope.row.user_id)"
+            >取消助教</el-button>
+            <el-button
+              v-if="scope.row.user_identity == 0"
+              type="text"
+              size="small"
+              @click="authAssistant(scope.row.user_id)"
+            >设为助教</el-button>
+            <el-divider v-if="scope.row.user_identity == 0" direction="vertical"></el-divider>
+            <el-button
+              v-if="scope.row.user_identity == 0"
+              type="text"
+              size="small"
+              style="color: #F56C6C;"
+              @click="deleteStudent(scope.row.user_id)"
+            >剔除学生</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -172,7 +196,11 @@ import PostList from "@/components/PostList";
 import Navigator from "@/components/Navigator";
 import * as FT from "@/tools/frontTool";
 import * as CourseAPI from "@/APIs/course";
-import { getCourseStudentList, getCourseVideoUrlArray } from "../APIs/course";
+import {
+  cancelAssistant,
+  getCourseStudentList,
+  getCourseVideoUrlArray,
+} from "../APIs/course";
 
 export default {
   name: "Course",
@@ -186,7 +214,7 @@ export default {
   data() {
     return {
       FT,
-      courseId: 1,
+      courseId: null,
       tabPos: "intro",
       showMemberUp: false,
       showVideoUp: false,
@@ -201,9 +229,11 @@ export default {
       startTime: null,
       pauseTime: null,
       duration: 0,
+      videoId: null,
     };
   },
 
+  // 监听tabPos的变化，当侧边栏从“video”切换至非“video”时，暂停视频播放，通过内置的自定义时间触发getPauseTime方法
   watch: {
     tabPos(newPos, oldPos) {
       if (oldPos == "video" && newPos != "video") {
@@ -213,15 +243,17 @@ export default {
     },
   },
 
+  // 加载
   async created() {
     if (this.$store.state.userId === -1) {
       FT.toPath("/Home");
     }
+    // 从地址栏获得courseId
     this.courseId = this.$route.params.courseId;
+    // 根据courseId获取相应的信息
     await this.getCourseBasicInfo();
     await this.getCourseVideoUrlArray();
-    await this.getCourseStudentList();
-    // 切换tab位置
+    // 切换tab位置，默认为第一个
     this.tabPos = this.$route.params.coursePos;
     if (this.tabNames.indexOf(this.tabPos) == -1) {
       this.$router.push({
@@ -231,8 +263,23 @@ export default {
     }
   },
 
+  // 切回其他页面，或直接关闭时的钩子函数
   async destroyed() {
+    // 手动调用getPauseTime方法，记录播放时常duration
     this.getPauseTime(new Date());
+    // 用POST请求发送给后端
+    const tempFormat = {
+      video_id: this.videoId,
+      user_id: this.$store.state.userId,
+      played_time: this.duration,
+      start_play_time: this.firstStartTime,
+    };
+    const temp = await CourseAPI.addWatchRecord(
+      tempFormat.video_id,
+      tempFormat.user_id,
+      tempFormat.played_time,
+      tempFormat.start_play_time
+    );
   },
 
   methods: {
@@ -288,7 +335,18 @@ export default {
         this.$route.params.courseId
       );
       if (temp.data.message === "success") {
-        this.studentList = temp.data.students;
+        let studentList = temp.data.students;
+        this.studentList = new Array();
+        for (let i = 0; i < studentList.length; i++) {
+          if (studentList[i].user_identity == 1) {
+            this.studentList.push(studentList[i]);
+          }
+        }
+        for (let i = 0; i < studentList.length; i++) {
+          if (studentList[i].user_identity == 0) {
+            this.studentList.push(studentList[i]);
+          }
+        }
       } else {
         this.studentList = [];
       }
@@ -296,6 +354,7 @@ export default {
       console.log(this.studentList);
     },
 
+    // 视频开始播放时触发的方法
     getStartTime(data) {
       if (this.firstStartTime === null) {
         this.firstStartTime = data.Format("yyyy-MM-dd hh:mm:ss");
@@ -303,6 +362,7 @@ export default {
       this.startTime = data;
     },
 
+    // 视频暂停时触发的方法
     getPauseTime(data) {
       this.pauseTime = data;
       this.duration += (data.getTime() - this.startTime.getTime()) / 1000;
@@ -310,6 +370,7 @@ export default {
       console.log(this.duration);
     },
 
+    // 更改视频的src
     changeVideo: function () {
       if (this.videoExist == false) {
         return;
@@ -318,20 +379,45 @@ export default {
       e.src =
         "http://101.200.219.50" +
         this.videoUrlArray[this.videoIndex].local_address;
+      this.videoId = this.videoUrlArray[this.videoIndex].id;
     },
 
-    handleCommand(command) {
+    async handleCommand(command) {
       if (command === "导入名单") {
         this.showMemberUp = true;
       } else if (command == "视频上传") {
         this.showVideoUp = true;
       } else if (command == "管理学生") {
+        await this.getCourseStudentList();
         this.showStudentUp = true;
       }
     },
 
-    handleClick(row) {
-      console.log(row);
+    async authAssistant(user_id) {
+      const temp = await CourseAPI.authAssistant(user_id, this.courseId);
+      for (let i = 0; i < this.studentList.length; i++) {
+        if (this.studentList[i].user_id == user_id) {
+          this.studentList[i].user_identity = 1;
+        }
+      }
+    },
+
+    async cancelAssistant(user_id) {
+      const temp = await CourseAPI.cancelAssistant(user_id, this.courseId);
+      for (let i = 0; i < this.studentList.length; i++) {
+        if (this.studentList[i].user_id == user_id) {
+          this.studentList[i].user_identity = 0;
+        }
+      }
+    },
+
+    async deleteStudent(user_id) {
+      const temp = await CourseAPI.deleteStudent(user_id, this.courseId);
+      for (let i = 0; i < this.studentList.length; i++) {
+        if (this.studentList[i].user_id == user_id) {
+          this.studentList.pop(i);
+        }
+      }
     },
 
     clickCommunity(target) {
