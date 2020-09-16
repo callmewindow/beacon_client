@@ -33,10 +33,21 @@ export const uploadVideo = (videoEntity) => {
   })
 }
 
-export const getCourseBasicInfo = (courseId) => {
+export const uploadExcel = (excelEntity) => {
+  return axios({
+    method: 'POST',
+    url: `uploadUserCourse2`,
+    data: QS({
+      course_id: excelEntity.courseId,
+      excel_name: excelEntity.excel_name
+    })
+  })
+}
+
+export const getCourseBasicInfo = (courseId, user_id) => {
   return axios({
     method: 'GET',
-    url: `/info/basic/class/?class_id=${courseId}`
+    url: `/info/basic/class/?class_id=${courseId}&user_id=${user_id}`
   })
 }
 
@@ -48,10 +59,10 @@ export const getCourseVideoUrlArray = (courseId) => {
 }
 
 export const getCourseStudentList = (courseId) => {
-    return axios({
-        method: 'GET',
-        url: `api/student/manage/search?class_id=${courseId}`
-    })
+  return axios({
+    method: 'GET',
+    url: `api/student/manage/search?class_id=${courseId}`
+  })
 }
 
 export const courseQuery = () => {
@@ -82,5 +93,67 @@ export const searchCourse = (keyword) => {
     data: QS({
       keyWord: keyword
     })
+  })
+}
+
+export const getUCRelation = (user_id, course_id) => {
+  return axios({
+    method: 'POST',
+    url: `/userCourse`,
+    data: QS({
+      user_id,
+      course_id,
+    })
+  })
+}
+
+export const getCourseWatchRecords = (course_id) => {
+  return axios({
+    method: 'POST',
+    url: `/getCourseWatches`,
+    data: QS({
+      id: course_id
+    })
+  })
+}
+
+export const addWatchRecord = (video_id, user_id, played_time, start_play_time) => {
+  return axios({
+    method: 'POST',
+    url: `/oneWatch`,
+    data: QS({
+      video_id,
+      user_id,
+      played_time,
+      start_play_time
+    })
+  })
+}
+
+export const authAssistant = (student_id, class_id) => {
+  return axios({
+    method: 'GET',
+    url: `/student/manage/authorize/?student_id=${student_id}&class_id=${class_id}&op=1`,
+  })
+}
+
+export const cancelAssistant = (student_id, class_id) => {
+  return axios({
+    method: 'GET',
+    url: `/student/manage/authorize/?student_id=${student_id}&class_id=${class_id}&op=0`,
+  })
+}
+
+export const deleteStudent = (student_id, class_id) => {
+  return axios({
+    method: 'GET',
+    url: `/student/manage/del/?student_id=${student_id}&class_id=${class_id}`,
+  })
+}
+
+export const joinCourse = (class_id, student_id, content) => {
+  return axios({
+    method: 'GET',
+    url: `api/class/application/create?class_id=${class_id}&student_id=${student_id}&content=${content}`,
   })
 }

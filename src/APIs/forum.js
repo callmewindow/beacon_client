@@ -100,3 +100,58 @@ export const cancelStarPost = (postId) => {
     })
   })
 }
+
+export const searchPost = (keyword, forumId) => {
+  return axios({
+    method: 'POST',
+    url: `/searchPost`,
+    data: QS({
+      keyWord: keyword,
+      forumId: forumId
+    })
+  })
+}
+
+export const addPoint = (user_id, course_id, point) => {
+  return axios({
+    method: 'POST',
+    url: `/getPoint`,
+    data: QS({
+      user_id,
+      course_id,
+      point
+    })
+  })
+}
+
+export const likeFloor = (user_id, floor_id) => {
+  return axios({
+    method: 'POST',
+    url: `/likeFloor`,
+    data: QS({
+      user_id,
+      floor_id,
+    })
+  })
+}
+
+export const dislikeFloor = (user_id, floor_id) => {
+  return axios({
+    method: 'POST',
+    url: `/unlikeFloor`,
+    data: QS({
+      user_id,
+      floor_id,
+    })
+  })
+}
+
+export const deletePost = (postId) => {
+  return axios({
+    method: 'POST',
+    url: `/deletePost`,
+    data: QS({
+      postId
+    })
+  })
+}

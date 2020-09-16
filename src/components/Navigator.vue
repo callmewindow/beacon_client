@@ -14,7 +14,7 @@
         圈子
       </el-menu-item>
 
-      <el-menu-item style="float:right;margin-right:100px;" @click="FT.toPath('/user')" index="user">
+      <el-menu-item style="float:right;margin-right:100px;" @click="FT.toPath('/user/0')" index="user">
         <el-badge
           :is-dot="this.$store.state.messageNum !== 0"
           :hidden="this.$store.state.messageNum === 0"

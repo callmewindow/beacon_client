@@ -16,6 +16,7 @@
         </el-button>
       </el-col>
     </el-row>
+<!--    全部课程列表-->
     <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px" v-if="!display_search_result">
       <el-col :span="6" v-for="(course,index) in course_list" :key="index" style="margin-top: 20px;">
         <el-card>
@@ -23,7 +24,7 @@
           <el-row style="margin-top: 5px">
             <el-link type="primary" :underline="false" style="font-size: 20px;height: 20px"
                      @click="frontTool.toPath('/course/'+course.id)">
-              {{ course.course_name }}
+              {{ course.course_name|cut_8 }}
             </el-link>
           </el-row>
           <el-row style="margin-top: 5px">
@@ -34,6 +35,7 @@
         </el-card>
       </el-col>
     </el-row>
+<!--    搜索结果列表-->
     <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px" v-if="display_search_result">
       <el-col :span="6" v-for="(course,index) in search_list" :key="index" style="margin-top: 20px;">
         <el-card>
@@ -41,7 +43,7 @@
           <el-row style="margin-top: 5px">
             <el-link type="primary" :underline="false" style="font-size: 20px;height: 20px"
                      @click="frontTool.toPath('/course/'+course.id)">
-              {{ course.course_name }}
+              {{ course.course_name|cut_8 }}
             </el-link>
           </el-row>
           <el-row style="margin-top: 5px">
@@ -92,7 +94,11 @@ export default {
     cut(str) {
       if (str) str = str.slice(0, 10);
       return str;
-    }
+    },
+    cut_8(str) {
+      if (str && str.length > 8) str = str.slice(0, 8) + "...";
+      return str;
+    },
   },
   methods: {
     async get_course_list() {

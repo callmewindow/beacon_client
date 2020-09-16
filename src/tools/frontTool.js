@@ -23,7 +23,7 @@ export const siteTitleInFull = 'beacon education'
 // }
 // 最终方案，最单纯的判断，最好用的解决方案
 export function CS(str) {
-    return (str.indexOf('"') != -1)||(str.indexOf("'") != -1)
+    return (str.indexOf('"') != -1) || (str.indexOf("'") != -1)
 }
 
 // 字符串内引号转义
@@ -31,6 +31,12 @@ export function TS(str) {
     str = str.replaceAll("\'", "\\\'");
     str = str.replaceAll('\"', '\\\"');
     return str;
+}
+
+// 检测邮箱格式
+export function isEmail(str) {
+    var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+    return reg.test(str);
 }
 
 export function updateTitleTo(value) {

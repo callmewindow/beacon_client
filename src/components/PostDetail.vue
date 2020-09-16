@@ -31,12 +31,6 @@
     <!--置顶加精按钮、点赞按钮、回复按钮、举报按钮-->
     <el-row style="margin-top: 20px; margin-bottom: 20px">
       <div style="float: right; margin-right: 30px">
-        <el-button type="text" v-if="post.top === 0" @click="top_post">设为置顶</el-button>
-        <el-button type="text" v-if="post.top === 1" @click="top_post">取消置顶</el-button>
-        <el-divider direction="vertical"></el-divider>
-        <el-button type="text" v-if="post.star === 0" @click="star_post">设为精华</el-button>
-        <el-button type="text" v-if="post.star === 1" @click="star_post">取消精华</el-button>
-        <el-divider direction="vertical"></el-divider>
         1楼
         <el-divider v-if="test" direction="vertical"></el-divider>
         <el-button type="primary" icon="el-icon-caret-top" size="mini" plain circle @click="like"></el-button>
@@ -249,40 +243,6 @@ export default {
       if (target.nodeName === "SPAN" || target.nodeName === "I")
         target = e.target.parentNode;
       target.blur();
-    },
-    //（取消）置顶帖子，通过当前post.top状态决定
-    async top_post() {
-      if (this.post.top === 0) {
-        try {
-          await postAPI.topPost(this.post.id);
-        } catch (e) {
-          this.$message.error("置顶请求超时");
-        }
-      } else {
-        try {
-          await postAPI.cancelTopPost(this.post.id);
-        } catch (e) {
-          this.$message.error("置顶请求超时");
-        }
-      }
-      this.post.top = 1 - this.post.top;
-    },
-    //（取消）加精帖子，通过当前post.star状态决定
-    async star_post() {
-      if (this.post.star === 0) {
-        try {
-          await postAPI.starPost(this.post.id);
-        } catch (e) {
-          this.$message.error("加精请求超时");
-        }
-      } else {
-        try {
-          await postAPI.cancelStarPost(this.post.id);
-        } catch (e) {
-          this.$message.error("加精请求超时");
-        }
-      }
-      this.post.star = 1 - this.post.star;
     },
   },
 };
