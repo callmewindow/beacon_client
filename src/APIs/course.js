@@ -33,10 +33,10 @@ export const uploadVideo = (videoEntity) => {
   })
 }
 
-export const getCourseBasicInfo = (courseId) => {
+export const getCourseBasicInfo = (courseId, user_id) => {
   return axios({
     method: 'GET',
-    url: `/info/basic/class/?class_id=${courseId}`
+    url: `/info/basic/class/?class_id=${courseId}&user_id=${user_id}`
   })
 }
 
@@ -48,10 +48,10 @@ export const getCourseVideoUrlArray = (courseId) => {
 }
 
 export const getCourseStudentList = (courseId) => {
-    return axios({
-        method: 'GET',
-        url: `api/student/manage/search?class_id=${courseId}`
-    })
+  return axios({
+    method: 'GET',
+    url: `api/student/manage/search?class_id=${courseId}`
+  })
 }
 
 export const courseQuery = () => {
