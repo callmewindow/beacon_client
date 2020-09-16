@@ -118,3 +118,24 @@ export const getUserDetail = (userid) => {
     url: `/userdetail?userid=${userid}`
   })
 }
+//通过好友申请
+export const passFriend = (sender_id,target_id,handle_content) => {
+  return axios({
+    method: 'POST',
+    url: `/passFriendApplication?sender_id=${sender_id}&target_id=${target_id}&handle_content=${handle_content}`
+  })
+}
+//拒绝好友申请
+export const rejectFriend = (sender_id,target_id,handle_content) => {
+  return axios({
+    method: 'POST',
+    url: `/rejectFriendApplication?sender_id=${sender_id}&target_id=${target_id}&handle_content=${handle_content}`
+  })
+}
+//获取好友申请
+export const getFriendApplication = (sender_id,target_id) => {
+  return axios({
+    method: 'POST',
+    url: `/getFriendApplication?sender_id=${sender_id}&target_id=${target_id}`
+  })
+}
