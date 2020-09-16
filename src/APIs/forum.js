@@ -111,3 +111,15 @@ export const searchPost = (keyword, forumId) => {
     })
   })
 }
+
+export const addPoint = (user_id, course_id, point) => {
+  return axios({
+    method: 'POST',
+    url: `/getPoint`,
+    data: QS({
+      user_id,
+      course_id,
+      point
+    })
+  })
+}

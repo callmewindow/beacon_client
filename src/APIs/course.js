@@ -95,3 +95,37 @@ export const searchCourse = (keyword) => {
     })
   })
 }
+
+export const getUCRelation = (user_id, course_id) => {
+  return axios({
+    method: 'POST',
+    url: `/userCourse`,
+    data: QS({
+      user_id,
+      course_id,
+    })
+  })
+}
+
+export const getCourseWatchRecords = (course_id) => {
+  return axios({
+    method: 'POST',
+    url: `/getCourseWatches`,
+    data: QS({
+      id: course_id
+    })
+  })
+}
+
+export const addWatchRecord = (video_id, user_id, played_time, start_play_time) => {
+  return axios({
+    method: 'POST',
+    url: `/oneWatch`,
+    data: QS({
+      video_id,
+      user_id,
+      played_time,
+      start_play_time
+    })
+  })
+}

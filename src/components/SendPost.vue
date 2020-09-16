@@ -26,11 +26,10 @@
     <div class="sendItem" style="width:50%">
       <div class="itemTitle">帖子标签</div>
       <el-select
-        v-model="value"
-        disabled
-        multiple
+        v-model="postTag"
         filterable
         allow-create
+        clearable
         default-first-option
         placeholder="添加额外标签"
       >
@@ -66,12 +65,20 @@ export default {
           value: "课程链接",
           label: "课程链接",
         },
+        {
+          value: "资源分享",
+          label: "资源分享",
+        },
       ],
-      value: [],
+      postTag: "",
     };
   },
   methods: {
     async sendPost() {
+      if(this.value.length > 6) {
+        this.$message.error("标签长度请限制在六个字符以内");
+        return ;
+      }
       if (FT.CS(this.post.title + this.post.content)) {
         this.$message.error("为了社区和谐，请勿输入英文引号，感谢支持");
         return;
@@ -80,11 +87,12 @@ export default {
         title: this.post.title,
         content: this.post.content,
         senderId: this.$store.state.userId,
-        tags: "",
+        tags: this.postTag,
         courseId: this.$route.params.courseId,
       };
       try {
         await forumAPI.sendPost(tempP);
+        await forumAPI.addPoint(this.$store.state.userId,this.courseId)
       } catch (error) {
         console.log(error);
       }
