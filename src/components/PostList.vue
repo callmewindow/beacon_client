@@ -86,7 +86,8 @@
                   <el-tag type="warning" size="medium" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
                           v-if="post.stared === 1">精华
                   </el-tag>
-                  <el-tag type="info" size="small" v-if="post.tag!==''" style="margin-left: 5px;">{{ post.tag }}</el-tag>
+                  <el-tag type="info" size="small" v-if="post.tag!==''" style="margin-left: 5px;">{{ post.tag }}
+                  </el-tag>
                 </el-col>
                 <el-col :span="5">
                   <div style="float: right;">
@@ -95,7 +96,7 @@
                     {{ post.datetime ? post.datetime.substring(5, 16) : "notime" }}
                   </div>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="3">
                   <div style="float: right;">阅读数：{{ post.read }}</div>
                 </el-col>
                 <el-col :span="3">
@@ -104,8 +105,10 @@
               </el-row>
 
               <el-row style="margin-bottom: 10px">
-                <el-col :span="20">{{ post.content|cut }}</el-col>
-                <el-col :span="4">
+                <el-col :span="18">{{ post.content|cut }}</el-col>
+                <el-col :span="6" v-if="has_permission">
+                  <el-button type="text" style="padding: 0" @click="delete_post(post.id)">删除</el-button>
+                  <el-divider direction="vertical"></el-divider>
                   <el-button type="text" style="padding: 0" v-if="post.topped === 0" @click="top_post(post.id)">设为置顶
                   </el-button>
                   <el-button type="text" style="padding: 0" v-if="post.topped === 1" @click="cancel_top_post(post.id)">
@@ -147,7 +150,8 @@
                   <el-tag type="warning" size="medium" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;"
                           v-if="post.stared === 1">精华
                   </el-tag>
-                  <el-tag type="info" size="small" v-if="post.tag!==''" style="margin-left: 5px;">{{ post.tag }}</el-tag>
+                  <el-tag type="info" size="small" v-if="post.tag!==''" style="margin-left: 5px;">{{ post.tag }}
+                  </el-tag>
                 </el-col>
                 <el-col :span="5">
                   <div style="float: right;">
@@ -156,7 +160,7 @@
                     {{ post.datetime ? post.datetime.substring(5, 16) : "notime" }}
                   </div>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="3">
                   <div style="float: right;">阅读数：{{ post.read }}</div>
                 </el-col>
                 <el-col :span="3">
@@ -165,8 +169,10 @@
               </el-row>
 
               <el-row style="margin-bottom: 10px">
-                <el-col :span="20">{{ post.content|cut }}</el-col>
-                <el-col :span="4">
+                <el-col :span="18">{{ post.content|cut }}</el-col>
+                <el-col :span="6" v-if="has_permission">
+                  <el-button type="text" style="padding: 0" @click="delete_post(post.id)">删除</el-button>
+                  <el-divider direction="vertical"></el-divider>
                   <el-button type="text" style="padding: 0" v-if="post.topped === 0" @click="top_post(post.id)">设为置顶
                   </el-button>
                   <el-button type="text" style="padding: 0" v-if="post.topped === 1" @click="cancel_top_post(post.id)">
@@ -218,7 +224,7 @@
                   {{ post.datetime ? post.datetime.substring(5, 16) : "notime" }}
                 </div>
               </el-col>
-              <el-col :span="4">
+              <el-col :span="3">
                 <div style="float: right;">阅读数：{{ post.read }}</div>
               </el-col>
               <el-col :span="3">
@@ -227,8 +233,10 @@
             </el-row>
 
             <el-row style="margin-bottom: 10px">
-              <el-col :span="20">{{ post.content|cut }}</el-col>
-              <el-col :span="4">
+              <el-col :span="18">{{ post.content|cut }}</el-col>
+              <el-col :span="6" v-if="has_permission">
+                <el-button type="text" style="padding: 0" @click="delete_post(post.id)">删除</el-button>
+                <el-divider direction="vertical"></el-divider>
                 <el-button type="text" style="padding: 0" v-if="post.topped === 0"
                            @click="post.topped=1;top_post(post.id)">设为置顶
                 </el-button>
@@ -290,12 +298,15 @@ export default {
       search_list: [],
       star_list: [],
       display_search_result: false,
-      tab_active_name: "all"
+      tab_active_name: "all",
+      has_permission: false
     };
   },
   created() {
     this.get_post_list();
     this.getCourseBasicInfo();
+    if (this.$store.state.permission !== 0)
+      this.has_permission = true;
   },
   filters: {
     cut(str) {
@@ -305,9 +316,6 @@ export default {
   },
   methods: {
     showDetail(postId) {
-      // this.$router.push({
-      //   path: "/course/" + this.$route.params.courseId + "/forum/post/" + postId,
-      // });
       this.detailId = postId;
       this.showDetailUp = true;
     },
@@ -377,7 +385,11 @@ export default {
     async top_post(id) {
       try {
         await postAPI.topPost(parseInt(id));
-        await this.get_post_list();
+        await this.get_post_list();;
+        this.$message({
+          type: 'success',
+          message: '置顶成功!'
+        });
       } catch (e) {
         this.$message.error("置顶请求超时");
       }
@@ -395,6 +407,10 @@ export default {
       try {
         await postAPI.starPost(parseInt(id));
         await this.get_post_list();
+        this.$message({
+          type: 'success',
+          message: '加精成功!'
+        });
       } catch (e) {
         this.$message.error("加精请求超时");
       }
@@ -406,6 +422,29 @@ export default {
       } catch (e) {
         this.$message.error("取消加精请求超时");
       }
+    },
+    //删帖
+    async delete_post(id) {
+      this.$confirm('此操作将永久删除该帖, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        try {
+          await postAPI.deletePost(parseInt(id));
+          await this.get_post_list();
+          if (this.display_search_result) {
+            const list = await postAPI.searchPost(this.search_keyword, this.$route.params.courseId);
+            this.search_list = list.data;
+          }
+        } catch (e) {
+          this.$message.error("删除请求超时");
+        }
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      });
     },
   },
 }
