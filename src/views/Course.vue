@@ -12,13 +12,19 @@
 
         <el-col :xs="20" :sm="20" :md="20" :lg="20">
           <el-card id="up_right_part">
-            <el-link id="course_name" type="primary" :underline="false" @click="FT.building">
-              {{courseInfo.course_name}}
-            </el-link>
+            <el-link
+              id="course_name"
+              type="primary"
+              :underline="false"
+              @click="FT.building"
+            >{{courseInfo.course_name}}</el-link>
 
-            <el-link id="teacher_name" type="success" :underline="false" @click="FT.building">
-              {{courseInfo.profession}}
-            </el-link>
+            <el-link
+              id="teacher_name"
+              type="success"
+              :underline="false"
+              @click="FT.building"
+            >{{courseInfo.profession}}</el-link>
 
             <el-dropdown id="teacher_manage_entrance" @command="handleCommand">
               <span class="el-dropdown-link">
@@ -45,9 +51,7 @@
                   <el-col class="tab_right_title">课程信息</el-col>
                 </el-row>
                 <el-card class="tab_right_body">
-                  <span style="color: #303133; font-size: 18px;">
-                    {{courseInfo.course_intro}}
-                  </span>
+                  <span style="color: #303133; font-size: 18px;">{{courseInfo.course_intro}}</span>
                 </el-card>
               </el-tab-pane>
 
@@ -110,8 +114,8 @@
                     <VideoPlayer
                       v-if="videoUrlArray != []"
                       style=" margin-top: 20px; width: 100%; border-radius: 2px;"
-                      @startTime="getStartTime"
-                      @pauseTime="getPauseTime"
+                      @startPlay="getStartTime"
+                      @pausePlay="getPauseTime"
                     ></VideoPlayer>
                   </el-row>
                 </el-card>
@@ -193,16 +197,26 @@ export default {
       videoIndex: null,
       videoUrlArray: null,
       studentList: [],
+      firstStartTime: null,
       startTime: null,
+      pauseTime: null,
       duration: 0,
     };
+  },
+
+  watch: {
+    tabPos(newPos, oldPos) {
+      if (oldPos == "video" && newPos != "video") {
+        let e = document.getElementById("video-player");
+        e.pause();
+      }
+    },
   },
 
   async created() {
     if (this.$store.state.userId === -1) {
       FT.toPath("/Home");
     }
-
     this.courseId = this.$route.params.courseId;
     await this.getCourseBasicInfo();
     await this.getCourseVideoUrlArray();
@@ -216,6 +230,11 @@ export default {
       this.tabPos = this.tabNames[0];
     }
   },
+
+  async destroyed() {
+    this.getPauseTime(new Date());
+  },
+
   methods: {
     handleStuClose(done) {
       this.$confirm("确认关闭？")
@@ -242,8 +261,6 @@ export default {
         this.$route.params.courseId,
         this.$store.state.userId
       );
-      console.log(temp);
-      console.log(this.$store.state.userId);
       this.courseInfo = temp.data.course;
       console.log("课程信息");
       console.log(this.courseInfo);
@@ -262,6 +279,8 @@ export default {
         this.videoUrlArray = [];
         this.videoExist = false;
       }
+      console.log("视频列表");
+      console.log(this.videoUrlArray);
     },
 
     async getCourseStudentList() {
@@ -278,13 +297,17 @@ export default {
     },
 
     getStartTime(data) {
-      console.log("开始播放");
-      console.log(data);
+      if (this.firstStartTime === null) {
+        this.firstStartTime = data.Format("yyyy-MM-dd hh:mm:ss");
+      }
+      this.startTime = data;
     },
 
     getPauseTime(data) {
-      console.log("暂停播放");
-      console.log(data);
+      this.pauseTime = data;
+      this.duration += (data.getTime() - this.startTime.getTime()) / 1000;
+      this.startTime = data;
+      console.log(this.duration);
     },
 
     changeVideo: function () {
