@@ -3,19 +3,22 @@
     <!--帖子标题、置顶精华标签-->
     <el-row style="margin-left: 20px; margin-bottom: 20px">
       <div
-          style="font-family: 微软雅黑; color: rgb(0,102,204); float: left; font-size: 26px; font-weight: bold">
-        {{ post.title }}
-      </div>
+        style="font-family: 微软雅黑; color: rgb(0,102,204); float: left; font-size: 26px; font-weight: bold"
+      >{{ post.title }}</div>
       <el-tag type="primary" effect="dark" style="margin-left: 5px;" v-if="post.top === 1">置顶</el-tag>
-      <el-tag type="warning" color="rgb(255,215,0)" effect="dark" style="margin-left: 5px;" v-if="post.star === 1">
-        精华
-      </el-tag>
+      <el-tag
+        type="warning"
+        color="rgb(255,215,0)"
+        effect="dark"
+        style="margin-left: 5px;"
+        v-if="post.star === 1"
+      >精华</el-tag>
     </el-row>
     <!--帖子作者、时间、阅读量-->
     <el-row style="font-size: 18px; margin-bottom: 20px;">
       <el-col :span="12">
         <div style="margin-left: 20px; color: rgb(120,120,120)">
-          {{ post.author }}
+          <Username :name="post.author" :text="post.author_tag" />
           <el-divider direction="vertical"></el-divider>
           {{ post.datetime|cut }}
         </div>
@@ -36,12 +39,12 @@
         <el-button type="primary" icon="el-icon-caret-top" size="mini" plain circle @click="like"></el-button>
         喜欢：{{ post.like }}
         <el-button
-            type="primary"
-            icon="el-icon-caret-bottom"
-            size="mini"
-            plain
-            circle
-            @click="dislike"
+          type="primary"
+          icon="el-icon-caret-bottom"
+          size="mini"
+          plain
+          circle
+          @click="dislike"
         ></el-button>
         <el-divider direction="vertical"></el-divider>
         <el-button type="text" @click="show_reply_box">回复</el-button>
@@ -52,21 +55,20 @@
     <!--回复文本框、发送-->
     <el-card v-if="reply_button_clicked" style="margin-bottom: 20px;">
       <el-input
-          type="textarea"
-          :rows="5"
-          placeholder="请输入回复内容"
-          v-model="reply_text"
-          maxlength="500"
-          show-word-limit
-          style="font-size: 20px; margin-bottom: 20px"
+        type="textarea"
+        :rows="5"
+        placeholder="请输入回复内容"
+        v-model="reply_text"
+        maxlength="500"
+        show-word-limit
+        style="font-size: 20px; margin-bottom: 20px"
       ></el-input>
       <el-button
-          type="primary"
-          plain
-          @click="send_reply"
-          style="float: right; margin-bottom: 20px"
-      >发送
-      </el-button>
+        type="primary"
+        plain
+        @click="send_reply"
+        style="float: right; margin-bottom: 20px"
+      >发送</el-button>
     </el-card>
     <!--帖子回复列表-->
     <el-card v-for="reply in reply_list" :key="reply.id" style="margin-bottom: 20px;">
@@ -98,28 +100,33 @@
 <script>
 import * as postAPI from "@/APIs/forum.js";
 import * as FT from "@/tools/frontTool";
+import Username from "@/components/Username";
 
 export default {
   name: "PostDetail",
   props: {
     postId: String,
   },
+  components: {
+    Username,
+  },
   data() {
     return {
       test: true,
       reply_button_clicked: false,
+      firstFloorId: 0,
       reply_text: "",
       post: {
         id: 0,
         title: "",
         author: "",
-        author_tag: 0,
+        author_tag: "",
         datetime: "",
         content: "",
         read: 0,
         like: 0,
         top: 0,
-        star: 0
+        star: 0,
       },
       reply_list: [],
     };
@@ -141,7 +148,12 @@ export default {
     },
   },
   methods: {
-    like(e) {
+    async like(e) {
+      let temp = await postAPI.likeFloor(
+        this.$store.state.userId,
+        this.firstFloorId
+      );
+      console.log(temp);
       this.post.like += 1;
       this.test = false;
       this.test = true;
@@ -150,8 +162,15 @@ export default {
         target = e.target.parentNode;
       target.blur();
     },
-    dislike(e) {
-      if (this.post.like > 0) this.post.like -= 1;
+    async dislike(e) {
+      if (this.post.like > 0) {
+        this.post.like -= 1;
+        let temp = await postAPI.likeFloor(
+          this.$store.state.userId,
+          this.firstFloorId
+        );
+        console.log(temp);
+      }
       this.test = false;
       this.test = true;
       let target = e.target;
@@ -160,9 +179,14 @@ export default {
       target.blur();
     },
     report(e) {
-      this.$message({
-        message: "已举报",
-        type: "success",
+      this.$confirm("是否决定举报该层内容", "再次确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        this.$message({
+          message: "举报以受理",
+        });
       });
       let target = e.target;
       if (target.nodeName === "SPAN" || target.nodeName === "I")
@@ -189,13 +213,18 @@ export default {
         this.post.id = detail_dict.data.post.id;
         this.post.title = detail_dict.data.post.title;
         this.post.author = detail_dict.data.post.owner.user_nickname;
-        this.post.author_tag = detail_dict.data.post.owner.teacher_identity;
+        if (detail_dict.data.post.owner.teacher_identity === 1) {
+          this.post.author_tag = "教师";
+        } else {
+          this.post.author_tag = "";
+        }
         this.post.datetime = detail_dict.data.floors[0].post_time;
         this.post.content = detail_dict.data.floors[0].content;
         this.post.read = detail_dict.data.post.watches;
         this.post.like = detail_dict.data.floors[0].like_num;
         this.post.top = detail_dict.data.post.topped;
         this.post.star = detail_dict.data.post.stared;
+        this.firstFloorId = detail_dict.data.floors[0].id;
         this.reply_list = [];
         for (let i = 1; i < detail_dict.data.floors.length; i++) {
           this.reply_list.push(detail_dict.data.floors[i]);
@@ -225,7 +254,7 @@ export default {
       let reply_dict = {
         floor_num: this.reply_list.length + 2,
         content: this.reply_text,
-        owner: {user_nickname: "zym4"}, //----------------------------------------------store.nickname
+        owner: { user_nickname: "zym4" }, //----------------------------------------------store.nickname
         post_time: mon + "-" + day + " " + hor + ":" + min,
       };
       this.reply_list.push(reply_dict);

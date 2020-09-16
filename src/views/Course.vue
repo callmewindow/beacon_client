@@ -160,9 +160,7 @@
 
     <el-dialog title="导入学生" :visible.sync="showMemberUp" width="30%">
       <UploadMember />
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="showMemberUp = false">取 消</el-button>
-      </span>
+      <span slot="footer" class="dialog-footer"></span>
     </el-dialog>
 
     <el-dialog :visible.sync="showVideoUp" width="50%">
@@ -383,6 +381,20 @@ export default {
       });
       this.tabPos = this.tabNames[0];
     }
+    if (this.identity == 3 && this.tabPos !== "intro") {
+      this.$message.error("请先加入课程");
+      setTimeout(() => {
+        this.tabPos = this.tabNames[0];
+        this.$router.push({
+          path: "/course/" + this.$route.params.courseId + "/intro",
+        });
+      }, 500);
+    }
+    let test1 = CourseAPI.getUCRelation(parseInt(this.userId),1);
+    let test2 = CourseAPI.getCourseWatchRecords(1);
+    console.log("观看记录测试")
+    console.log(test1);
+    console.log(test2);
   },
 
   // 切回其他页面，或直接关闭时的钩子函数

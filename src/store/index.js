@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     email: '847590417@qq.com',
     frontIP: 'http://211.159.161.35',
-    userId: 7, // -1代表没有登录
+    userId: 1, // -1代表没有登录
     expertId: 'null',
     messageNum: 0,
     messages:[],
