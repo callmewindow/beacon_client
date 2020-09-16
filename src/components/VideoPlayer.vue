@@ -7,13 +7,13 @@ export default {
   name: "VideoPlayer",
   methods: {
     sendStartTime() {
-      let startTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
-      this.$emit("startTime", startTime);
+      let startTime = new Date();
+      this.$emit("startPlay", startTime);
     },
 
     sendPauseTime() {
-      let pauseTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
-      this.$emit("pauseTime", pauseTime);
+      let pauseTime = new Date();
+      this.$emit("pausePlay", pauseTime);
     },
   },
 };
