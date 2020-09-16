@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navigator active-func="home"/>
+    <Navigator active-func="course"/>
     <el-row :gutter="10" style="margin-left: 15%; margin-right: 15%">
       <el-col :span="17" style="margin-top: 80px;">
         <el-input placeholder="搜索课程" prefix-icon="el-icon-search" v-model="search_keyword" clearable></el-input>

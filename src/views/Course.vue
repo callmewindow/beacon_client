@@ -1,6 +1,6 @@
 <template>
   <div class="course">
-    <Navigator />
+    <Navigator activeFunc="course" />
 
     <div id="course_body">
       <el-row id="up_part">
@@ -32,8 +32,8 @@
               @command="handleCommand"
             >
               <span class="el-dropdown-link">
-                教师管理入口
-                <i class="el-icon-arrow-down el-icon--right"></i>
+                课程管理
+                <i class="el-icon-arrow-down"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="导入名单">导入名单</el-dropdown-item>
@@ -61,19 +61,21 @@
             <el-tabs v-model="tabPos" tab-position="left" @tab-click="clickCommunity">
               <el-tab-pane :name="tabNames[0]">
                 <div class="tab_left_part" slot="label">课程信息</div>
-                <el-row>
-                  <el-col class="tab_right_title">课程信息</el-col>
-                </el-row>
                 <el-card class="tab_right_body">
-                  <span style="color: #303133; font-size: 18px;">{{courseInfo.course_intro}}</span>
+                  <div class="courseTitle">课程简介</div>
+                  <div class="courseCon">{{courseInfo.course_intro}}</div>
+                  <div class="courseTitle">授课教师信息</div>
+                  <div class="courseCon">原沧州-教师-北京航空航天大学</div>
+                  <div class="courseTitle">选课人数</div>
+                  <div class="courseCon">114514人</div>
                 </el-card>
               </el-tab-pane>
 
               <el-tab-pane :name="tabNames[1]">
                 <div class="tab_left_part" slot="label">课程直播</div>
-                <el-row>
+                <!-- <el-row>
                   <el-col class="tab_right_title">课程直播</el-col>
-                </el-row>
+                </el-row>-->
 
                 <el-card class="tab_right_body">
                   <span style="color: #303133; font-size: 18px; float: left;">功能开发中，敬请期待</span>
@@ -82,9 +84,9 @@
 
               <el-tab-pane :name="tabNames[2]">
                 <div class="tab_left_part" slot="label">视频资源</div>
-                <el-row>
+                <!-- <el-row>
                   <el-col class="tab_right_title">视频资源</el-col>
-                </el-row>
+                </el-row>-->
 
                 <el-card class="tab_right_body">
                   <el-row id="course_selector">
@@ -118,29 +120,35 @@
                       ></el-option>
                     </el-select>-->
                   </el-row>
-                  <el-row style="margin-top: 10px; text-align: center;">
-                    <span
-                      style="font-size: 20px;"
-                      v-if="videoExist"
-                    >{{videoUrlArray[videoIndex].title}}</span>
-                  </el-row>
                   <el-row>
+                    <div class="videoTitle">
+                      <div v-if="videoExist">{{videoUrlArray[videoIndex].title}}</div>
+                      <div v-if="!videoExist">当前课程暂无可观看的视频</div>
+                    </div>
                     <VideoPlayer
-                      v-if="videoUrlArray != []"
+                      v-show="videoExist"
                       style=" margin-top: 20px; width: 100%; border-radius: 2px;"
                       @startPlay="getStartTime"
                       @pausePlay="getPauseTime"
                     ></VideoPlayer>
+                    <div class="videoIntro" v-if="videoExist">
+                      <span style="color:black">视频简介：</span>
+                      {{videoUrlArray[videoIndex].introduction}}
+                    </div>
                   </el-row>
                 </el-card>
               </el-tab-pane>
 
               <el-tab-pane :name="tabNames[3]">
                 <div class="tab_left_part" slot="label">圈子社区</div>
-                <el-row>
-                  <el-col class="tab_right_title" v-if="courseInfo.is_open">圈子社区</el-col>
-                </el-row>
-                <div id="postList" v-if="courseInfo.is_open">
+                <!-- <el-row>
+                  <el-col class="tab_right_title" v-if="courseInfo.is_open">
+                    圈子社区
+                    <i class="el-icon-circle-close circleClose"></i>
+                    <el-button style="border:1px solid black;margin-bottom:-10px" type="primary" size="mini" circle icon="el-icon-close"></el-button>
+                  </el-col>
+                </el-row>-->
+                <div id="postList" style="min-height:600px" v-if="courseInfo.is_open">
                   <PostList />
                 </div>
               </el-tab-pane>
@@ -323,7 +331,7 @@ export default {
       showStudentRecord: false,
       recordTitle: null,
 
-      tabPos: "intro",
+      tabPos: "video",
       tabNames: ["intro", "direct", "video", "forum"],
 
       firstStartTime: null,
@@ -337,6 +345,17 @@ export default {
   // 监听tabPos的变化，当侧边栏从“video”切换至非“video”时，暂停视频播放，通过内置的自定义时间触发getPauseTime方法
   watch: {
     tabPos(newPos, oldPos) {
+      // 如果没加入课程只能看课程信息
+      if (this.identity == 3 && newPos !== "intro") {
+        this.$message.error("请先加入课程");
+        // 设置异步方法，在tabPos值改变后再次进行赋值修改，实现强制跳转
+        setTimeout(() => {
+          this.tabPos = this.tabNames[0];
+          this.$router.push({
+            path: "/course/" + this.$route.params.courseId + "/intro",
+          });
+        }, 500);
+      }
       if (oldPos === "video" && newPos !== "video") {
         let e = document.getElementById("video-player");
         e.pause();
@@ -580,9 +599,13 @@ export default {
 
     clickCommunity(target) {
       // 切换路由
-      this.$router.push({
-        path: "/course/" + this.$route.params.courseId + "/" + target.name,
-      });
+      let toPath = "/course/" + this.$route.params.courseId + "/" + target.name;
+      // 当路由需要切换时才切换
+      if (toPath !== this.$route.path) {
+        this.$router.push({
+          path: "/course/" + this.$route.params.courseId + "/" + target.name,
+        });
+      }
       if (target.name == "video") {
         this.changeVideo();
         return;
@@ -681,6 +704,7 @@ export default {
 #down_part {
   margin-top: 2px;
   border-radius: 1px;
+  padding-bottom: 20px;
 }
 
 #down_card {
@@ -701,6 +725,7 @@ export default {
   margin-right: 10%;
   margin-top: 10px;
   font-size: 18px;
+  border-bottom: 1px solid rgba(175, 172, 172, 0.699);
 }
 
 #course_selector {
@@ -723,10 +748,41 @@ export default {
 #postList {
   width: 80%;
   margin-left: 10%;
+  margin-top: 10px;
 }
 
 .el-button {
   margin-left: 0;
+}
+
+.circleClose {
+  color: #409eff;
+  font-weight: bold;
+  cursor: pointer;
+}
+.videoTitle {
+  margin-top: 10px;
+  margin-bottom: -10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.videoIntro {
+  margin-top: 5px;
+  font-size: 15px;
+  color: rgb(95, 95, 95);
+}
+.courseTitle {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+.courseTitle:nth-child(1) {
+  margin-top: 0px;
+}
+.courseCon {
+  margin-top: 5px;
+  font-size: 16px;
+  color: rgb(61, 61, 61);
 }
 </style>
 

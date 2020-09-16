@@ -107,7 +107,7 @@
               <el-row style="margin-bottom: 10px">
                 <el-col :span="18">{{ post.content|cut }}</el-col>
                 <el-col :span="6" v-if="has_permission">
-                  <el-button type="text" style="padding: 0" @click="delete_post(post.id)">删除</el-button>
+                  <el-button type="text" style="padding: 0;color: #F56C6C" @click="delete_post(post.id)">删除</el-button>
                   <el-divider direction="vertical"></el-divider>
                   <el-button type="text" style="padding: 0" v-if="post.topped === 0" @click="top_post(post.id)">设为置顶
                   </el-button>
@@ -171,7 +171,7 @@
               <el-row style="margin-bottom: 10px">
                 <el-col :span="18">{{ post.content|cut }}</el-col>
                 <el-col :span="6" v-if="has_permission">
-                  <el-button type="text" style="padding: 0" @click="delete_post(post.id)">删除</el-button>
+                  <el-button type="text" style="padding: 0;color: #F56C6C" @click="delete_post(post.id)">删除</el-button>
                   <el-divider direction="vertical"></el-divider>
                   <el-button type="text" style="padding: 0" v-if="post.topped === 0" @click="top_post(post.id)">设为置顶
                   </el-button>
@@ -235,7 +235,7 @@
             <el-row style="margin-bottom: 10px">
               <el-col :span="18">{{ post.content|cut }}</el-col>
               <el-col :span="6" v-if="has_permission">
-                <el-button type="text" style="padding: 0" @click="delete_post(post.id)">删除</el-button>
+                <el-button type="text" style="padding: 0;color: #F56C6C" @click="delete_post(post.id)">删除</el-button>
                 <el-divider direction="vertical"></el-divider>
                 <el-button type="text" style="padding: 0" v-if="post.topped === 0"
                            @click="post.topped=1;top_post(post.id)">设为置顶
