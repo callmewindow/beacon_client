@@ -150,6 +150,45 @@ export const deleteStudent = (student_id, class_id) => {
     url: `/student/manage/del/?student_id=${student_id}&class_id=${class_id}`,
   })
 }
+// 退出用户已有课程
+export const deleteUserCourse = (user_id,course_id) => {
+  return axios({
+    method: 'GET',
+    url: `/class/quit?user_id=${user_id}&course_id`,
+  })
+}
+
+//用户已创建课程列表
+export const getUserOwnerCourse = (user_id) => {
+  return axios({
+    method: 'GET',
+    url: `/class/asowner?user_id=${user_id}`,
+  })
+}
+
+//通过课程加入申请
+export const confirmCourse = (course_application_id) => {
+  return axios({
+    method: 'GET',
+    url: `/class/application/accept?course_application_id=${course_application_id}`,
+  })
+}
+
+//拒绝课程加入申请
+export const rejectCourse = (course_application_id) => {
+  return axios({
+    method: 'GET',
+    url: `/class/application/reject?course_application_id=${course_application_id}`,
+  })
+}
+
+//删除某课程
+export const deleteCourse = (course_id) => {
+  return axios({
+    method: 'GET',
+    url: `/class/delete?course_id=${course_id}`,
+  })
+}
 
 export const joinCourse = (class_id, student_id, content) => {
   return axios({
