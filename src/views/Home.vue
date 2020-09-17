@@ -37,7 +37,7 @@
                   class="classes"
                   v-for="(item,index) in selectClasses"
                   :key="index"
-                  @click="toClass(0)"
+                  @click="toClass(item.course_id)"
                 >{{item.course_name +"-"+ item.profession}}</div>
                 <div
                   v-if="this.allSelect.length>3"
@@ -175,6 +175,7 @@ export default {
         this.selectClasses.push(this.allSelect[index]);
       }
     }
+    console.log(this.selectClasses)
     await this.getHotCourse();
   },
   methods: {
