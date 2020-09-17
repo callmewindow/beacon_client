@@ -37,3 +37,27 @@ export const setAllNoticesRead = (userId) => {
     })
   })
 }
+
+export const getPrivateMessages = (speakersId) => {
+  return axios({
+    method: 'POST',
+    url: `/getPrivateMessages`,
+    data: QS({
+      user_id1 : speakersId.user1Id,
+      user_id2 : speakersId.user2Id,
+    })
+  })
+}
+
+export const sendPrivateMessages = (text) => {
+  return axios({
+    method: 'POST',
+    url: `/postPrivateMessage`,
+    data: QS({
+      sender_id:text.senderId,
+  receiver_id:text.receiverId,
+      content:text.textarea,
+      send_time:text.time
+    })
+  })
+}

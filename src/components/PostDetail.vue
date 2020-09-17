@@ -153,7 +153,6 @@ export default {
         this.$store.state.userId,
         this.firstFloorId
       );
-      console.log(temp);
       this.post.like += 1;
       this.test = false;
       this.test = true;
@@ -169,7 +168,6 @@ export default {
           this.$store.state.userId,
           this.firstFloorId
         );
-        console.log(temp);
       }
       this.test = false;
       this.test = true;
@@ -209,7 +207,6 @@ export default {
     async get_post_detail(pid) {
       try {
         const detail_dict = await postAPI.postDetail(pid);
-        window.console.log(detail_dict.data);
         this.post.id = detail_dict.data.post.id;
         this.post.title = detail_dict.data.post.title;
         this.post.author = detail_dict.data.post.owner.user_nickname;

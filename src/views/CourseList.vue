@@ -16,7 +16,7 @@
         </el-button>
       </el-col>
     </el-row>
-<!--    全部课程列表-->
+    <!--    全部课程列表-->
     <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px" v-if="!display_search_result">
       <el-col :span="6" v-for="(course,index) in course_list" :key="index" style="margin-top: 20px;">
         <el-card>
@@ -28,14 +28,20 @@
             </el-link>
           </el-row>
           <el-row style="margin-top: 5px">
-            <div>
-              开课：{{ course.start_time|cut }} 至 {{ course.end_time|cut }}
+            开课：{{ course.start_time|cut }} 至 {{ course.end_time|cut }}
+          </el-row>
+          <el-row>
+            <div style="float: left">
+              教师：{{ course.teacher.realname}}
+            </div>
+            <div style="float: right">
+              学生人数：{{ course.student_number }}
             </div>
           </el-row>
         </el-card>
       </el-col>
     </el-row>
-<!--    搜索结果列表-->
+    <!--    搜索结果列表-->
     <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px" v-if="display_search_result">
       <el-col :span="6" v-for="(course,index) in search_list" :key="index" style="margin-top: 20px;">
         <el-card>
@@ -104,6 +110,7 @@ export default {
     async get_course_list() {
       try {
         const list = await courseAPI.courseQuery();
+        window.console.log(list);
         this.course_list = list.data.courses;
         this.course_list.reverse();
       } catch (e) {
@@ -113,7 +120,6 @@ export default {
     async search_course(e) {
       try {
         const list = await courseAPI.searchCourse(this.search_keyword);
-        //window.console.log(list);
         this.search_list = list.data;
         this.display_search_result = true;
       } catch (e) {
