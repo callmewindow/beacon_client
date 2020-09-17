@@ -12,12 +12,15 @@ export default new Vuex.Store({
     messageNum: 0,
     messages:[],
     identity: 'user',
-    teacherID: 1,
+    teacherID: 0,
     nickname: "稼轩",
     permission: 2, //-1==首陀罗，0==吠舍，1==刹帝利，2==婆罗门
     // permission仅针对用户-课程关系，0普通用户，1管理员，2创始人，3未加入课程
   },
   mutations: {
+    setTeacherID(state, newTID){
+      state.teacherID = newTID;
+    }
   },
   actions: {
   },

@@ -10,14 +10,16 @@
               <i class="el-icon-user-solid"></i>
               <b style="margin-left: 5%">{{users.username}}</b>
             </div>
-            <div class="info-content" v-show="users.identity===0">
+            <div class="info-content" v-show="this.$store.state.teacherID===0">
               教师
               <b style="margin-left: 5px; margin-right:5px">|</b>
               {{users.school}}
             </div>
             <div class="info-content" style="margin-top: 10px">{{users.major}}</div>
-            <template v-if="users.identity===0">
-              <el-button class="button" @click="FT.building">教师认证</el-button>
+            <template>
+              <el-button v-if="this.$store.state.teacherID===0" class="button" style="width:100px" @click="showAuthUp = true">申请教师认证</el-button>
+              <el-tag v-if="this.$store.state.teacherID===1" style="cursor: pointer" size="mini" type="info" @click="$message('认证结果会发送至您邮箱，届时请注意查收')">认证审核中</el-tag>
+              <el-tag v-if="this.$store.state.teacherID===2" style="cursor:pointer" size="mini" type="success" @click="showResUp = true">已认证为教师用户</el-tag>
             </template>
           </el-col>
           <el-col :span="1" :offset="4">
@@ -52,7 +54,7 @@
           <div
             class="info-content"
             style="float: right;margin-right:30%;margin-top: -2%"
-          >学习时长将会隔天进行更新</div>
+          >学习时长将会实时进行更新</div>
         </el-row>
       </el-card>
       <el-tabs v-model="activeName" @tab-click="handleClick()" class="tab" style="size: 40px">
@@ -283,6 +285,13 @@
           </el-row>
         </el-tab-pane>
       </el-tabs>
+
+      <el-dialog title="教师认证申请" :visible.sync="showAuthUp" width="30%">
+        <TeacherAuth />
+      </el-dialog>
+      <el-dialog title="教师认证信息" :visible.sync="showResUp" width="30%">
+        <TeacherAuth status="result" />
+      </el-dialog>
       <Footer />
     </div>
   </div>
@@ -291,16 +300,19 @@
 <script>
 import Navigator from "../components/Navigator";
 import Footer from "../components/Footer";
+import TeacherAuth from "@/components/TeacherAuth";
 import * as FT from "../tools/frontTool";
 import * as userAPI from "../APIs/user.js";
 import * as courseAPI from "../APIs/course.js";
 
 export default {
   name: "UserDetail",
-  components: { Navigator, Footer },
+  components: { Navigator, Footer, TeacherAuth },
   data() {
     return {
       FT,
+      showResUp: false,
+      showAuthUp: false,
       userId: this.$store.state.userId,
       circleUrl: require("@/assets/useravatar.jpg"),
       users: {
@@ -422,6 +434,7 @@ export default {
   created() {
     this.get_userDetail();
     this.get_userCourse();
+    console.log(this.$store.state);
   },
   filters: {
     filterIntro(value) {
@@ -479,6 +492,7 @@ export default {
         this.users.major = res.data.user.profession;
         this.users.score = res.data.user.score;
         this.users.time = res.data.user.coursetime;
+        console.log(res.data.user.school_id);
       });
     },
 
