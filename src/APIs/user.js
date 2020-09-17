@@ -6,20 +6,19 @@ import {
   QS
 } from './../tools/apiTool'
 
-export const register = (username, user_password, user_nickname, school, school_id, email) => {
+export const register = (username, user_nickname, user_password,  email) => {
   return axios({
     method: 'POST',
     url: `/addUser`,
     data: QS({
       username,
-      user_password,
       user_nickname,
-      school,
-      school_id,
+      user_password,
       email
     }),
   })
 }
+
 
 export const login = (username, user_password) => {
   return axios({

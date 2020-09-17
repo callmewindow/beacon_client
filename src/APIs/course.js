@@ -241,3 +241,20 @@ export const updateVideoInfo = (video_id, title, introduction) => {
     })
   })
 }
+
+export const getHotCourses = () => {
+  return axios({
+    method: 'GET',
+    url: `hotCourses`,
+  })
+}
+
+export const searchTeacher = (keyword) => {
+  return axios({
+    method: 'POST',
+    url: `/searchTeacher`,
+    data: QS({
+      keyWord: keyword
+    })
+  })
+}
