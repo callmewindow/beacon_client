@@ -817,7 +817,6 @@ export default {
       let courseId = this.$route.params.courseId;
       try {
         const list = await postAPI.postList(parseInt(courseId));
-        window.console.log(list.data);
         this.post_list = [];
         this.post_list_1 = [];
         this.post_list_2 = [];
