@@ -6,7 +6,7 @@
       <el-row id="up_part">
         <el-col :xs="4" :sm="4" :md="4" :lg="4">
           <el-card id="up_left_part">
-            <div style="font-size: 18px;">大学名称</div>
+            <div style="font-size: 18px;">{{teacherInfo.teacher_university}}</div>
           </el-card>
         </el-col>
 
@@ -24,7 +24,7 @@
               type="success"
               :underline="false"
               @click="FT.building"
-            >{{courseInfo.profession}}</el-link>
+            >{{teacherInfo.teacher_name}}</el-link>
 
             <el-dropdown
               id="teacher_manage_entrance"
@@ -65,18 +65,16 @@
                   <div class="courseTitle">课程简介</div>
                   <div class="courseCon">{{courseInfo.course_intro}}</div>
                   <div class="courseTitle">授课教师信息</div>
-                  <div class="courseCon">原沧州-教师-北京航空航天大学</div>
+                  <div
+                    class="courseCon"
+                  >{{teacherInfo.teacher_name}}-{{teacherInfo.teacher_profession}}-{{teacherInfo.teacher_university}} 联系邮箱：{{teacherInfo.teacher_email}}</div>
                   <div class="courseTitle">选课人数</div>
-                  <div class="courseCon">114514人</div>
+                  <div class="courseCon">{{courseInfo.person_number}}</div>
                 </el-card>
               </el-tab-pane>
 
               <el-tab-pane :name="tabNames[1]">
                 <div class="tab_left_part" slot="label">课程直播</div>
-                <!-- <el-row>
-                  <el-col class="tab_right_title">课程直播</el-col>
-                </el-row>-->
-
                 <el-card class="tab_right_body">
                   <span style="color: #303133; font-size: 18px; float: left;">功能开发中，敬请期待</span>
                 </el-card>
@@ -84,10 +82,6 @@
 
               <el-tab-pane :name="tabNames[2]">
                 <div class="tab_left_part" slot="label">视频资源</div>
-                <!-- <el-row>
-                  <el-col class="tab_right_title">视频资源</el-col>
-                </el-row>-->
-
                 <el-card class="tab_right_body">
                   <el-row id="course_selector">
                     <span style="margin-left: 5px;">请选择章节：</span>
@@ -104,21 +98,6 @@
                         :value="index"
                       ></el-option>
                     </el-select>
-
-                    <!-- <el-select
-                      class="video_select"
-                      v-model="videoIndex"
-                      style="margin-left: 20px;"
-                      placeholder="请选择"
-                      @change="getVideoIndex"
-                    >
-                      <el-option
-                        v-for="item in urlArray"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      ></el-option>
-                    </el-select>-->
                   </el-row>
                   <el-row>
                     <div class="videoTitle">
@@ -141,13 +120,6 @@
 
               <el-tab-pane :name="tabNames[3]">
                 <div class="tab_left_part" slot="label">圈子社区</div>
-                <!-- <el-row>
-                  <el-col class="tab_right_title" v-if="courseInfo.is_open">
-                    圈子社区
-                    <i class="el-icon-circle-close circleClose"></i>
-                    <el-button style="border:1px solid black;margin-bottom:-10px" type="primary" size="mini" circle icon="el-icon-close"></el-button>
-                  </el-col>
-                </el-row>-->
                 <div id="postList" style="min-height:600px" v-if="courseInfo.is_open">
                   <PostList />
                 </div>
@@ -173,7 +145,7 @@
         <el-table-column prop="introduction" label="视频简介"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" @click="updateVideoInfo(scope.row)">更改信息</el-button>
+            <el-button type="text" size="medium" @click="manageVideoInfo(scope.row)">更改信息</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button
               type="text"
@@ -186,7 +158,7 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog :title="manageVideoTitle" :visible.sync="showSpecificVideoInfo">
+    <el-dialog :title="manageVideoTitle" :visible.sync="showSpecificVideoInfo" width="30%">
       <div style="font-size: 16px; margin-bottom: 10px;">视频标题</div>
       <el-input v-model="newTitle" :placeholder="specificVideoInfo.title"></el-input>
       <el-divider></el-divider>
@@ -197,8 +169,11 @@
         :placeholder="specificVideoInfo.introduction"
         v-model="newIntroduction"
       ></el-input>
-      <el-button type="text" style="color: #909399; font-size: 17px; margin: 4% 7% 0 80%;">取消</el-button>
-      <el-button type="text" style="color: #409EFF; font-size: 17px;">更新</el-button>
+      <el-button
+        type="text"
+        style="color: #409EFF; font-size: 17px; margin-left: 90%;"
+        @click="updateVideoInfo"
+      >更新</el-button>
     </el-dialog>
 
     <el-dialog title="人员名单" :visible.sync="showStudentList" width="80%">
@@ -248,11 +223,37 @@
     </el-dialog>
 
     <el-dialog :title="recordTitle" :visible.sync="showStudentRecord">
-      <el-table :data="recordList" stripe style="width: 100%">
-        <el-table-column prop="id" label="视频ID"></el-table-column>
-        <el-table-column prop="title" label="视频标题"></el-table-column>
-        <el-table-column prop="duration" label="观看时常"></el-table-column>
-      </el-table>
+      <el-collapse accordion>
+        <el-collapse-item v-for="(item1, index1) in videoUrlArray" :key="index1">
+          <div slot="title" v-for="(item2, index2) in viewRecordList" :key="index2">
+            <span v-if="item1.id === item2.video_id">
+              视频{{index1+1}}：{{item1.title}}
+              <el-divider direction="vertical"></el-divider>
+              观看次数：{{item2.play_times}}次
+              <el-divider direction="vertical"></el-divider>
+              观看时常：{{parseInt(item2.play_time/60)}}分{{item2.play_time%60}}秒
+            </span>
+          </div>
+          <div v-for="(item2, index2) in viewRecordList" :key="index2">
+            <el-table
+              :key="index2"
+              :data="item2.recordList"
+              v-if="item1.id === item2.video_id"
+              border
+              height="200"
+              style="width: 100%"
+            >
+              <el-table-column type="index" label="播放记录编号" width="120px"></el-table-column>
+              <el-table-column prop="start_play_time" label="播放开始时间"></el-table-column>
+              <el-table-column prop="played_time" label="播放时常">
+                <template
+                  slot-scope="scope"
+                >{{parseInt(scope.row.played_time/60)}}分{{scope.row.played_time%60}}秒</template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-collapse-item>
+      </el-collapse>
     </el-dialog>
   </div>
 </template>
@@ -267,6 +268,7 @@ import * as FT from "@/tools/frontTool";
 import * as CourseAPI from "@/APIs/course";
 import {
   cancelAssistant,
+  deleteVideo,
   getCourseStudentList,
   getCourseVideoUrlArray,
 } from "../APIs/course";
@@ -283,33 +285,20 @@ export default {
   data() {
     return {
       FT,
+      activeName: "1",
 
       userId: null,
       identity: null,
       courseId: null,
 
       courseInfo: {},
+      teacherInfo: {},
       videoExist: false,
       videoIndex: null,
       videoUrlArray: null,
       studentList: [],
-      recordList: [
-        {
-          id: 1,
-          title: "夏露伊苏",
-          duration: 100,
-        },
-        {
-          id: 2,
-          title: "木吉手枪",
-          duration: 1000000,
-        },
-        {
-          id: 3,
-          title: "更衣室大战",
-          duration: 233,
-        },
-      ],
+
+      viewRecordList: [],
 
       joinMessage: null,
 
@@ -323,6 +312,7 @@ export default {
         title: "加载中",
         introduction: "加载中",
       },
+      specificVideoId: null,
       newTitle: null,
       newIntroduction: null,
 
@@ -367,7 +357,6 @@ export default {
       FT.toPath("/Home");
     }
     this.userId = this.$store.state.userId;
-    this.identity = this.$store.state.permission;
     // 从地址栏获得courseId
     this.courseId = this.$route.params.courseId;
     // 根据courseId获取相应的信息
@@ -390,14 +379,10 @@ export default {
         });
       }, 500);
     }
-    let test1 = CourseAPI.getUCRelation(parseInt(this.userId),1);
-    let test2 = CourseAPI.getCourseWatchRecords(1);
-    console.log("观看记录测试")
-    console.log(test1);
-    console.log(test2);
   },
 
   // 切回其他页面，或直接关闭时的钩子函数
+  // destroyed方法存在问题，手动刷新页面时好像不会触发
   async destroyed() {
     if (this.firstStartTime === null) {
       return;
@@ -405,7 +390,6 @@ export default {
     if (this.pauseTime === null) {
       this.getPauseTime(new Date());
     }
-    setTimeout(1000);
     // 用POST请求发送给后端
     const tempFormat = {
       video_id: this.videoId,
@@ -416,11 +400,10 @@ export default {
     const temp = await CourseAPI.addWatchRecord(
       tempFormat.video_id,
       tempFormat.user_id,
-      tempFormat.played_time,
+      parseInt(tempFormat.played_time),
       tempFormat.start_play_time
     );
-    console.log(temp);
-    setTimeout(10000);
+    await console.log(temp);
   },
 
   methods: {
@@ -449,9 +432,12 @@ export default {
         this.$route.params.courseId,
         this.$store.state.userId
       );
-      this.courseInfo = temp.data.course;
       console.log("课程信息");
-      console.log(this.courseInfo);
+      console.log(temp.data);
+      this.courseInfo = temp.data.course;
+      this.identity = 2 /*temp.data.relation*/;
+      this.$store.state.permission = this.identity;
+      this.teacherInfo = temp.data.teacher;
     },
 
     async getCourseVideoUrlArray() {
@@ -511,6 +497,7 @@ export default {
       console.log("暂停时间：" + this.pauseTime.Format("yyyy-MM-dd hh:mm:ss"));
       this.duration += (data.getTime() - this.startTime.getTime()) / 1000;
       this.startTime = null;
+      console.log("本次播放持续时间");
       console.log(this.duration);
     },
 
@@ -554,6 +541,7 @@ export default {
             this.userId,
             "233"
           );
+          console.log("申请返回");
           console.log(temp);
           if (temp.data.message === "success") {
             this.$message({
@@ -579,6 +567,17 @@ export default {
       }
     },
 
+    async deleteVideo(video) {
+      this.$alert("确定删除视频吗？", "删除视频", {
+        confirmButtonText: "确定",
+        callback: async (action) => {
+          const temp = await CourseAPI.deleteVideo(video.id);
+          console.log("删除返回");
+          console.log(temp);
+        },
+      });
+    },
+
     async cancelAssistant(user_id) {
       const temp = await CourseAPI.cancelAssistant(user_id, this.courseId);
       for (let i = 0; i < this.studentList.length; i++) {
@@ -597,16 +596,69 @@ export default {
       }
     },
 
-    updateVideoInfo(data) {
+    manageVideoInfo(data) {
       this.showSpecificVideoInfo = true;
       this.manageVideoTitle = '"' + data.title + '"' + "的详细信息";
       this.specificVideoInfo = data;
-      console.log(this.specificVideoInfo);
+      this.specificVideoId = data.id;
+      this.newTitle = data.title;
+      this.newIntroduction = data.introduction;
+    },
+
+    async updateVideoInfo() {
+      const tempFormat = {
+        video_id: this.specificVideoId,
+        title: this.newTitle,
+        introduction: this.newIntroduction,
+      };
+      const temp = await CourseAPI.updateVideoInfo(
+        tempFormat.video_id,
+        tempFormat.title,
+        tempFormat.introduction
+      );
+      console.log("更新返回");
+      console.log(temp);
+      this.getCourseVideoUrlArray();
+      this.showSpecificVideoInfo = false;
     },
 
     async viewRecord(user_id, realname) {
       this.recordTitle = '"' + realname + '"' + "的观看记录";
       this.showStudentRecord = true;
+      const temp = await CourseAPI.getUCRelation(
+        parseInt(user_id),
+        this.courseId
+      );
+
+      let user_play_records = temp.data.user_play_records;
+      let user_videos = temp.data.user_videos;
+      let videos = temp.data.videos;
+
+      let tempList = [];
+
+      for (let i = 0; i < videos.length; i++) {
+        let record = new Object();
+        record.video_id = videos[i].id;
+        record.video_title = videos[i].title;
+        record.play_times = 0; // 播放总次数
+        record.play_time = 0; // 播放总时常
+        record.recordList = [];
+        for (let j = 0; j < user_videos.length; j++) {
+          if (user_videos[j].video === videos[i].id) {
+            record.play_times = user_videos[j].video_viewed_time; // 播放总次数
+            record.play_time = user_videos[j].video_viewed_times; // 播放总时常
+            for (let k = 0; k < user_play_records.length; k++) {
+              if (user_play_records[k].user_video === user_videos[j].id) {
+                record.recordList.push(user_play_records[k]);
+              }
+            }
+          }
+        }
+        tempList.push(record);
+      }
+      this.viewRecordList = tempList;
+      console.log("播放记录");
+      console.log(this.viewRecordList);
     },
 
     clickCommunity(target) {

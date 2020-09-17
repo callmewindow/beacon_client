@@ -151,7 +151,7 @@ export const deleteStudent = (student_id, class_id) => {
   })
 }
 // 退出用户已有课程
-export const deleteUserCourse = (user_id,course_id) => {
+export const deleteUserCourse = (user_id, course_id) => {
   return axios({
     method: 'GET',
     url: `/class/quit?user_id=${user_id}&course_id`,
@@ -194,5 +194,24 @@ export const joinCourse = (class_id, student_id, content) => {
   return axios({
     method: 'GET',
     url: `api/class/application/create?class_id=${class_id}&student_id=${student_id}&content=${content}`,
+  })
+}
+
+export const deleteVideo = (video_id) => {
+  return axios({
+    method: 'GET',
+    url: `video/manage/delete?video_id=${video_id}`,
+  })
+}
+
+export const updateVideoInfo = (video_id, title, introduction) => {
+  return axios({
+    method: 'POST',
+    url: `video/manage/update`,
+    data: QS({
+      video_id,
+      title,
+      introduction
+    })
   })
 }
