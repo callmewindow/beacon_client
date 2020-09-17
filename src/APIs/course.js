@@ -151,7 +151,7 @@ export const deleteStudent = (student_id, class_id) => {
   })
 }
 
-// 退出用户已有课程
+// 退出用户已有课程*
 export const deleteUserCourse = (user_id, course_id) => {
   return axios({
     method: 'GET',
@@ -200,17 +200,17 @@ export const deleteCourse = (course_id) => {
 }
 
 //发送系统消息
-export const systemMessages = (course_id) => {
+export const systemMessages = (user_id,title,content) => {
   return axios({
     method: 'GET',
-    url: `/class/delete?course_id=${course_id}`,
+    url: `/sysmessage/send?user_id=${user_id}&title=${title}&content=${content}`,
   })
 }
 //已读系统消息
-export const readMessages = (course_id) => {
+export const readMessages = (message_id) => {
   return axios({
     method: 'GET',
-    url: `/class/delete?course_id=${course_id}`,
+    url: `/sysmessage/read?message_id=${message_id}`,
   })
 }
 

@@ -196,7 +196,7 @@
                       <el-card class="message_detail">
                         <div class="message_title">
                           <span class="message_title">
-                            <b style="color: #409eff">{{p.application}}</b>
+                            <b style="color: #409eff">{{p.application_content}}</b>
                             申请加你为好友
                             <div
                               style="float: right;color: #797b80;font-weight: bold;font-size: 13px"
@@ -205,17 +205,17 @@
                             <el-button-group>
                               <el-button
                                 class="confirm_button"
-                                @click="confirmFriend(),p.app_result=1"
-                                v-show="p.app_result===0"
+                                @click="p.result=1,confirmFriend()"
+                                v-show="p.result===0"
                               >同意</el-button>
                               <el-button
                                 class="confirm_button"
-                                @click="rejectFriend(),p.app_result=2"
-                                v-show="p.app_result===0"
+                                @click="p.result=2,rejectFriend()"
+                                v-show="p.result===0"
                               >拒绝</el-button>
                             </el-button-group>
-                            <el-button class="confirmed_button" v-show="p.app_result===1">已同意</el-button>
-                            <el-button class="confirmed_button" v-show="p.app_result===2">已拒绝</el-button>
+                            <el-button class="confirmed_button" v-show="p.result===1">已同意</el-button>
+                            <el-button class="confirmed_button" v-show="p.result===2">已拒绝</el-button>
                           </span>
                         </div>
                       </el-card>
@@ -422,6 +422,7 @@ export default {
     this.get_userMakeCourse();
     this.get_CourseApply();
     this.get_FriendApply();
+    this.sendSystemMes();
     console.log(this.$store.state);
   },
   filters: {
@@ -531,7 +532,6 @@ export default {
          let newarr = [...this.unhandledMessages,...this.accptedMessages, ...this.rejectedMessages];
           this.courseMessages=newarr;
         console.log("A",newarr);
-
       });
     },
     //同意加入课程*
@@ -542,6 +542,9 @@ export default {
       });
       courseAPI.Course(course_application_id).then((res) => {
       });
+      courseAPI.systemMessages(19,'课程申请','老师已经通过了你的申请').then((res) => {
+        console.log("C",res);
+      });
     },
     //拒绝加入课程*
     rejectCourse(course_application_id) {
@@ -550,6 +553,9 @@ export default {
         type: "success",
       });
       courseAPI.rejectCourse(course_application_id).then((res) => {
+      });
+      courseAPI.systemMessages(19,'课程申请','老师拒绝了你的申请').then((res) => {
+        console.log("C",res);
       });
     },
     //获取所有好友申请
@@ -569,7 +575,10 @@ export default {
         message: "成功添加好友",
         type: "success",
       });
-      courseAPI.rejectCourse(course_application_id).then((res) => {
+      userAPI.passFriend(20,19).then((res) => {
+      });
+      courseAPI.systemMessages(19,'好友申请','20已经通过了你的好友申请').then((res) => {
+        console.log("C",res);
       });
     },
     //拒绝添加好友
@@ -578,12 +587,27 @@ export default {
         message: "已拒绝好友",
         type: "success",
       });
+      userAPI.rejectFriend(22,19).then((res) => {
+
+      });
+      courseAPI.systemMessages(19,"好友申请","2拒绝了你的好友申请").then((res) => {
+        console.log("C",res);
+      });
+    },
+    //发送系统消息
+    sendSystemMes(){
+      courseAPI.systemMessages("1","123","456").then((res) => {
+        console.log("C",res);
+      });
     },
     //消息已读
     open2() {
       this.$message({
         message: "消息已标为已读",
         type: "success",
+      });
+      courseAPI.readMessages("1").then((res) => {
+        console.log("D",res);
       });
     },
   },
