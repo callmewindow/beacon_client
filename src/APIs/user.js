@@ -151,10 +151,10 @@ export const getFriendApplication = (target_id) => {
 }
 
 //删除好友
-export const getFriendApplication = (user1_id, user2_id) => {
+export const deleteFriend = (user1_id, user2_id) => {
   return axios({
     method: 'POST',
-    url: `/getFriendApplicationOfOthers`,
+    url: `/deleteFriendRecord`,
     data: QS({
       user1_id,
       user2_id

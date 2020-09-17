@@ -34,8 +34,8 @@ export default {
     };
   },
   async created() {
-    //let temp = await NoticeAPI.getAllFriend(1);
-    let temp2 = await ua.getFriendApplication(1);
+    let temp = await NoticeAPI.getAllFriend(1);
+    // let temp2 = await ua.getFriendApplication(1);
     console.log(temp2);
   },
   filters: {
