@@ -181,8 +181,8 @@
         <el-table-column prop="school_id" label="学号"></el-table-column>
         <el-table-column prop="realname" label="姓名"></el-table-column>
         <el-table-column prop="school" label="学校"></el-table-column>
-        <el-table-column label="总观看次数"></el-table-column>
-        <el-table-column label="总播放时长"></el-table-column>
+        <el-table-column prop="watch_num" label="总观看次数"></el-table-column>
+        <el-table-column prop="watch_duration" label="总播放时长"></el-table-column>
         <el-table-column prop="user_identity" label="身份">
           <template slot-scope="scope">
             <span v-if="scope.row.user_identity == 0">学生</span>
