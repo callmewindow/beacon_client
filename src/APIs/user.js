@@ -161,3 +161,17 @@ export const deleteFriend = (user1_id, user2_id) => {
     })
   })
 }
+
+//发送好友请求
+export const sendFriendApply = (userId, FID, time) => {
+  return axios({
+    method: 'POST',
+    url: `/sendFriendApplication`,
+    data: QS({
+      applicant_id: userId,
+      target_id: FID,
+      application_content: "233",
+      application_time: time
+    })
+  })
+}

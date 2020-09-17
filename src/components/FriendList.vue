@@ -1,64 +1,94 @@
 <template>
   <div id="FLA">
-    <div class="friendItem" v-for="o in 12" :key="o">
-      <div class="friendName">木村</div>
-      <div class="lastMessage">{{ msg | cutMsg }}</div>
-      <div class="msgStatusNo" v-if="!read">未读</div>
-      <div class="msgStatusYes" v-if="read">已读</div>
-      <div class="friendBtn">
-        <el-button size="mini" type="primary" @click="showMsg('木村')">私信</el-button>
-        <el-button size="mini" type="primary" @click="deleteFriend('木村')">删除</el-button>
+    <div v-if="!haveFriend">暂无好友</div>
+    <div v-if="haveFriend">
+      <div class="friendItem" v-for="(item,index) in friendList" :key="index">
+        <div class="friendName">{{item.user_nickname}}</div>
+        <div
+          class="lastMessage"
+          v-if="item.last_message.content"
+        >{{ item.last_message.content | cutMsg }}</div>
+        <div class="lastMessage" v-if="!item.last_message.content">暂无最近对话</div>
+        <div class="msgStatusNo" v-if="item.last_message.is_read == 0">未读</div>
+        <div class="msgStatusYes" v-if="item.last_message.is_read == 1">已读</div>
+        <div class="friendBtn">
+          <el-button size="mini" type="primary" @click="showMsg(index)">私信</el-button>
+          <el-button size="mini" type="primary" @click="deleteFriend(index)">删除</el-button>
+        </div>
       </div>
     </div>
-    <el-dialog :title="talkFriend" :visible.sync="showMsgUp" width="50%">好友私信</el-dialog>
+    <el-dialog :title="msgTitle" :visible.sync="showMsgUp" width="40%">
+      <PrivateMessages :friendId="talkId" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import * as postAPI from "@/APIs/forum.js";
-import * as CourseAPI from "@/APIs/course";
 import * as NoticeAPI from "@/APIs/notice";
-import * as ua from "@/APIs/user";
+import * as UserAPI from "@/APIs/user";
 import * as FT from "@/tools/frontTool";
+import PrivateMessages from "@/components/PrivateMessages";
 
 export default {
   name: "FriendList",
-  components: {},
+  components: {
+    PrivateMessages,
+  },
   data() {
     return {
       FT,
-      read: false,
+      haveFriend: false,
       showMsgUp: false,
-      msg: "你好，我是木村你好，我是木村",
-      talkFriend: "与木村的对话",
+      msgTitle: "",
+      talkId: 0,
+      friendList: [],
     };
-  },
-  async created() {
-    let temp = await NoticeAPI.getAllFriend(1);
-    // let temp2 = await ua.getFriendApplication(1);
-    console.log(temp2);
   },
   filters: {
     cutMsg(str) {
-      if(str.length > 8){
-        return str.slice(0,8)+"...";
-      }else{
+      if (str.length > 8) {
+        return str.slice(0, 8) + "...";
+      } else {
         return str;
       }
     },
   },
+  async created() {
+    await this.getFriendList();
+  },
   methods: {
-    showMsg(name) {
-      this.showMsgUp = true;
-      this.msgTitle = "与" + name + "的对话";
+    async getFriendList() {
+      let temp = await NoticeAPI.getAllFriend(this.$store.state.userId);
+      this.friendList = temp.data.users;
+      console.log(temp);
+      if (this.friendList.length == 0) {
+        this.haveFriend = false;
+      } else {
+        this.haveFriend = true;
+      }
     },
-    async deleteFriend(name) {
-      this.$confirm("是否确定删除和 "+name+" 的好友关系？", "好友删除", {
+    showMsg(i) {
+      this.showMsgUp = true;
+      let name = this.friendList[i].user_nickname;
+      this.msgTitle = "与" + name + "的对话";
+      this.talkId = this.friendList[i].user_nickname;
+      if (i == 0) {
+        this.talkId = "45";
+      } else {
+        this.talkId = "44";
+      }
+    },
+    async deleteFriend(i) {
+      let name = this.friendList[i].user_nickname;
+      let id = this.friendList[i].user_nickname;
+      this.$confirm("是否确定删除和 " + name + " 的好友关系？", "好友删除", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(async () => {
+          let temp = await UserAPI.deleteFriend(1, 44);
+          this.getFriendList();
           this.$message({
             type: "success",
             message: "删除成功!",
@@ -72,10 +102,10 @@ export default {
 
 <style scoped>
 #FLA {
-  width: 500px;
+  /* width: 500px;
   height: 400px;
   padding: 20px;
-  overflow: scroll;
+  overflow: scroll; */
   background-color: white;
 }
 .friendItem {

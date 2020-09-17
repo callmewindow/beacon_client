@@ -28,7 +28,6 @@
       <el-select
         v-model="postTag"
         filterable
-        allow-create
         clearable
         default-first-option
         placeholder="添加额外标签"
@@ -75,8 +74,8 @@ export default {
   },
   methods: {
     async sendPost() {
-      if(this.postTag.length > 6) {
-        this.$message.error("标签长度请限制在六个字符以内");
+      if(this.post.title === "" || this.post.content === "") {
+        this.$message.error("不能发送空帖子");
         return ;
       }
       if (FT.CS(this.post.title + this.post.content)) {

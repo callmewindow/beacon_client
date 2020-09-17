@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navigator active-func="UserDetail" />
+    <Navigator active-func="user" />
     <div class="back">
       <!--            上层个人信息展示-->
       <el-card class="card align-center text-align: center;">
@@ -17,9 +17,26 @@
             </div>
             <div class="info-content" style="margin-top: 10px">{{users.major}}</div>
             <template>
-              <el-button v-if="this.$store.state.teacherID===0" class="button" style="width:100px" @click="showAuthUp = true">申请教师认证</el-button>
-              <el-tag v-if="this.$store.state.teacherID===1" style="cursor: pointer" size="mini" type="info" @click="$message('认证结果会发送至您邮箱，届时请注意查收')">认证审核中</el-tag>
-              <el-tag v-if="this.$store.state.teacherID===2" style="cursor:pointer" size="mini" type="success" @click="showResUp = true">已认证为教师用户</el-tag>
+              <el-button
+                v-if="this.$store.state.teacherID===0"
+                class="button"
+                style="width:100px"
+                @click="showAuthUp = true"
+              >申请教师认证</el-button>
+              <el-tag
+                v-if="this.$store.state.teacherID===1"
+                style="cursor: pointer"
+                size="mini"
+                type="info"
+                @click="$message('认证结果会发送至您邮箱，届时请注意查收')"
+              >认证审核中</el-tag>
+              <el-tag
+                v-if="this.$store.state.teacherID===2"
+                style="cursor:pointer"
+                size="mini"
+                type="success"
+                @click="showResUp = true"
+              >已认证为教师用户</el-tag>
             </template>
           </el-col>
           <el-col :span="1" :offset="4">
@@ -46,7 +63,6 @@
             <i class="el-icon-time el-icon"></i>
           </el-col>
           <el-col :span="2">
-
             <div class="icon-content" style="margin-top: 30px">学习时长</div>
             <div class="icon-content" style="margin-top: 10px; font-size: medium">{{users.time}}</div>
           </el-col>
@@ -64,7 +80,12 @@
 
       <el-tabs v-model="activeName" @tab-click="handleClick()" class="tab" style="size: 40px">
         <el-tab-pane label="课程" name="first">
-          <el-switch v-model="value1" inactive-text="加入的课程" active-text="创建的课程" active-value="false"></el-switch>
+          <el-switch
+            v-model="value1"
+            inactive-text="加入的课程"
+            active-text="创建的课程"
+            active-value="false"
+          ></el-switch>
           <div style="margin-left: 5%" v-show="!value1">
             <el-row :gutter="100" style="margin-top: 20px ">
               <el-col :span="5" :offset="0" v-for="(o,index) in course" :key="index">
@@ -77,10 +98,14 @@
                         @click.stop="clicktry()"
                         style="float: left;margin-left: 10px"
                       >
-                        <el-dropdown @command="handleCommand" >
-                          <span class="el-dropdown-link" style="font-weight: bold" @click="getcourse(o.course_id)">...</span>
+                        <el-dropdown @command="handleCommand">
+                          <span
+                            class="el-dropdown-link"
+                            style="font-weight: bold"
+                            @click="getcourse(o.course_id)"
+                          >...</span>
                           <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="a" >退出课程</el-dropdown-item>
+                            <el-dropdown-item command="a">退出课程</el-dropdown-item>
                           </el-dropdown-menu>
                         </el-dropdown>
                       </div>
@@ -137,7 +162,11 @@
                         style="float: left;margin-left: 10px"
                       >
                         <el-dropdown @command="handleCommand">
-                          <span class="el-dropdown-link" style="font-weight: bold" @click="getcourse(w.id)">...</span>
+                          <span
+                            class="el-dropdown-link"
+                            style="font-weight: bold"
+                            @click="getcourse(w.id)"
+                          >...</span>
                           <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item command="b">删除课程</el-dropdown-item>
                           </el-dropdown-menu>
@@ -225,6 +254,9 @@
               </el-col>
               <el-col :span="14">
                 <el-card class="message_card">好友列表</el-card>
+                <div class="friendList">
+                  <FriendList />
+                </div>
               </el-col>
             </el-row>
           </div>
@@ -263,30 +295,36 @@
             <el-col :span="11">
               <el-card class="message_card">课程申请</el-card>
               <div style="overflow-y: scroll; height: 500px">
-              <div class="message_detail">
-                <div v-for="(n,index) in courseMessages" :key="index">
-                  <el-card class="message_detail">
-                    <div class="message_title">
-                      <span class="message_title">
-                        <b style="color: #409eff">{{n.user}}</b>
-                        申请加入
-                        <b style="color: #409eff">{{n.course}}</b>
-                        课程
-                        <div
-                          style="float: right;color: #797b80;font-weight: bold;font-size: 13px"
-                        >{{time(n.application_time)}}</div>
-                        <div class="message_content">{{n.content}}</div>
-                        <el-button-group v-show="n.result===0">
-                          <el-button class="reject_button" @click="confirmCourse(n.id),n.result=1">同意</el-button>
-                          <el-button class="reject_button" @click="rejectCourse(n.id),n.result=2">拒绝</el-button>
-                        </el-button-group>
-                        <el-button class="rejected_button" v-show="n.result===1">已同意</el-button>
-                        <el-button class="rejected_button" v-show="n.result===2">已拒绝</el-button>
-                      </span>
-                    </div>
-                  </el-card>
+                <div class="message_detail">
+                  <div v-for="(n,index) in courseMessages" :key="index">
+                    <el-card class="message_detail">
+                      <div class="message_title">
+                        <span class="message_title">
+                          <b style="color: #409eff">{{n.user}}</b>
+                          申请加入
+                          <b style="color: #409eff">{{n.course}}</b>
+                          课程
+                          <div
+                            style="float: right;color: #797b80;font-weight: bold;font-size: 13px"
+                          >{{time(n.application_time)}}</div>
+                          <div class="message_content">{{n.content}}</div>
+                          <el-button-group v-show="n.result===0">
+                            <el-button
+                              class="reject_button"
+                              @click="confirmCourse(n.id),n.result=1"
+                            >同意</el-button>
+                            <el-button
+                              class="reject_button"
+                              @click="rejectCourse(n.id),n.result=2"
+                            >拒绝</el-button>
+                          </el-button-group>
+                          <el-button class="rejected_button" v-show="n.result===1">已同意</el-button>
+                          <el-button class="rejected_button" v-show="n.result===2">已拒绝</el-button>
+                        </span>
+                      </div>
+                    </el-card>
+                  </div>
                 </div>
-              </div>
               </div>
             </el-col>
           </el-row>
@@ -308,13 +346,14 @@
 import Navigator from "../components/Navigator";
 import Footer from "../components/Footer";
 import TeacherAuth from "@/components/TeacherAuth";
+import FriendList from "@/components/FriendList";
 import * as FT from "../tools/frontTool";
 import * as userAPI from "../APIs/user.js";
 import * as courseAPI from "../APIs/course.js";
 
 export default {
   name: "UserDetail",
-  components: { Navigator, Footer, TeacherAuth },
+  components: { Navigator, Footer, TeacherAuth, FriendList },
   data() {
     return {
       FT,
@@ -334,8 +373,8 @@ export default {
       },
       activeName: "first",
       seen: false,
-      course_id:1,
-      sender_id:1,
+      course_id: 1,
+      sender_id: 1,
       current: 0,
       value1: true,
       currentDate: new Date(),
@@ -345,22 +384,19 @@ export default {
           profession: "软件工程",
           teacher: "吕云翔",
           classIntro: "《软件工程实践》是软件工程本科专业的一门专业...",
-          studentnum:'1'  ,
-          course_id:50,
+          studentnum: "1",
+          course_id: 50,
         },
         {
           name: "数据库",
           profession: "计算机",
           teacher: "黄坚",
           classIntro: "《数据库》是计算机本科专业的一门专业必修课。它是...",
-          studentnum:'13'  ,
-          course_id:12,
+          studentnum: "13",
+          course_id: 12,
         },
       ],
-      makeCourse: [
-        {
-        },
-      ],
+      makeCourse: [{}],
       messages: [
         {
           message_title: "今晚5：30，WYX带你参观绿园",
@@ -376,16 +412,15 @@ export default {
           send_time: "2020-09-06 11:06:44",
           is_read: 0,
         },
-
       ],
-      courseMessages:[
+      courseMessages: [
         {
           courses: "软件工程实践",
           user: "LGY",
           result: 0,
           application_time: "2020-09-16",
           content: "233",
-          id:1,
+          id: 1,
         },
         {
           courses: "数据库",
@@ -393,12 +428,12 @@ export default {
           result: 0,
           application_time: "2020-09-13",
           content: "学习使我进步",
-          id:2,
+          id: 2,
         },
       ],
-      acceptedMessages:[],
-      rejectedMessages:[],
-      unhandled_applications:[],
+      acceptedMessages: [],
+      rejectedMessages: [],
+      unhandled_applications: [],
       friendMessages: [
         {
           application: "WHQ",
@@ -437,8 +472,19 @@ export default {
       console.log(tab, event);
     },
 
-    quitLogin(){
-
+    quitLogin() {
+      this.$confirm("是否确认退出当前账号", "退出登录", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+      })
+        .then(async () => {
+          this.$message.success("已退出登录");
+          this.$store.state.userId = -1;
+          this.$router.push({
+            path: "/home",
+          });
+        })
+        .catch(() => {});
     },
 
     show(index) {
@@ -456,22 +502,21 @@ export default {
       });
     },
 
-    clicktry() {
-    },
+    clicktry() {},
     //获取用户加入的课程*
     get_userCourse() {
       courseAPI.getUserCourse(this.userId).then((res) => {
         // let str = '{"message": "OK", "courses": [{"course_name": "科技写作", "course_intro": "Ian", "start_time": datetime.datetime(2020, 9, 11, 5, 3, 33), "profession": "Ian", "studentnum": 2, "teachername": null}, {"course_name": "软工23", "course_intro": "没什么用23", "start_time": datetime.datetime(2020, 9, 11, 5, 3, 33), "profession": null, "studentnum": 1, "teachername": null}]}'
-         console.log("11", res.data.courses);
+        console.log("11", res.data.courses);
         this.course = res.data.courses;
       });
     },
     //获取用户创建的课程*
-    get_userMakeCourse(){
+    get_userMakeCourse() {
       courseAPI.getUserOwnerCourse(this.userId).then((res) => {
         this.makeCourse = res.data.course_list;
-       // console.log(res.data);
-        console.log("@",res.data.course_list);
+        // console.log(res.data);
+        console.log("@", res.data.course_list);
       });
     },
 
@@ -481,19 +526,19 @@ export default {
     },
 
     //退出课程*
-    quitCourse(course_id){
-      courseAPI.deleteUserCourse(this.userId,course_id).then((res) => {
-          this.get_userCourse();
-        });
+    quitCourse(course_id) {
+      courseAPI.deleteUserCourse(this.userId, course_id).then((res) => {
+        this.get_userCourse();
+      });
     },
     //获取course_id的工具函数
-    getcourse(course_id){
-      this.course_id=course_id;
+    getcourse(course_id) {
+      this.course_id = course_id;
     },
     //删除课程*
-    deleteCourse(course_id){
+    deleteCourse(course_id) {
       courseAPI.deleteCourse(course_id).then((res) => {
-        console.log(this.userId,course_id);
+        console.log(this.userId, course_id);
         this.get_userMakeCourse();
       });
     },
@@ -505,7 +550,7 @@ export default {
           confirmButtonText: "确定",
           callback: (action) => {
             if (action == "confirm") {
-                this.quitCourse(this.course_id);
+              this.quitCourse(this.course_id);
             }
           },
         });
@@ -516,22 +561,26 @@ export default {
           callback: (action) => {
             // this.$message({     type: 'info',     message: `action: ${ action }` });
             if (action == "confirm") {
-               this.deleteCourse(this.course_id);
+              this.deleteCourse(this.course_id);
             }
           },
         });
       }
     },
     //获取所有课程申请++
-    get_CourseApply(){
+    get_CourseApply() {
       courseAPI.getUserApply(this.userId).then((res) => {
-         console.log("44", res.data);
-         this.accptedMessages = res.data.accepted_applications;
-         this.rejectedMessages = res.data.rejected_applications;
-         this.unhandledMessages = res.data.unhandled_applications;
-         let newarr = [...this.unhandledMessages,...this.accptedMessages, ...this.rejectedMessages];
-          this.courseMessages=newarr;
-        console.log("A",newarr);
+        console.log("44", res.data);
+        this.accptedMessages = res.data.accepted_applications;
+        this.rejectedMessages = res.data.rejected_applications;
+        this.unhandledMessages = res.data.unhandled_applications;
+        let newarr = [
+          ...this.unhandledMessages,
+          ...this.accptedMessages,
+          ...this.rejectedMessages,
+        ];
+        this.courseMessages = newarr;
+        console.log("A", newarr);
       });
     },
     //同意加入课程*
@@ -540,11 +589,12 @@ export default {
         message: "已添加成员进入课程",
         type: "success",
       });
-      courseAPI.Course(course_application_id).then((res) => {
-      });
-      courseAPI.systemMessages(19,'课程申请','老师已经通过了你的申请').then((res) => {
-        console.log("C",res);
-      });
+      courseAPI.Course(course_application_id).then((res) => {});
+      courseAPI
+        .systemMessages(19, "课程申请", "老师已经通过了你的申请")
+        .then((res) => {
+          console.log("C", res);
+        });
     },
     //拒绝加入课程*
     rejectCourse(course_application_id) {
@@ -552,22 +602,23 @@ export default {
         message: "拒绝成员进入课程",
         type: "success",
       });
-      courseAPI.rejectCourse(course_application_id).then((res) => {
-      });
-      courseAPI.systemMessages(19,'课程申请','老师拒绝了你的申请').then((res) => {
-        console.log("C",res);
-      });
+      courseAPI.rejectCourse(course_application_id).then((res) => {});
+      courseAPI
+        .systemMessages(19, "课程申请", "老师拒绝了你的申请")
+        .then((res) => {
+          console.log("C", res);
+        });
     },
     //获取所有好友申请
-    get_FriendApply(){
+    get_FriendApply() {
       userAPI.getFriendApplication(this.userId).then((res) => {
-                this.friendMessages=res.data;
-                console.log("B",res.data);})
-
+        this.friendMessages = res.data;
+        console.log("B", res.data);
+      });
     },
     //获取friend_id的工具函数
-    getfriend(sender_id){
-      this.sender_id=sender_id;
+    getfriend(sender_id) {
+      this.sender_id = sender_id;
     },
     //同意添加好友
     confirmFriend() {
@@ -575,11 +626,12 @@ export default {
         message: "成功添加好友",
         type: "success",
       });
-      userAPI.passFriend(20,19).then((res) => {
-      });
-      courseAPI.systemMessages(19,'好友申请','20已经通过了你的好友申请').then((res) => {
-        console.log("C",res);
-      });
+      userAPI.passFriend(20, 19).then((res) => {});
+      courseAPI
+        .systemMessages(19, "好友申请", "20已经通过了你的好友申请")
+        .then((res) => {
+          console.log("C", res);
+        });
     },
     //拒绝添加好友
     rejectFriend() {
@@ -587,17 +639,17 @@ export default {
         message: "已拒绝好友",
         type: "success",
       });
-      userAPI.rejectFriend(22,19).then((res) => {
-
-      });
-      courseAPI.systemMessages(19,"好友申请","2拒绝了你的好友申请").then((res) => {
-        console.log("C",res);
-      });
+      userAPI.rejectFriend(22, 19).then((res) => {});
+      courseAPI
+        .systemMessages(19, "好友申请", "2拒绝了你的好友申请")
+        .then((res) => {
+          console.log("C", res);
+        });
     },
     //发送系统消息
-    sendSystemMes(){
-      courseAPI.systemMessages("1","123","456").then((res) => {
-        console.log("C",res);
+    sendSystemMes() {
+      courseAPI.systemMessages("1", "123", "456").then((res) => {
+        console.log("C", res);
       });
     },
     //消息已读
@@ -607,7 +659,7 @@ export default {
         type: "success",
       });
       courseAPI.readMessages("1").then((res) => {
-        console.log("D",res);
+        console.log("D", res);
       });
     },
   },
@@ -640,8 +692,8 @@ function sortByTime(array, key1, key2) {
   margin-right: 6%;
   background-image: linear-gradient(
     to left,
-    rgba(255, 0, 0, 0.5),
-    rgba(255, 165, 0, 0.65)
+    rgba(255, 0, 0, 0.6),
+    rgba(255, 165, 0, 0.7)
   );
 }
 
@@ -901,15 +953,13 @@ function sortByTime(array, key1, key2) {
   color: #797b80 !important;
   font-weight: bold;
 }
-.quitButton{
+.quitButton {
   background-color: unset;
-  border: solid  white;
+  border: solid white;
   color: white;
   padding: 8px;
   font-weight: bold;
   margin-left: 35px;
-
-
 }
 
 /deep/ .el-switch__label.is-active {
@@ -921,4 +971,9 @@ function sortByTime(array, key1, key2) {
   background-color: #ff7256;
 }
 
+.friendList{
+   overflow-y: scroll;
+   height: 450px;
+   margin-top: 10px;
+}
 </style>

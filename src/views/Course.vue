@@ -121,7 +121,7 @@
               <el-tab-pane :name="tabNames[3]">
                 <div class="tab_left_part" slot="label">圈子社区</div>
                 <div id="postList" style="min-height:600px" v-if="courseInfo.is_open">
-                  <PostList />
+                  <PostList :point="circlePoint" />
                 </div>
               </el-tab-pane>
             </el-tabs>
@@ -289,6 +289,8 @@ export default {
       FT,
       activeName: "1",
 
+      circlePoint: 0,
+
       userId: null,
       identity: null,
       courseId: null,
@@ -321,7 +323,7 @@ export default {
       showStudentRecord: false,
       recordTitle: null,
 
-      tabPos: "video",
+      tabPos: "intro",
       tabNames: ["intro", "direct", "video", "forum"],
 
       firstStartTime: null,
@@ -434,11 +436,21 @@ export default {
         this.$route.params.courseId,
         this.$store.state.userId
       );
+      const UCR = await CourseAPI.getUCRelation(
+        this.$store.state.userId,
+        this.$route.params.courseId
+      );
+      if(UCR.data.result=="OK"){
+        this.circlePoint = UCR.data.user_course.point;
+        if(!this.circlePoint){
+          this.circlePoint = 0;
+        }
+      }
       console.log("课程信息");
       console.log(temp.data);
       this.courseInfo = temp.data.course;
       // this.identity = temp.data.relation;
-      this.identity = 3;
+      this.identity = 2;
       this.$store.state.permission = this.identity;
       this.teacherInfo = temp.data.teacher;
     },
@@ -771,6 +783,7 @@ export default {
 }
 
 #down_part {
+  min-height: 800px;
   margin-top: 2px;
   border-radius: 1px;
   padding-bottom: 20px;
@@ -789,7 +802,7 @@ export default {
 
 .tab_right_body {
   width: 80%;
-  height: 600px;
+  min-height: 600px;
   margin-left: 10%;
   margin-right: 10%;
   margin-top: 10px;
@@ -809,7 +822,7 @@ export default {
 }
 
 .tab_left_part {
-  width: 9vw;
+  min-width: 9vw;
   text-align: center;
   font-size: 16px;
 }

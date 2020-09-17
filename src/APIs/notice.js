@@ -65,6 +65,6 @@ export const sendPrivateMessages = (text) => {
 export const getAllFriend = (userId) => {
   return axios({
     method: 'GET',
-    url: `/friend/search?user_id=${userId}`
+    url: `/api/friend/search?user_id=${userId}`
   })
 }

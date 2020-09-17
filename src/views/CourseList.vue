@@ -1,15 +1,21 @@
 <template>
-  <div>
-    <Navigator active-func="course"/>
-    <el-row :gutter="10" style="margin-left: 15%; margin-right: 15%">
-      <el-col :span="17" style="margin-top: 80px;">
-        <el-input placeholder="搜索课程" prefix-icon="el-icon-search" v-model="search_keyword" clearable></el-input>
+  <div id="CL">
+    <Navigator active-func="course" />
+    <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%">
+      <el-col :span="16" style="margin-top: 80px;">
+        <el-input placeholder="请输入内容" v-model="searchInput" class="input-with-select">
+          <el-select
+            v-model="select"
+            style="width: 90px;color:black;padding-left:10px"
+            slot="prepend"
+          >
+            <el-option label="课 程" value="课程"></el-option>
+            <el-option label="教 师" value="教师"></el-option>
+          </el-select>
+          <el-button slot="append" style="color:#409eff" icon="el-icon-search" @click="searchAll"></el-button>
+        </el-input>
       </el-col>
-      <el-col :span="4" style="margin-top: 80px;">
-        <el-button type="primary" @click="search_course">搜索课程</el-button>
-        <el-button type="primary" v-if="display_search_result" @click="display_search_result=false">返回</el-button>
-      </el-col>
-      <el-col :span="3" style="margin-top: 80px;">
+      <el-col :span="3" style="margin-top: 80px;float:right">
         <el-button type="primary" style="float: right" @click="showAddCourse = true">
           创建课程
           <i class="el-icon-arrow-right"></i>
@@ -17,53 +23,71 @@
       </el-col>
     </el-row>
     <!--    全部课程列表-->
-    <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px" v-if="!display_search_result">
-      <el-col :span="6" v-for="(course,index) in course_list" :key="index" style="margin-top: 20px;">
+    <el-row
+      :gutter="20"
+      style="margin-left: 15%; margin-right: 15%; padding-bottom:50px"
+      v-if="!display_search_result"
+    >
+      <el-col
+        :span="6"
+        v-for="(course,index) in course_list"
+        :key="index"
+        style="margin-top: 20px;"
+      >
         <el-card>
-          <img src="@/assets/course-cover.png" style="width: 100%">
+          <img src="@/assets/course-cover.png" style="width: 100%" />
           <el-row style="margin-top: 5px">
-            <el-link type="primary" :underline="false" style="font-size: 20px;height: 20px"
-                     @click="frontTool.toPath('/course/'+course.id)">
-              {{ course.course_name|cut_8 }}
-            </el-link>
+            <el-link
+              type="primary"
+              :underline="false"
+              style="font-size: 20px;height: 20px"
+              @click="frontTool.toPath('/course/'+course.id)"
+            >{{ course.course_name|cut_8 }}</el-link>
           </el-row>
-          <el-row style="margin-top: 5px">
-            开课：{{ course.start_time|cut }} 至 {{ course.end_time|cut }}
-          </el-row>
+          <el-row style="margin-top: 5px">开课：{{ course.start_time|cut }} 至 {{ course.end_time|cut }}</el-row>
           <el-row>
-            <div style="float: left">
-              <!-- 教师：{{ course.teacher.realname? 123:23}} -->
-            </div>
-            <div style="float: right">
-              学生人数：{{ course.student_number }}
-            </div>
+            <div style="float: left">教师：{{ course.teacher ? course.teacher.realname:'匿名'}}</div>
+            <div style="float: right">学生人数：{{ course.student_number }}</div>
           </el-row>
         </el-card>
       </el-col>
     </el-row>
     <!--    搜索结果列表-->
-    <el-row :gutter="20" style="margin-left: 15%; margin-right: 15%; padding-bottom:50px" v-if="display_search_result">
-      <el-col :span="6" v-for="(course,index) in search_list" :key="index" style="margin-top: 20px;">
+    <el-row
+      :gutter="20"
+      style="margin-left: 15%; margin-right: 15%; padding-bottom:50px"
+      v-if="display_search_result"
+    >
+      <el-card v-if="search_list.length == 0">暂无有关课程</el-card>
+      <el-col
+        :span="6"
+        v-for="(course,index) in search_list"
+        :key="index"
+        style="margin-top: 20px;"
+      >
         <el-card>
-          <img src="@/assets/course-cover.png" style="width: 100%">
+          <img src="@/assets/course-cover.png" style="width: 100%" />
           <el-row style="margin-top: 5px">
-            <el-link type="primary" :underline="false" style="font-size: 20px;height: 20px"
-                     @click="frontTool.toPath('/course/'+course.id)">
-              {{ course.course_name|cut_8 }}
-            </el-link>
+            <el-link
+              type="primary"
+              :underline="false"
+              style="font-size: 20px;height: 20px"
+              @click="frontTool.toPath('/course/'+course.id)"
+            >{{ course.course_name|cut_8 }}</el-link>
           </el-row>
           <el-row style="margin-top: 5px">
-            <div>
-              开课：{{ course.start_time|cut }} 至 {{ course.end_time|cut }}
-            </div>
+            <div>开课：{{ course.start_time|cut }} 至 {{ course.end_time|cut }}</div>
+          </el-row>
+          <el-row>
+            <div style="float: left">教师：{{ course.teacher_name }}</div>
           </el-row>
         </el-card>
       </el-col>
     </el-row>
     <el-dialog :visible.sync="showAddCourse" width="50%">
-      <AddCourse/>
+      <AddCourse />
     </el-dialog>
-    <Footer/>
+    <Footer />
   </div>
 </template>
 
@@ -86,11 +110,13 @@ export default {
   data() {
     return {
       frontTool,
+      select: "课程",
+      searchInput: "",
       showAddCourse: false,
-      course_list: [],// course_intro,course_name,end_time,id,is_open,profession,rule,start_time
+      course_list: [], // course_intro,course_name,end_time,id,is_open,profession,rule,start_time
       search_keyword: "",
       search_list: [],
-      display_search_result: false
+      display_search_result: false,
     };
   },
   created() {
@@ -107,6 +133,16 @@ export default {
     },
   },
   methods: {
+    async searchAll() {
+      if (this.select == "课程") {
+        this.search_keyword = this.searchInput;
+        this.display_search_result = false;
+        this.search_course();
+      }
+      if(this.select == "教师"){
+        this.$message("教师检索功能开发中，敬请期待！")
+      }
+    },
     async get_course_list() {
       try {
         const list = await courseAPI.courseQuery();
@@ -114,25 +150,25 @@ export default {
         this.course_list = list.data.courses;
         this.course_list.reverse();
       } catch (e) {
-        this.$message.error('请求超时');
+        this.$message.error("请求超时");
       }
     },
-    async search_course(e) {
+    async search_course() {
       try {
         const list = await courseAPI.searchCourse(this.search_keyword);
         this.search_list = list.data;
         this.display_search_result = true;
+        console.log(list);
       } catch (e) {
-        this.$message.error('请求超时');
+        this.$message.error("请求超时");
       }
-      let target = e.target;
-      if (target.nodeName === "SPAN" || target.nodeName === "I")
-        target = e.target.parentNode;
-      target.blur();
     },
-  }
+  },
 };
 </script>
 
 <style scoped>
+#CL{
+  min-height: calc(100vh + 10px);
+}
 </style>

@@ -18,7 +18,7 @@
     <el-row style="font-size: 18px; margin-bottom: 20px;">
       <el-col :span="12">
         <div style="margin-left: 20px; color: rgb(120,120,120)">
-          <Username :name="post.author" :text="post.author_tag" />
+          <div @click="addFriend(floor1.author,floor1.owner.user_nickname)">{{post.author}}</div>
           <el-divider direction="vertical"></el-divider>
           {{ post.datetime|cut }}
         </div>
@@ -78,7 +78,9 @@
       <el-row style="margin-left: 5px">
         <el-col :span="12">
           <div>
-            {{ reply.owner.user_nickname }}
+            <div
+              @click="addFriend(reply.author,reply.owner.user_nickname)"
+            >{{ reply.owner.user_nickname }}</div>
             <el-divider direction="vertical"></el-divider>
             {{ reply.post_time|cut }}
           </div>
@@ -99,16 +101,13 @@
 
 <script>
 import * as postAPI from "@/APIs/forum.js";
+import * as UserAPI from "@/APIs/user.js";
 import * as FT from "@/tools/frontTool";
-import Username from "@/components/Username";
 
 export default {
   name: "PostDetail",
   props: {
     postId: String,
-  },
-  components: {
-    Username,
   },
   data() {
     return {
@@ -128,6 +127,7 @@ export default {
         top: 0,
         star: 0,
       },
+      floor1: {},
       reply_list: [],
     };
   },
@@ -148,6 +148,27 @@ export default {
     },
   },
   methods: {
+    async addFriend(FID, name) {
+      this.$confirm("是否向" + name + "发送好友请求", "添加好友", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      })
+        .then(async () => {
+          if (FID == this.$store.state.userId) {
+            this.$message.warning("不能向自己发送好友请求");
+            return;
+          }
+          await UserAPI.sendFriendApply(
+            this.$store.state.userId,
+            FID,
+            new Date().Format("yyyy-MM-dd hh:mm:ss")
+          );
+          this.$message.success({
+            message: "成功发送好友请求",
+          });
+        })
+        .catch(() => {});
+    },
     async like(e) {
       let temp = await postAPI.likeFloor(
         this.$store.state.userId,
@@ -181,11 +202,13 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      }).then(() => {
-        this.$message({
-          message: "举报以受理",
-        });
-      });
+      })
+        .then(() => {
+          this.$message({
+            message: "举报以受理",
+          });
+        })
+        .catch(() => {});
       let target = e.target;
       if (target.nodeName === "SPAN" || target.nodeName === "I")
         target = e.target.parentNode;
@@ -207,14 +230,10 @@ export default {
     async get_post_detail(pid) {
       try {
         const detail_dict = await postAPI.postDetail(pid);
+        console.log(detail_dict);
         this.post.id = detail_dict.data.post.id;
         this.post.title = detail_dict.data.post.title;
         this.post.author = detail_dict.data.post.owner.user_nickname;
-        if (detail_dict.data.post.owner.teacher_identity === 1) {
-          this.post.author_tag = "教师";
-        } else {
-          this.post.author_tag = "";
-        }
         this.post.datetime = detail_dict.data.floors[0].post_time;
         this.post.content = detail_dict.data.floors[0].content;
         this.post.read = detail_dict.data.post.watches;
@@ -222,6 +241,7 @@ export default {
         this.post.top = detail_dict.data.post.topped;
         this.post.star = detail_dict.data.post.stared;
         this.firstFloorId = detail_dict.data.floors[0].id;
+        this.floor1 = detail_dict.data.floors[0];
         this.reply_list = [];
         for (let i = 1; i < detail_dict.data.floors.length; i++) {
           this.reply_list.push(detail_dict.data.floors[i]);
