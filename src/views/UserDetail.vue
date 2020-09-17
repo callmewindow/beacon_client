@@ -315,8 +315,7 @@ export default {
       FT,
       showResUp: false,
       showAuthUp: false,
-      userId: 57,
-      // this.$store.state.userId,
+      userId: this.$store.state.userId,
       circleUrl: require("@/assets/useravatar.jpg"),
       users: {
         username: "烽火",

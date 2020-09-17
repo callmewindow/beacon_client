@@ -3,9 +3,16 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const routes = [{
+const routes = [
+
+    {
     path: '/',
     redirect: '/home',
+  },
+  {
+    path: '/pm',
+    name: 'PrivateMessage',
+    component: () => import('@/components/PrivateMessages.vue'),
   },
   {
     path: '/home',
