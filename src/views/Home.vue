@@ -22,16 +22,17 @@
             </div>
             <div class="con-block selfBlock" v-if="this.$store.state.userId != -1">
               <div class="username">
-                <Username v-if="$store.state.teacherID != 2" :name="username" text="教师" type="1" />
-                <Username v-if="$store.state.teacherID == 2" :name="username" text="" type="1" />
+                {{username}}
+                <!-- <Username v-if="$store.state.teacherID != 2" :name="username" text="教师" type="1" />
+                <Username v-if="$store.state.teacherID == 2" :name="username" text="" type="1" />-->
               </div>
               <div id="tip">最近学习</div>
               <div
-                v-if="selectClasses == []"
+                v-if="!haveClass"
                 class="classes"
                 style="padding-bottom:10px;cursor:default"
               >暂未加入课程</div>
-              <div v-if="selectClasses != []">
+              <div v-if="haveClass">
                 <div
                   class="classes"
                   v-for="(item,index) in selectClasses"
@@ -66,17 +67,37 @@
                 <el-button
                   style="float: right; padding: 3px 0"
                   type="text"
-                  @click="getHotCourse()"
+                  @click="getHotCourse('f5')"
                 >刷新</el-button>
               </div>
               <el-row class="hotCourseCon" justify="space-around">
-                <el-col class="hotCourse" :span="5" v-for="o in 8" :key="o">
-                  <div class="className" @click="FT.building">软件工程实践</div>
-                  <div class="classType">软件工程</div>
-                  <div class="classFrom">北京航空航天大学-X老师</div>
-                  <div class="studentNum">163人</div>
+                <el-col class="hotCourse" :span="5" v-for="(item,index) in hotCourse" :key="index">
+                  <div class="className" @click="toClass(item.id)">{{item.course_name | filterName}}</div>
+                  <div class="classType">{{item.profession}}</div>
+                  <div
+                    class="classFrom"
+                  >开始：{{item.start_time.substring(5,10)}} 结束：{{item.end_time.substring(5,10)}}</div>
+                  <div class="studentNum">选课{{item.student_number}}人</div>
                   <!-- <el-divider></el-divider> -->
                   <!-- <div class="classIntro">{{ classIntro | filterIntro }}</div> -->
+                </el-col>
+              </el-row>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+
+      <div id="bottom">
+        <el-row type="flex" class="row-bg" justify="center">
+          <el-col :span="18">
+            <el-card>
+              <div slot="header">
+                <span>热门领域</span>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="FT.building">刷新</el-button>
+              </div>
+              <el-row class="hotCourseCon" justify="space-around">
+                <el-col :span="2" v-for="o in 10" :key="o">
+                  <el-tag class="hotTag" @click="FT.building" effect="plain" type="primary">软件工程</el-tag>
                 </el-col>
               </el-row>
             </el-card>
@@ -96,18 +117,18 @@ import * as UserAPI from "@/APIs/user.js";
 import * as CourseAPI from "@/APIs/course.js";
 import Navigator from "@/components/Navigator";
 import Footer from "@/components/Footer";
-import Username from "@/components/Username";
+// import Username from "@/components/Username";
 export default {
   name: "Home",
   components: {
     Navigator,
     Footer,
-    Username,
+    // Username,
   },
   data() {
     return {
       FT,
-      timeTest: "",
+      haveClass: false,
       centerLogo: require("@/assets/logo-horizon-complex.png"),
       simpleLogo: require("@/assets/logo-horizon-simple.png"),
       username: "加载中",
@@ -134,20 +155,25 @@ export default {
       return value.substring(0, 40) + "...";
     },
     filterName(value) {
-      return value.substring(0, 6) + "...";
+      if (value.length > 6) {
+        return value.substring(0, 6) + "...";
+      }
+      return value;
     },
   },
   async created() {
     this.username = this.$store.state.nickname;
     let temp = await CourseAPI.getUserCourse(this.$store.state.userId);
-    this.allSelect = temp.data.courses;
-    this.allSelect.reverse();
-    this.allSelect.push(this.allSelect[0]);
-    this.allSelect.push(this.allSelect[0]);
-    this.allSelect.push(this.allSelect[0]);
-    this.allSelect.push(this.allSelect[0]);
-    for (let index = 0; index < this.allSelect.length && index < 3; index++) {
-      this.selectClasses.push(this.allSelect[index]);
+    console.log(temp);
+    if (temp.data.message == "该用户未参加任何课程。") {
+      this.haveClass = false;
+    } else {
+      this.haveClass = true;
+      this.allSelect = temp.data.courses;
+      this.allSelect.reverse();
+      for (let index = 0; index < this.allSelect.length && index < 3; index++) {
+        this.selectClasses.push(this.allSelect[index]);
+      }
     }
     await this.getHotCourse();
   },
@@ -155,42 +181,14 @@ export default {
     toClass(courseId) {
       FT.toPath("/course/" + courseId);
     },
-    async registerTest() {
-      // 手动修改内容可以完成注册
-      const tempU = {
-        username: "wyx0",
-        user_password: "wyx847590417",
-        school: "北京航空航天大学",
-        user_nickname: "稼轩fake",
-        school_id: "17373109",
-        email: "847590417@qq.com",
-      };
-      const temp = await UserAPI.register(
-        tempU.username,
-        tempU.user_password,
-        tempU.user_nickname,
-        tempU.school,
-        tempU.school_id,
-        tempU.email
-      );
-      // 获取其中需要的内容
-      let userData = temp.data;
-      console.log(userData);
-    },
-    async loginTest() {
-      const tempU = {
-        username: "张泰威",
-        user_password: "张泰威",
-      };
-      const temp = await UserAPI.login(tempU.username, tempU.user_password);
-      // 完整的返回消息
-      console.log(temp);
-      // 获取其中需要的内容，也就是后端给的result
-      let userData = temp.data;
-      console.log(userData);
-    },
-    async getHotCourse() {
-      console.log("get!");
+    async getHotCourse(type) {
+      let temp = await CourseAPI.getHotCourses();
+      this.hotCourse = temp.data.courses;
+      this.hotCourse.pop();
+      this.hotCourse.pop();
+      if (type == "f5") {
+        this.$message.success("热门课程已刷新");
+      }
     },
   },
 };
@@ -216,10 +214,10 @@ export default {
   padding-bottom: 10px;
 }
 .username {
-  padding-top: 12px;
-  font-size: 14px;
-  font-weight: bold;
   width: 100%;
+  padding-top: 12px;
+  font-size: 16px;
+  font-weight: bold;
   text-align: center;
 }
 #tip {
@@ -302,6 +300,7 @@ export default {
   clear: both;
   font-size: 15px;
   margin: 5px 0;
+  margin-top: 7px;
   height: 20px;
   line-height: 20px;
 }

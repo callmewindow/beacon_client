@@ -42,6 +42,12 @@ const routes = [
     ]
   },
   {
+    path: '/Login',
+    name: 'Login',
+    component: () =>
+      import('@/components/LoginTemp.vue'),
+  },
+  {
     path: '/test',
     name: 'FriendList',
     component: () => import('@/components/FriendList.vue'),

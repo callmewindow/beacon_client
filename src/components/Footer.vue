@@ -28,6 +28,7 @@ export default {
   color: #909399;
   font-size: 10px;
   text-align: center;
+  font-weight: bold;
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   position: fixed;
@@ -35,10 +36,10 @@ export default {
 }
 .footer-l{
   width: auto;
-  left: 10px;
+  left: 20px;
 }
 .footer-r{
   width: auto;
-  right: 10px;
+  right: 20px;
 }
 </style>

@@ -437,7 +437,8 @@ export default {
       console.log("课程信息");
       console.log(temp.data);
       this.courseInfo = temp.data.course;
-      this.identity = 2 /*temp.data.relation*/;
+      // this.identity = temp.data.relation;
+      this.identity = 3;
       this.$store.state.permission = this.identity;
       this.teacherInfo = temp.data.teacher;
     },
@@ -540,7 +541,7 @@ export default {
         .then(async () => {
           const temp = await CourseAPI.joinCourse(
             this.courseId,
-            this.userId,
+            7,
             "233"
           );
           console.log("申请返回");

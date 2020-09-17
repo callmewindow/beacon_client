@@ -32,7 +32,7 @@
           </el-row>
           <el-row>
             <div style="float: left">
-              教师：{{ course.teacher.realname}}
+              <!-- 教师：{{ course.teacher.realname? 123:23}} -->
             </div>
             <div style="float: right">
               学生人数：{{ course.student_number }}

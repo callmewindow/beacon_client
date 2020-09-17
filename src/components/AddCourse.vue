@@ -204,6 +204,7 @@ export default {
     submitFormWhole(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.courseEntity.teacher_id = this.$store.state.userId;
           this.courseEntity.course_name = this.Form.courseTitle;
           this.courseEntity.profession = this.Form.courseMajor;
           this.courseEntity.course_intro = this.Form.courseIntro;
