@@ -181,13 +181,15 @@
         <el-table-column prop="school_id" label="学号"></el-table-column>
         <el-table-column prop="realname" label="姓名"></el-table-column>
         <el-table-column prop="school" label="学校"></el-table-column>
+        <el-table-column  label="总观看次数"></el-table-column>
+        <el-table-column  label="总播放时长"></el-table-column>
         <el-table-column prop="user_identity" label="身份">
           <template slot-scope="scope">
             <span v-if="scope.row.user_identity == 0">学生</span>
             <span v-if="scope.row.user_identity == 1">助教</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="220px">
           <template slot-scope="scope">
             <el-button
               v-if="scope.row.user_identity == 1"
@@ -231,7 +233,7 @@
               <el-divider direction="vertical"></el-divider>
               观看次数：{{item2.play_times}}次
               <el-divider direction="vertical"></el-divider>
-              观看时常：{{parseInt(item2.play_time/60)}}分{{item2.play_time%60}}秒
+              观看时长：{{parseInt(item2.play_time/60)}}分{{item2.play_time%60}}秒
             </span>
           </div>
           <div v-for="(item2, index2) in viewRecordList" :key="index2">
@@ -245,7 +247,7 @@
             >
               <el-table-column type="index" label="播放记录编号" width="120px"></el-table-column>
               <el-table-column prop="start_play_time" label="播放开始时间"></el-table-column>
-              <el-table-column prop="played_time" label="播放时常">
+              <el-table-column prop="played_time" label="播放时长">
                 <template
                   slot-scope="scope"
                 >{{parseInt(scope.row.played_time/60)}}分{{scope.row.played_time%60}}秒</template>
