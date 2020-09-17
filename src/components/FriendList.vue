@@ -18,6 +18,7 @@
 import * as postAPI from "@/APIs/forum.js";
 import * as CourseAPI from "@/APIs/course";
 import * as NoticeAPI from "@/APIs/notice";
+import * as ua from "@/APIs/user";
 import * as FT from "@/tools/frontTool";
 
 export default {
@@ -32,7 +33,11 @@ export default {
       talkFriend: "与木村的对话",
     };
   },
-  async created() {},
+  async created() {
+    //let temp = await NoticeAPI.getAllFriend(1);
+    let temp2 = await ua.getFriendApplication(1);
+    console.log(temp2);
+  },
   filters: {
     cutMsg(str) {
       if(str.length > 8){

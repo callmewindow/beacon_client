@@ -6,7 +6,7 @@ import {
   QS
 } from './../tools/apiTool'
 
-export const register = (username, user_nickname, user_password,  email) => {
+export const register = (username, user_nickname, user_password, email) => {
   return axios({
     method: 'POST',
     url: `/addUser`,
@@ -118,23 +118,46 @@ export const getUserDetail = (userid) => {
   })
 }
 //通过好友申请
-export const passFriend = (sender_id,target_id) => {
+export const passFriend = (sender_id, target_id) => {
   return axios({
     method: 'POST',
-    url: `/passFriendApplication?sender_id=${sender_id}&target_id=${target_id}`
+    url: `/passFriendApplication`,
+    data: QS({
+      applicant_id: sender_id,
+      target_id
+    })
   })
 }
 //拒绝好友申请
-export const rejectFriend = (sender_id,target_id) => {
+export const rejectFriend = (sender_id, target_id) => {
   return axios({
     method: 'POST',
-    url: `/rejectFriendApplication?sender_id=${sender_id}&target_id=${target_id}`
+    url: `/rejectFriendApplication`,
+    data: QS({
+      applicant_id: sender_id,
+      target_id
+    })
   })
 }
-//获取好友申请
+//获取收到的好友申请
 export const getFriendApplication = (target_id) => {
   return axios({
     method: 'POST',
-    url: `/getFriendApplicationOfYourself?target_id=${target_id}`
+    url: `/getFriendApplicationOfOthers`,
+    data: QS({
+      target_id
+    })
+  })
+}
+
+//删除好友
+export const getFriendApplication = (user1_id, user2_id) => {
+  return axios({
+    method: 'POST',
+    url: `/getFriendApplicationOfOthers`,
+    data: QS({
+      user1_id,
+      user2_id
+    })
   })
 }
