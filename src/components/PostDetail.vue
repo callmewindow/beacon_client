@@ -165,7 +165,7 @@ export default {
     async dislike(e) {
       if (this.post.like > 0) {
         this.post.like -= 1;
-        let temp = await postAPI.likeFloor(
+        let temp = await postAPI.dislikeFloor(
           this.$store.state.userId,
           this.firstFloorId
         );
