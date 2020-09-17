@@ -119,23 +119,23 @@ export const getUserDetail = (userid) => {
   })
 }
 //通过好友申请
-export const passFriend = (sender_id,target_id,handle_content) => {
+export const passFriend = (sender_id,target_id) => {
   return axios({
     method: 'POST',
-    url: `/passFriendApplication?sender_id=${sender_id}&target_id=${target_id}&handle_content=${handle_content}`
+    url: `/passFriendApplication?sender_id=${sender_id}&target_id=${target_id}`
   })
 }
 //拒绝好友申请
-export const rejectFriend = (sender_id,target_id,handle_content) => {
+export const rejectFriend = (sender_id,target_id) => {
   return axios({
     method: 'POST',
-    url: `/rejectFriendApplication?sender_id=${sender_id}&target_id=${target_id}&handle_content=${handle_content}`
+    url: `/rejectFriendApplication?sender_id=${sender_id}&target_id=${target_id}`
   })
 }
 //获取好友申请
-export const getFriendApplication = (sender_id,target_id) => {
+export const getFriendApplication = (target_id) => {
   return axios({
     method: 'POST',
-    url: `/getFriendApplication?sender_id=${sender_id}&target_id=${target_id}`
+    url: `/getFriendApplicationOfYourself?target_id=${target_id}`
   })
 }

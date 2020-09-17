@@ -59,7 +59,7 @@
       </el-card>
       <el-tabs v-model="activeName" @tab-click="handleClick()" class="tab" style="size: 40px">
         <el-tab-pane label="课程" name="first">
-          <el-switch v-model="value1" active-text="创建的课程" inactive-text="加入的课程"></el-switch>
+          <el-switch v-model="value1" inactive-text="加入的课程" active-text="创建的课程" active-value="false"></el-switch>
           <div style="margin-left: 5%" v-show="!value1">
             <el-row :gutter="100" style="margin-top: 20px ">
               <el-col :span="5" :offset="0" v-for="(o,index) in course" :key="index">
@@ -72,10 +72,10 @@
                         @click.stop="clicktry()"
                         style="float: left;margin-left: 10px"
                       >
-                        <el-dropdown @command="handleCommand">
-                          <span class="el-dropdown-link" style="font-weight: bold">...</span>
+                        <el-dropdown @command="handleCommand" >
+                          <span class="el-dropdown-link" style="font-weight: bold" @click="getcourse(o.course_id)">...</span>
                           <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="a">退出课程</el-dropdown-item>
+                            <el-dropdown-item command="a" >退出课程</el-dropdown-item>
                           </el-dropdown-menu>
                         </el-dropdown>
                       </div>
@@ -132,7 +132,7 @@
                         style="float: left;margin-left: 10px"
                       >
                         <el-dropdown @command="handleCommand">
-                          <span class="el-dropdown-link" style="font-weight: bold">...</span>
+                          <span class="el-dropdown-link" style="font-weight: bold" @click="getcourse(w.id)">...</span>
                           <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item command="b">删除课程</el-dropdown-item>
                           </el-dropdown-menu>
@@ -257,6 +257,7 @@
             </el-col>
             <el-col :span="11">
               <el-card class="message_card">课程申请</el-card>
+              <div style="overflow-y: scroll; height: 500px">
               <div class="message_detail">
                 <div v-for="(n,index) in courseMessages" :key="index">
                   <el-card class="message_detail">
@@ -264,15 +265,15 @@
                       <span class="message_title">
                         <b style="color: #409eff">{{n.user}}</b>
                         申请加入
-                        <b style="color: #409eff">{{n.courses}}</b>
+                        <b style="color: #409eff">{{n.course}}</b>
                         课程
                         <div
                           style="float: right;color: #797b80;font-weight: bold;font-size: 13px"
-                        >{{n.application_time}}</div>
+                        >{{time(n.application_time)}}</div>
                         <div class="message_content">{{n.content}}</div>
                         <el-button-group v-show="n.result===0">
-                          <el-button class="reject_button" @click="confirmCourse(),n.result=1">同意</el-button>
-                          <el-button class="reject_button" @click="rejectCourse(),n.result=2">拒绝</el-button>
+                          <el-button class="reject_button" @click="confirmCourse(n.id),n.result=1">同意</el-button>
+                          <el-button class="reject_button" @click="rejectCourse(n.id),n.result=2">拒绝</el-button>
                         </el-button-group>
                         <el-button class="rejected_button" v-show="n.result===1">已同意</el-button>
                         <el-button class="rejected_button" v-show="n.result===2">已拒绝</el-button>
@@ -280,6 +281,7 @@
                     </div>
                   </el-card>
                 </div>
+              </div>
               </div>
             </el-col>
           </el-row>
@@ -313,7 +315,8 @@ export default {
       FT,
       showResUp: false,
       showAuthUp: false,
-      userId: this.$store.state.userId,
+      userId: 57,
+      // this.$store.state.userId,
       circleUrl: require("@/assets/useravatar.jpg"),
       users: {
         username: "烽火",
@@ -325,8 +328,9 @@ export default {
         score: 99,
         time: "13时26分",
       },
-      activeName: "third",
+      activeName: "first",
       seen: false,
+      course_id:1,
       current: 0,
       value1: true,
       currentDate: new Date(),
@@ -336,22 +340,20 @@ export default {
           profession: "软件工程",
           teacher: "吕云翔",
           classIntro: "《软件工程实践》是软件工程本科专业的一门专业...",
+          studentnum:'1'  ,
+          course_id:50,
         },
         {
           name: "数据库",
           profession: "计算机",
           teacher: "黄坚",
           classIntro: "《数据库》是计算机本科专业的一门专业必修课。它是...",
+          studentnum:'13'  ,
+          course_id:12,
         },
       ],
       makeCourse: [
         {
-          course_name: "数据库",
-          profession: "计算机",
-          teachername: "黄坚",
-          start_time: "2020-10-01",
-          studentnum: 165,
-          course_intro: "《数据库》是计算机本科专业的一门专业必修课。它是...",
         },
       ],
       messages: [
@@ -369,42 +371,16 @@ export default {
           send_time: "2020-09-06 11:06:44",
           is_read: 0,
         },
-        {
-          message_title: "今晚5：30，WYX带你参观绿园",
-          message_content:
-            "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！",
-          send_time: "2020-09-05 10:06:44",
-          is_read: 0,
-        },
-        {
-          message_title: "明早8：00，F111，每日站会",
-          message_content:
-            "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目",
-          send_time: "2020-09-06 11:06:44",
-          is_read: 0,
-        },
-        {
-          message_title: "今晚5：30，WYX带你参观绿园",
-          message_content:
-            "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！",
-          send_time: "2020-09-05 10:06:44",
-          is_read: 0,
-        },
-        {
-          message_title: "明早8：00，F111，每日站会",
-          message_content:
-            "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目",
-          send_time: "2020-09-06 11:06:44",
-          is_read: 0,
-        },
+
       ],
-      courseMessages: [
+      courseMessages:[
         {
           courses: "软件工程实践",
           user: "LGY",
           result: 0,
           application_time: "2020-09-16",
           content: "233",
+          id:1,
         },
         {
           courses: "数据库",
@@ -412,8 +388,12 @@ export default {
           result: 0,
           application_time: "2020-09-13",
           content: "学习使我进步",
+          id:2,
         },
       ],
+      acceptedMessages:[],
+      rejectedMessages:[],
+      unhandled_applications:[],
       friendMessages: [
         {
           application: "WHQ",
@@ -434,6 +414,9 @@ export default {
   created() {
     this.get_userDetail();
     this.get_userCourse();
+    this.get_userMakeCourse();
+    this.get_CourseApply();
+    this.get_FriendApply();
     console.log(this.$store.state);
   },
   filters: {
@@ -442,38 +425,6 @@ export default {
     },
   },
   methods: {
-    authentication() {
-      this.$router.push({ path: "/authentication" });
-    },
-
-    confirmCourse() {
-      this.$message({
-        message: "已添加成员进入课程",
-        type: "success",
-      });
-    },
-
-    rejectCourse() {
-      this.$message({
-        message: "拒绝成员进入课程",
-        type: "success",
-      });
-    },
-
-    confirmFriend() {
-      this.$message({
-        message: "成功添加好友",
-        type: "success",
-      });
-    },
-
-    rejectFriend() {
-      this.$message({
-        message: "已拒绝好友",
-        type: "success",
-      });
-    },
-
     jumpCourse() {},
 
     handleClick(tab, event) {
@@ -483,10 +434,9 @@ export default {
     show(index) {
       this.i = index;
     },
-
+    //获取用户信息*
     get_userDetail() {
       userAPI.getUserDetail(this.userId).then((res) => {
-        console.log("1111", res.data.user);
         this.users.username = res.data.user.nickname;
         this.users.school = res.data.user.school;
         this.users.major = res.data.user.profession;
@@ -496,14 +446,22 @@ export default {
       });
     },
 
-    clicktry() {},
-
+    clicktry() {
+    },
+    //获取用户加入的课程*
     get_userCourse() {
       courseAPI.getUserCourse(this.userId).then((res) => {
         // let str = '{"message": "OK", "courses": [{"course_name": "科技写作", "course_intro": "Ian", "start_time": datetime.datetime(2020, 9, 11, 5, 3, 33), "profession": "Ian", "studentnum": 2, "teachername": null}, {"course_name": "软工23", "course_intro": "没什么用23", "start_time": datetime.datetime(2020, 9, 11, 5, 3, 33), "profession": null, "studentnum": 1, "teachername": null}]}'
-        // console.log("11", typeof res.data);
-        console.log("11", res);
+         console.log("11", res.data.courses);
         this.course = res.data.courses;
+      });
+    },
+    //获取用户创建的课程*
+    get_userMakeCourse(){
+      courseAPI.getUserOwnerCourse(this.userId).then((res) => {
+        this.makeCourse = res.data.course_list;
+       // console.log(res.data);
+        console.log("@",res.data.course_list);
       });
     },
 
@@ -512,24 +470,32 @@ export default {
       if (s) return s.substring(0, 10);
     },
 
-    open2() {
-      this.$message({
-        message: "消息已标为已读",
-        type: "success",
+    //退出课程*
+    quitCourse(course_id){
+      courseAPI.deleteUserCourse(this.userId,course_id).then((res) => {
+          this.get_userCourse();
+        });
+    },
+    //获取user_id的工具函数
+    getcourse(course_id){
+      this.course_id=course_id;
+    },
+    //删除课程*
+    deleteCourse(course_id){
+      courseAPI.deleteCourse(course_id).then((res) => {
+        console.log(this.userId,course_id);
+        this.get_userMakeCourse();
       });
     },
-
+    //**
     handleCommand(command) {
       console.log("112");
       if (command == "a") {
         this.$alert("确定退出该课程吗", "退出课程", {
           confirmButtonText: "确定",
           callback: (action) => {
-            // this.$message({
-            //     type: 'info',
-            //     message: `action: ${ action }`
-            // });
             if (action == "confirm") {
+                this.quitCourse(this.course_id);
             }
           },
         });
@@ -538,17 +504,77 @@ export default {
         this.$alert("确定删除该课程吗", "删除课程", {
           confirmButtonText: "确定",
           callback: (action) => {
-            // this.$message({
-            //     type: 'info',
-            //     message: `action: ${ action }`
-            // });
+            // this.$message({     type: 'info',     message: `action: ${ action }` });
             if (action == "confirm") {
+               this.deleteCourse(this.course_id);
             }
           },
         });
       }
     },
+    //获取所有课程申请++
+    get_CourseApply(){
+      courseAPI.getUserApply(this.userId).then((res) => {
+         console.log("44", res.data);
+         this.accptedMessages = res.data.accepted_applications;
+         this.rejectedMessages = res.data.rejected_applications;
+         this.unhandledMessages = res.data.unhandled_applications;
+         let newarr = [...this.unhandledMessages,...this.accptedMessages, ...this.rejectedMessages];
+          this.courseMessages=newarr;
+        console.log("A",newarr);
+
+      });
+    },
+    //同意加入课程*
+    confirmCourse(course_application_id) {
+      this.$message({
+        message: "已添加成员进入课程",
+        type: "success",
+      });
+      courseAPI.Course(course_application_id).then((res) => {
+      });
+    },
+    //拒绝加入课程*
+    rejectCourse(course_application_id) {
+      this.$message({
+        message: "拒绝成员进入课程",
+        type: "success",
+      });
+      courseAPI.rejectCourse(course_application_id).then((res) => {
+      });
+    },
+    //获取所有好友申请
+    get_FriendApply(){
+      userAPI.getFriendApplication(this.userId).then((res) => {
+                this.friendMessages=res.data;
+                console.log("B",res.data);})
+
+    },
+    //同意添加好友
+    confirmFriend() {
+      this.$message({
+        message: "成功添加好友",
+        type: "success",
+      });
+      courseAPI.rejectCourse(course_application_id).then((res) => {
+      });
+    },
+    //拒绝添加好友
+    rejectFriend() {
+      this.$message({
+        message: "已拒绝好友",
+        type: "success",
+      });
+    },
+    //消息已读
+    open2() {
+      this.$message({
+        message: "消息已标为已读",
+        type: "success",
+      });
+    },
   },
+
   computed: {
     sortmessages: function () {
       return sortByTime(this.messages, "send_time", "is_read");
