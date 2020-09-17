@@ -46,8 +46,12 @@
             <i class="el-icon-time el-icon"></i>
           </el-col>
           <el-col :span="2">
+
             <div class="icon-content" style="margin-top: 30px">学习时长</div>
             <div class="icon-content" style="margin-top: 10px; font-size: medium">{{users.time}}</div>
+          </el-col>
+          <el-col :span="1">
+            <el-button class="quitButton" @click="quitLogin">注销</el-button>
           </el-col>
         </el-row>
         <el-row :gutter="20">
@@ -57,6 +61,7 @@
           >学习时长将会实时进行更新</div>
         </el-row>
       </el-card>
+
       <el-tabs v-model="activeName" @tab-click="handleClick()" class="tab" style="size: 40px">
         <el-tab-pane label="课程" name="first">
           <el-switch v-model="value1" inactive-text="加入的课程" active-text="创建的课程" active-value="false"></el-switch>
@@ -330,6 +335,7 @@ export default {
       activeName: "first",
       seen: false,
       course_id:1,
+      sender_id:1,
       current: 0,
       value1: true,
       currentDate: new Date(),
@@ -430,6 +436,10 @@ export default {
       console.log(tab, event);
     },
 
+    quitLogin(){
+
+    },
+
     show(index) {
       this.i = index;
     },
@@ -475,7 +485,7 @@ export default {
           this.get_userCourse();
         });
     },
-    //获取user_id的工具函数
+    //获取course_id的工具函数
     getcourse(course_id){
       this.course_id=course_id;
     },
@@ -548,6 +558,10 @@ export default {
                 this.friendMessages=res.data;
                 console.log("B",res.data);})
 
+    },
+    //获取friend_id的工具函数
+    getfriend(sender_id){
+      this.sender_id=sender_id;
     },
     //同意添加好友
     confirmFriend() {
@@ -863,6 +877,16 @@ function sortByTime(array, key1, key2) {
   color: #797b80 !important;
   font-weight: bold;
 }
+.quitButton{
+  background-color: unset;
+  border: solid  white;
+  color: white;
+  padding: 8px;
+  font-weight: bold;
+  margin-left: 35px;
+
+
+}
 
 /deep/ .el-switch__label.is-active {
   color: #ff7256 !important;
@@ -872,4 +896,5 @@ function sortByTime(array, key1, key2) {
   border-color: #ff7256;
   background-color: #ff7256;
 }
+
 </style>
