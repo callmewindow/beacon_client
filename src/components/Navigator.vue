@@ -4,7 +4,7 @@
       <el-menu-item @click="FT.toPath('/home')">
         <el-image style="height:50px;width:130px;margin:auto;margin-left:100px;" :src="wel" />
       </el-menu-item>
-      <el-menu-item class="nav-text" @click="FT.toPath('/courseList')" index="class">
+      <el-menu-item class="nav-text" @click="FT.toPath('/courseList')" index="course">
         课程
       </el-menu-item>
       <el-menu-item class="nav-text" @click="FT.building" index="college">
@@ -14,7 +14,7 @@
         圈子
       </el-menu-item>
 
-      <el-menu-item style="float:right;margin-right:100px;" @click="FT.toPath('/user')" index="user">
+      <el-menu-item style="float:right;margin-right:100px;" @click="FT.toPath('/user/0')" index="user">
         <el-badge
           :is-dot="this.$store.state.messageNum !== 0"
           :hidden="this.$store.state.messageNum === 0"

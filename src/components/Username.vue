@@ -1,7 +1,7 @@
 <template>
   <div id="una">
-    {{name}}
-    <el-tag type="success" v-if="text" size="small" effect="dark">{{text}}</el-tag>
+    <div id="nameName">{{name}}</div>
+    <el-tag id="nameTag" type="success" v-if="text" size="small" effect="dark">{{text}}</el-tag>
   </div>
 </template>
 
@@ -20,7 +20,14 @@ export default {
 
 <style scoped>
 /* #una {
-  height: 30px;
-  line-height: 30px;
+  border: 1px solid black;
 } */
+#nameName{
+  margin-top: 1px;
+  float:left
+}
+#nameTag{
+  margin-top: 0px;
+  margin-left: 3px;
+}
 </style>

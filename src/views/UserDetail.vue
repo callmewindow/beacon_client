@@ -2,6 +2,7 @@
   <div>
     <Navigator active-func="UserDetail" />
     <div class="back">
+      <!--            上层个人信息展示-->
       <el-card class="card align-center text-align: center;">
         <el-row :gutter="20" class="row-bg">
           <el-col :span="8" :offset="2">
@@ -9,14 +10,16 @@
               <i class="el-icon-user-solid"></i>
               <b style="margin-left: 5%">{{users.username}}</b>
             </div>
-            <div class="info-content" v-show="users.identity===0">
+            <div class="info-content" v-show="this.$store.state.teacherID===0">
               教师
               <b style="margin-left: 5px; margin-right:5px">|</b>
               {{users.school}}
             </div>
             <div class="info-content" style="margin-top: 10px">{{users.major}}</div>
-            <template v-if="users.identity===0">
-              <el-button class="button" @click="FT.building">教师认证</el-button>
+            <template>
+              <el-button v-if="this.$store.state.teacherID===0" class="button" style="width:100px" @click="showAuthUp = true">申请教师认证</el-button>
+              <el-tag v-if="this.$store.state.teacherID===1" style="cursor: pointer" size="mini" type="info" @click="$message('认证结果会发送至您邮箱，届时请注意查收')">认证审核中</el-tag>
+              <el-tag v-if="this.$store.state.teacherID===2" style="cursor:pointer" size="mini" type="success" @click="showResUp = true">已认证为教师用户</el-tag>
             </template>
           </el-col>
           <el-col :span="1" :offset="4">
@@ -51,18 +54,32 @@
           <div
             class="info-content"
             style="float: right;margin-right:30%;margin-top: -2%"
-          >学习时长将会隔天进行更新</div>
+          >学习时长将会实时进行更新</div>
         </el-row>
       </el-card>
-
-      <el-tabs v-model="activeName" @tab-click="handleClick" class="tab" style="size: 40px">
+      <el-tabs v-model="activeName" @tab-click="handleClick()" class="tab" style="size: 40px">
         <el-tab-pane label="课程" name="first">
-          <div style="margin-left: 5%">
-            <el-row :gutter="100" style="margin-top: 2px ">
+          <el-switch v-model="value1" active-text="创建的课程" inactive-text="加入的课程"></el-switch>
+          <div style="margin-left: 5%" v-show="!value1">
+            <el-row :gutter="100" style="margin-top: 20px ">
               <el-col :span="5" :offset="0" v-for="(o,index) in course" :key="index">
                 <div style="min-width: 200px ;margin-bottom: 30px">
-                  <div v-on: @mouseover="show(index)" @mouseleave="i=-1" @click="FT.building()">
+                  <div v-on: @mouseover="show(index)" @mouseleave="i=-1" @click="jumpCourse()">
                     <el-card :body-style="{padding:'2px'}" shadow="hover" class="courseCard">
+                      <!-- 退出课程按钮-->
+                      <div
+                        v-show="index === i"
+                        @click.stop="clicktry()"
+                        style="float: left;margin-left: 10px"
+                      >
+                        <el-dropdown @command="handleCommand">
+                          <span class="el-dropdown-link" style="font-weight: bold">...</span>
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="a">退出课程</el-dropdown-item>
+                          </el-dropdown-menu>
+                        </el-dropdown>
+                      </div>
+                      <!--                                            课程信息详情-->
                       <div class="className">{{o.course_name}}</div>
                       <el-tag
                         class="tag"
@@ -102,17 +119,104 @@
               </el-col>
             </el-row>
           </div>
+          <div style="margin-left: 5%" v-show="value1">
+            <el-row :gutter="100" style="margin-top: 20px ">
+              <el-col :span="5" :offset="0" v-for="(w,index) in makeCourse" :key="index">
+                <div style="min-width: 200px ;margin-bottom: 30px">
+                  <div v-on: @mouseover="show(index)" @mouseleave="i=-1" @click="jumpCourse()">
+                    <el-card :body-style="{padding:'2px'}" shadow="hover" class="courseCard">
+                      <!-- 退出课程按钮-->
+                      <div
+                        v-show="index === i"
+                        @click.stop="clicktry()"
+                        style="float: left;margin-left: 10px"
+                      >
+                        <el-dropdown @command="handleCommand">
+                          <span class="el-dropdown-link" style="font-weight: bold">...</span>
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="b">删除课程</el-dropdown-item>
+                          </el-dropdown-menu>
+                        </el-dropdown>
+                      </div>
+                      <!--                                            课程信息详情-->
+                      <div class="className">{{w.course_name}}</div>
+                      <el-tag
+                        class="tag"
+                        type="warning"
+                        style="width: 60px"
+                        v-show="w.profession"
+                      >{{w.profession}}</el-tag>
+                      <div class="classFrom info-content">{{w.teachername}}</div>
+                      <div v-show="index !==i" class="startime info-content">
+                        <i class="el-icon-date"></i>
+                        {{time(w.start_time)}}
+                      </div>
+                      <div v-show="index!==i" class="studentNum info-content">
+                        <i class="el-icon-user"></i>
+                        {{w.studentnum}}
+                      </div>
+                      <div v-show="index === i" class="classIntro">{{w.course_intro }}</div>
+                      <div
+                        v-show="index === i"
+                        class="info-content"
+                        style=" color: #797b80;float: left;margin-left: 5%;font-size: 12px"
+                      >
+                        <i class="el-icon-date"></i>
+                        {{time(w.start_time)}}
+                      </div>
+                      <div
+                        v-show="index === i"
+                        class="info-content"
+                        style="color: #797b80;float: right ;font-size: 12px"
+                      >
+                        <i class="el-icon-user"></i>
+                        {{w.studentnum}}
+                      </div>
+                    </el-card>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </div>
         </el-tab-pane>
-
-
         <el-tab-pane label="帖子" name="second"></el-tab-pane>
-
-
         <el-tab-pane label="好友" name="third">
           <div class="message">
             <el-row :gutter="30">
               <el-col :span="10">
                 <el-card class="message_card">好友申请</el-card>
+                <div style="overflow-y: scroll; height: 500px">
+                  <div class="message_detail">
+                    <div v-for="(p,index) in friendMessages" :key="index">
+                      <el-card class="message_detail">
+                        <div class="message_title">
+                          <span class="message_title">
+                            <b style="color: #409eff">{{p.application}}</b>
+                            申请加你为好友
+                            <div
+                              style="float: right;color: #797b80;font-weight: bold;font-size: 13px"
+                            >{{p.application_time}}</div>
+                            <div class="message_content">{{p.application_content}}</div>
+                            <el-button-group>
+                              <el-button
+                                class="confirm_button"
+                                @click="confirmFriend(),p.app_result=1"
+                                v-show="p.app_result===0"
+                              >同意</el-button>
+                              <el-button
+                                class="confirm_button"
+                                @click="rejectFriend(),p.app_result=2"
+                                v-show="p.app_result===0"
+                              >拒绝</el-button>
+                            </el-button-group>
+                            <el-button class="confirmed_button" v-show="p.app_result===1">已同意</el-button>
+                            <el-button class="confirmed_button" v-show="p.app_result===2">已拒绝</el-button>
+                          </span>
+                        </div>
+                      </el-card>
+                    </div>
+                  </div>
+                </div>
               </el-col>
               <el-col :span="14">
                 <el-card class="message_card">好友列表</el-card>
@@ -121,23 +225,73 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="消息中心" name="forth">
-             <div class="message">
-                <el-row :gutter="20">
-                   <el-col :span="11">
-                      <el-card class="message_card">系统消息</el-card>
-                     <el-card class="message_detail">dsf</el-card>
-                   </el-col>
-                  <el-col :span="2"><div class="line">|</div></el-col>
-                  <el-col :span="11">
-                    <el-card class="message_card">课程申请</el-card>
-                    <el-card class="message_detail"></el-card>
-                  </el-col>
-                </el-row>
-             </div>
-
+          <el-row :gutter="20">
+            <el-col :span="11">
+              <el-card class="message_card">系统消息</el-card>
+              <div style="overflow-y: scroll; height: 500px">
+                <div v-for="(m,index) in sortmessages" :key="index">
+                  <el-card class="message_detail">
+                    <el-row>
+                      <el-col :span="1">
+                        <el-badge is-dot class="dot_item" v-show="m.is_read===0"></el-badge>
+                      </el-col>
+                      <el-col :span="23">
+                        <div class="message_title">{{m.message_title}};</div>
+                      </el-col>
+                    </el-row>
+                    <div class="message_content">{{m.message_content}}</div>
+                    <div class="message_time">
+                      {{m.send_time}}
+                      <el-button
+                        @click="open2(),m.is_read=1"
+                        class="button"
+                        :class="{ read_button:m.is_read===0,unread_button:m.is_read===1}"
+                      >标为已读</el-button>
+                    </div>
+                  </el-card>
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="2">
+              <div class="line">|</div>
+            </el-col>
+            <el-col :span="11">
+              <el-card class="message_card">课程申请</el-card>
+              <div class="message_detail">
+                <div v-for="(n,index) in courseMessages" :key="index">
+                  <el-card class="message_detail">
+                    <div class="message_title">
+                      <span class="message_title">
+                        <b style="color: #409eff">{{n.user}}</b>
+                        申请加入
+                        <b style="color: #409eff">{{n.courses}}</b>
+                        课程
+                        <div
+                          style="float: right;color: #797b80;font-weight: bold;font-size: 13px"
+                        >{{n.application_time}}</div>
+                        <div class="message_content">{{n.content}}</div>
+                        <el-button-group v-show="n.result===0">
+                          <el-button class="reject_button" @click="confirmCourse(),n.result=1">同意</el-button>
+                          <el-button class="reject_button" @click="rejectCourse(),n.result=2">拒绝</el-button>
+                        </el-button-group>
+                        <el-button class="rejected_button" v-show="n.result===1">已同意</el-button>
+                        <el-button class="rejected_button" v-show="n.result===2">已拒绝</el-button>
+                      </span>
+                    </div>
+                  </el-card>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
         </el-tab-pane>
-
       </el-tabs>
+
+      <el-dialog title="教师认证申请" :visible.sync="showAuthUp" width="30%">
+        <TeacherAuth />
+      </el-dialog>
+      <el-dialog title="教师认证信息" :visible.sync="showResUp" width="30%">
+        <TeacherAuth status="result" />
+      </el-dialog>
       <Footer />
     </div>
   </div>
@@ -146,15 +300,19 @@
 <script>
 import Navigator from "../components/Navigator";
 import Footer from "../components/Footer";
+import TeacherAuth from "@/components/TeacherAuth";
 import * as FT from "../tools/frontTool";
 import * as userAPI from "../APIs/user.js";
 import * as courseAPI from "../APIs/course.js";
+
 export default {
   name: "UserDetail",
-  components: { Navigator, Footer },
+  components: { Navigator, Footer, TeacherAuth },
   data() {
     return {
       FT,
+      showResUp: false,
+      showAuthUp: false,
       userId: this.$store.state.userId,
       circleUrl: require("@/assets/useravatar.jpg"),
       users: {
@@ -167,9 +325,10 @@ export default {
         score: 99,
         time: "13时26分",
       },
-      activeName: "forth",
+      activeName: "third",
       seen: false,
       current: 0,
+      value1: true,
       currentDate: new Date(),
       course: [
         {
@@ -185,12 +344,97 @@ export default {
           classIntro: "《数据库》是计算机本科专业的一门专业必修课。它是...",
         },
       ],
+      makeCourse: [
+        {
+          course_name: "数据库",
+          profession: "计算机",
+          teachername: "黄坚",
+          start_time: "2020-10-01",
+          studentnum: 165,
+          course_intro: "《数据库》是计算机本科专业的一门专业必修课。它是...",
+        },
+      ],
+      messages: [
+        {
+          message_title: "今晚5：30，WYX带你参观绿园",
+          message_content:
+            "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！",
+          send_time: "2020-09-05 10:06:44",
+          is_read: 0,
+        },
+        {
+          message_title: "明早8：00，F111，每日站会",
+          message_content:
+            "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目",
+          send_time: "2020-09-06 11:06:44",
+          is_read: 0,
+        },
+        {
+          message_title: "今晚5：30，WYX带你参观绿园",
+          message_content:
+            "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！",
+          send_time: "2020-09-05 10:06:44",
+          is_read: 0,
+        },
+        {
+          message_title: "明早8：00，F111，每日站会",
+          message_content:
+            "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目",
+          send_time: "2020-09-06 11:06:44",
+          is_read: 0,
+        },
+        {
+          message_title: "今晚5：30，WYX带你参观绿园",
+          message_content:
+            "CT、JYM、ZYM、JYH等将分享他们和绿园的故事，走过路过不要错过！",
+          send_time: "2020-09-05 10:06:44",
+          is_read: 0,
+        },
+        {
+          message_title: "明早8：00，F111，每日站会",
+          message_content:
+            "THB、LGY、JJD将在线答疑。烽火平台在线为你直播，又是一个你不能错过的节目",
+          send_time: "2020-09-06 11:06:44",
+          is_read: 0,
+        },
+      ],
+      courseMessages: [
+        {
+          courses: "软件工程实践",
+          user: "LGY",
+          result: 0,
+          application_time: "2020-09-16",
+          content: "233",
+        },
+        {
+          courses: "数据库",
+          user: "THB",
+          result: 0,
+          application_time: "2020-09-13",
+          content: "学习使我进步",
+        },
+      ],
+      friendMessages: [
+        {
+          application: "WHQ",
+          application_content: "加个好友",
+          application_time: "2020-09-16",
+          app_result: 0,
+        },
+        {
+          application: "YCZ",
+          application_content: "感受原力吧",
+          application_time: "2020-09-15",
+          app_result: 0,
+        },
+      ],
       i: -1,
     };
   },
   created() {
-    this.get_userdetail();
-    this.get_usercourse();
+    this.get_userDetail();
+    this.get_userCourse();
+    console.log(this.$store.state);
   },
   filters: {
     filterIntro(value) {
@@ -201,13 +445,46 @@ export default {
     authentication() {
       this.$router.push({ path: "/authentication" });
     },
+
+    confirmCourse() {
+      this.$message({
+        message: "已添加成员进入课程",
+        type: "success",
+      });
+    },
+
+    rejectCourse() {
+      this.$message({
+        message: "拒绝成员进入课程",
+        type: "success",
+      });
+    },
+
+    confirmFriend() {
+      this.$message({
+        message: "成功添加好友",
+        type: "success",
+      });
+    },
+
+    rejectFriend() {
+      this.$message({
+        message: "已拒绝好友",
+        type: "success",
+      });
+    },
+
+    jumpCourse() {},
+
     handleClick(tab, event) {
       console.log(tab, event);
     },
+
     show(index) {
       this.i = index;
     },
-    get_userdetail() {
+
+    get_userDetail() {
       userAPI.getUserDetail(this.userId).then((res) => {
         console.log("1111", res.data.user);
         this.users.username = res.data.user.nickname;
@@ -215,9 +492,13 @@ export default {
         this.users.major = res.data.user.profession;
         this.users.score = res.data.user.score;
         this.users.time = res.data.user.coursetime;
+        console.log(res.data.user.school_id);
       });
     },
-    get_usercourse() {
+
+    clicktry() {},
+
+    get_userCourse() {
       courseAPI.getUserCourse(this.userId).then((res) => {
         // let str = '{"message": "OK", "courses": [{"course_name": "科技写作", "course_intro": "Ian", "start_time": datetime.datetime(2020, 9, 11, 5, 3, 33), "profession": "Ian", "studentnum": 2, "teachername": null}, {"course_name": "软工23", "course_intro": "没什么用23", "start_time": datetime.datetime(2020, 9, 11, 5, 3, 33), "profession": null, "studentnum": 1, "teachername": null}]}'
         // console.log("11", typeof res.data);
@@ -225,21 +506,72 @@ export default {
         this.course = res.data.courses;
       });
     },
+
     time(s) {
       //  将截取后的时间return出来
       if (s) return s.substring(0, 10);
     },
+
+    open2() {
+      this.$message({
+        message: "消息已标为已读",
+        type: "success",
+      });
+    },
+
+    handleCommand(command) {
+      console.log("112");
+      if (command == "a") {
+        this.$alert("确定退出该课程吗", "退出课程", {
+          confirmButtonText: "确定",
+          callback: (action) => {
+            // this.$message({
+            //     type: 'info',
+            //     message: `action: ${ action }`
+            // });
+            if (action == "confirm") {
+            }
+          },
+        });
+      }
+      if (command == "b") {
+        this.$alert("确定删除该课程吗", "删除课程", {
+          confirmButtonText: "确定",
+          callback: (action) => {
+            // this.$message({
+            //     type: 'info',
+            //     message: `action: ${ action }`
+            // });
+            if (action == "confirm") {
+            }
+          },
+        });
+      }
+    },
+  },
+  computed: {
+    sortmessages: function () {
+      return sortByTime(this.messages, "send_time", "is_read");
+    },
   },
 };
+function sortByTime(array, key1, key2) {
+  return array.sort(function (a, b) {
+    var x = a[key1];
+    var y = b[key1];
+    return x > y ? -1 : x < y ? 1 : 0;
+  });
+}
 </script>
 
-<style scoped >
+<style scoped>
 .back {
   width: 100%;
   clear: both;
   background-color: #fffafa;
-  height: 1000px;
+  height: 920px;
 }
+
 .card {
   margin-left: 6%;
   margin-right: 6%;
@@ -249,9 +581,11 @@ export default {
     rgba(255, 165, 0, 0.65)
   );
 }
+
 .row-bg {
   margin-top: 5%;
 }
+
 .info-title {
   font-size: 20px;
   margin-top: 20px;
@@ -259,12 +593,14 @@ export default {
   font-weight: bold;
   color: white;
 }
+
 .info-content {
   margin-top: 8px;
   font-size: 13px;
   font-family: 微软雅黑;
   color: white;
 }
+
 .button {
   margin-top: 20px;
   margin-left: -3px;
@@ -280,33 +616,40 @@ export default {
   font-weight: 900;
   font-size: 70%;
 }
+
 .el-icon {
   margin-top: 40px;
   color: white;
   font-size: xx-large;
 }
+
 .icon-content {
   font-family: 微软雅黑;
   font-size: 14px;
   color: white;
 }
+
 .tab {
   margin-top: 30px;
   margin-left: 90px;
   margin-right: 90px;
 }
+
 .el-tabs /deep/ .el-tabs__item.is-active {
   color: #ff7f00;
 }
+
 .el-tabs /deep/ .el-tabs__item {
   color: #363636;
   font-size: 16px;
   font-weight: 500;
   padding: 0 20px;
 }
-.el-tabs /deep/.el-tabs__active-bar {
+
+.el-tabs /deep/ .el-tabs__active-bar {
   background-color: #ff7256;
 }
+
 .className {
   margin-top: 12%;
   font-size: 15px;
@@ -323,6 +666,7 @@ export default {
   line-height: 20px;
   color: #797b80;
 }
+
 .studentNum {
   font-size: 12px;
   color: #797b80;
@@ -330,6 +674,7 @@ export default {
   margin-right: 5%;
   margin-top: 14%;
 }
+
 .startime {
   font-size: 12px;
   color: #797b80;
@@ -338,12 +683,15 @@ export default {
   margin-left: 5%;
   display: block;
 }
-/deep/.el-col-8 {
+
+/deep/ .el-col-8 {
   width: 20%;
 }
-/deep/.el-card {
+
+/deep/ .el-card {
   border: 0px white;
 }
+
 .courseCard {
   background-image: linear-gradient(
     180deg,
@@ -354,6 +702,7 @@ export default {
   text-align: center;
   height: 150px;
 }
+
 .classIntro {
   font-size: 12px;
   color: #797b80;
@@ -364,6 +713,7 @@ export default {
   width: 180px;
   height: 29px;
 }
+
 .tag {
   background-color: #ff7256;
   color: white;
@@ -373,23 +723,128 @@ export default {
   padding: 0 5px;
   margin-top: -24%;
 }
-.message{
+
+.message {
   width: 1083px;
+}
+
+.message_card {
+  color: #409eff;
+  font-weight: bold;
   height: 60px;
+  text-align: center;
 }
-.message_card{
-  color: #797b80;
+
+.message_detail {
+  height: auto;
+  margin-top: 10px;
+  padding: 0px;
 }
-.message_detail{
-   height: 550px;
-  margin-top: 20px;
-}
-.line{
+
+.line {
   margin-left: 46%;
   width: 2px;
-  height: 400px;
-  background-color: #E4E7ED;
+  height: 600px;
+  background-color: #e4e7ed;
   font-size: xx-small;
   color: #e4e7ed;
+}
+
+.dot_item {
+  margin-top: 4px;
+  color: #409eff;
+}
+
+.message_title {
+  font-weight: bold;
+  color: #363636;
+  font-size: 14px;
+}
+
+.message_content {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #696969;
+  font-family: 微软雅黑;
+}
+
+.message_time {
+  margin-top: 20px;
+  font-size: 13px;
+  color: #797b80;
+  height: 10px;
+}
+
+/deep/ .el-badge__content {
+  background-color: #409eff;
+}
+
+.read_button {
+  background-color: #409eff;
+  color: white;
+  margin-left: 350px;
+  margin-top: -30px;
+}
+
+.unread_button {
+  margin-left: 350px;
+  margin-top: -30px;
+  background-color: #797b80;
+  color: white;
+}
+
+.reject_button {
+  margin-left: 290px;
+  background-color: #409eff;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: white;
+}
+
+.rejected_button {
+  margin-left: 330px;
+  background-color: #797b80;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: white;
+}
+
+.confirm_button {
+  margin-left: 250px;
+  background-color: #409eff;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: white;
+}
+
+.confirmed_button {
+  margin-left: 280px;
+  background-color: #797b80;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 0px !important;
+}
+
+.delete_course {
+  margin-top: -150px;
+  margin-left: -200px;
+  border-radius: 2px;
+}
+/deep/ .el-switch__label {
+  color: #797b80 !important;
+  font-weight: bold;
+}
+
+/deep/ .el-switch__label.is-active {
+  color: #ff7256 !important;
+  font-weight: bold;
+}
+/deep/.el-switch.is-checked .el-switch__core {
+  border-color: #ff7256;
+  background-color: #ff7256;
 }
 </style>

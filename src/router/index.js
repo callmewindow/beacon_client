@@ -25,7 +25,7 @@ const routes = [
     component: () => import('@/views/CourseList.vue'),
   },
   {
-    path: '/user',
+    path: '/user/:userId',
     name: 'UserDetail',
     component: () => import('@/views/UserDetail.vue'),
   },
@@ -40,7 +40,12 @@ const routes = [
     children: [
       {path: 'post/:postId'},
     ]
-  }
+  },
+  {
+    path: '/test',
+    name: 'FriendList',
+    component: () => import('@/components/FriendList.vue'),
+  },
 
 ]
 
