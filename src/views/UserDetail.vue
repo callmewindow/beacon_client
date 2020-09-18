@@ -457,7 +457,7 @@ export default {
     };
   },
   created() {
-    this.sendSystemMes();
+    // this.sendSystemMes();
     this.get_userDetail();
     this.get_userCourse();
     this.get_userMakeCourse();
@@ -526,10 +526,12 @@ export default {
     get_userMakeCourse() {
       courseAPI.getUserOwnerCourse(this.userId).then((res) => {
         console.log(23333, res);
-        this.makeCourse = res.data.course_list;
-        this.teachername = res.data.teacher.realname;
-        // console.log(res.data);
-        //console.log("@", this.teachername);
+        if (res.data.message === "该用户未创建任何课程。") {
+          this.makeCourse = [];
+        } else {
+          this.makeCourse = res.data.course_list;
+          this.teachername = res.data.teacher.realname;
+        }
       });
     },
 
@@ -673,7 +675,11 @@ export default {
     get_sysMsg() {
       noticeAPI.getAllSysMsg(this.userId).then((res) => {
         this.messages = res.data.messages;
-        this.messages.reverse();
+        if (this.messages) {
+          this.messages.reverse();
+        } else {
+          this.messages = [];
+        }
       });
     },
     //消息已读（messageid替换）
