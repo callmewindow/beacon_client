@@ -358,8 +358,10 @@ export default {
       FT.toPath("/Home");
     }
     this.userId = this.$store.state.userId;
+    console.log("userID：" + this.userId);
     // 从地址栏获得courseId
     this.courseId = this.$route.params.courseId;
+    console.log("courseId：" + this.courseId);
     // 根据courseId获取相应的信息
     await this.getCourseBasicInfo();
     await this.getCourseVideoUrlArray();
@@ -429,10 +431,8 @@ export default {
     },
 
     async getCourseBasicInfo() {
-      const temp = await CourseAPI.getCourseBasicInfo(
-        this.$route.params.courseId,
-        this.$store.state.userId
-      );
+      console.log(this.userId);
+      const temp = await CourseAPI.getCourseBasicInfo(this.courseId, this.userId);
       const UCR = await CourseAPI.getUCRelation(
         this.$store.state.userId,
         this.$route.params.courseId

@@ -200,7 +200,7 @@ export const deleteCourse = (course_id) => {
 }
 
 //发送系统消息
-export const systemMessages = (user_id,title,content) => {
+export const systemMessages = (user_id, title, content) => {
   return axios({
     method: 'GET',
     url: `/sysmessage/send?user_id=${user_id}&title=${title}&content=${content}`,
