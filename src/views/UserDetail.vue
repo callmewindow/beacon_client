@@ -14,7 +14,7 @@
             <div class="info-content" style="margin-top: 10px">领域：{{users.major}}</div>
             <template>
               <el-button
-                v-if="this.$store.state.teacherID===0"
+                v-if="this.$store.state.teacherID===0||!this.$store.state.teacherID"
                 class="button"
                 style="width:100px"
                 @click="showAuthUp = true"
