@@ -3,22 +3,26 @@
     <!--帖子标题、置顶精华标签-->
     <el-row style="margin-left: 20px; margin-bottom: 20px">
       <div
-        style="font-family: 微软雅黑; color: rgb(0,102,204); float: left; font-size: 26px; font-weight: bold"
-      >{{ post.title }}</div>
+          style="font-family: 微软雅黑; color: rgb(0,102,204); float: left; font-size: 26px; font-weight: bold"
+      >{{ post.title }}
+      </div>
       <el-tag type="primary" effect="dark" style="margin-left: 5px;" v-if="post.top === 1">置顶</el-tag>
       <el-tag
-        type="warning"
-        color="rgb(255,215,0)"
-        effect="dark"
-        style="margin-left: 5px;"
-        v-if="post.star === 1"
-      >精华</el-tag>
+          type="warning"
+          color="rgb(255,215,0)"
+          effect="dark"
+          style="margin-left: 5px;"
+          v-if="post.star === 1"
+      >精华
+      </el-tag>
     </el-row>
     <!--帖子作者、时间、阅读量-->
     <el-row style="font-size: 18px; margin-bottom: 20px;">
       <el-col :span="12">
         <div style="margin-left: 20px; color: rgb(120,120,120)">
-          <div @click="addFriend(floor1.author,floor1.owner.user_nickname)">{{post.author}}</div>
+          <el-button type="text" style="font-size: 18px" @click="addFriend(floor1.author,floor1.owner.user_nickname)">
+            {{ post.author }}
+          </el-button>
           <el-divider direction="vertical"></el-divider>
           {{ post.datetime|cut }}
         </div>
@@ -39,12 +43,12 @@
         <el-button type="primary" icon="el-icon-caret-top" size="mini" plain circle @click="like"></el-button>
         喜欢：{{ post.like }}
         <el-button
-          type="primary"
-          icon="el-icon-caret-bottom"
-          size="mini"
-          plain
-          circle
-          @click="dislike"
+            type="primary"
+            icon="el-icon-caret-bottom"
+            size="mini"
+            plain
+            circle
+            @click="dislike"
         ></el-button>
         <el-divider direction="vertical"></el-divider>
         <el-button type="text" @click="show_reply_box">回复</el-button>
@@ -55,20 +59,21 @@
     <!--回复文本框、发送-->
     <el-card v-if="reply_button_clicked" style="margin-bottom: 20px;">
       <el-input
-        type="textarea"
-        :rows="5"
-        placeholder="请输入回复内容"
-        v-model="reply_text"
-        maxlength="500"
-        show-word-limit
-        style="font-size: 20px; margin-bottom: 20px"
+          type="textarea"
+          :rows="5"
+          placeholder="请输入回复内容"
+          v-model="reply_text"
+          maxlength="500"
+          show-word-limit
+          style="font-size: 20px; margin-bottom: 20px"
       ></el-input>
       <el-button
-        type="primary"
-        plain
-        @click="send_reply"
-        style="float: right; margin-bottom: 20px"
-      >发送</el-button>
+          type="primary"
+          plain
+          @click="send_reply"
+          style="float: right; margin-bottom: 20px"
+      >发送
+      </el-button>
     </el-card>
     <!--帖子回复列表-->
     <el-card v-for="reply in reply_list" :key="reply.id" style="margin-bottom: 20px;">
@@ -78,9 +83,9 @@
       <el-row style="margin-left: 5px">
         <el-col :span="12">
           <div>
-            <div
-              @click="addFriend(reply.author,reply.owner.user_nickname)"
-            >{{ reply.owner.user_nickname }}</div>
+            <el-button type="text" style="font-size: 18px" @click="addFriend(reply.author,reply.owner.user_nickname)">
+              {{ reply.owner.user_nickname }}
+            </el-button>
             <el-divider direction="vertical"></el-divider>
             {{ reply.post_time|cut }}
           </div>
@@ -153,27 +158,25 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
       })
-        .then(async () => {
-          if (FID == this.$store.state.userId) {
-            this.$message.warning("不能向自己发送好友请求");
-            return;
-          }
-          await UserAPI.sendFriendApply(
-            this.$store.state.userId,
-            FID,
-            new Date().Format("yyyy-MM-dd hh:mm:ss")
-          );
-          this.$message.success({
-            message: "成功发送好友请求",
+          .then(async () => {
+            if (FID === this.$store.state.userId) {
+              this.$message.warning("不能向自己发送好友请求");
+              return;
+            }
+            await UserAPI.sendFriendApply(
+                this.$store.state.userId,
+                FID,
+                new Date().Format("yyyy-MM-dd hh:mm:ss")
+            );
+            this.$message.success({
+              message: "成功发送好友请求",
+            });
+          })
+          .catch(() => {
           });
-        })
-        .catch(() => {});
     },
     async like(e) {
-      let temp = await postAPI.likeFloor(
-        this.$store.state.userId,
-        this.firstFloorId
-      );
+      await postAPI.likeFloor(this.$store.state.userId, this.firstFloorId);
       this.post.like += 1;
       this.test = false;
       this.test = true;
@@ -185,10 +188,7 @@ export default {
     async dislike(e) {
       if (this.post.like > 0) {
         this.post.like -= 1;
-        let temp = await postAPI.dislikeFloor(
-          this.$store.state.userId,
-          this.firstFloorId
-        );
+        await postAPI.dislikeFloor(this.$store.state.userId, this.firstFloorId);
       }
       this.test = false;
       this.test = true;
@@ -203,12 +203,13 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
-          this.$message({
-            message: "举报以受理",
+          .then(() => {
+            this.$message({
+              message: "举报以受理",
+            });
+          })
+          .catch(() => {
           });
-        })
-        .catch(() => {});
       let target = e.target;
       if (target.nodeName === "SPAN" || target.nodeName === "I")
         target = e.target.parentNode;
@@ -271,12 +272,12 @@ export default {
       let reply_dict = {
         floor_num: this.reply_list.length + 2,
         content: this.reply_text,
-        owner: { user_nickname: "zym4" }, //----------------------------------------------store.nickname
+        owner: {user_nickname: this.$store.state.nickname},
         post_time: mon + "-" + day + " " + hor + ":" + min,
       };
       this.reply_list.push(reply_dict);
       try {
-        await postAPI.replyPost(this.post.id, 5, this.reply_text); //-------------store.userid
+        await postAPI.replyPost(this.post.id, this.$store.state.userId, this.reply_text);
       } catch (e) {
         this.$message.error("回复请求超时");
       }
