@@ -180,6 +180,7 @@
       <el-table :data="studentList" border style="width: 100%">
         <el-table-column prop="school_id" label="学号"></el-table-column>
         <el-table-column prop="realname" label="姓名"></el-table-column>
+        <el-table-column prop="user_nickname" label="昵称"></el-table-column>
         <el-table-column prop="school" label="学校"></el-table-column>
         <el-table-column prop="watch_num" label="总观看次数"></el-table-column>
         <el-table-column prop="watch_duration" label="总播放时长"></el-table-column>

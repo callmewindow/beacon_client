@@ -176,7 +176,7 @@ export default {
           });
     },
     async like(e) {
-      await postAPI.likeFloor(this.$store.state.userId, this.firstFloorId);
+      // await postAPI.likeFloor(this.$store.state.userId, this.firstFloorId);
       this.post.like += 1;
       this.test = false;
       this.test = true;
@@ -188,7 +188,7 @@ export default {
     async dislike(e) {
       if (this.post.like > 0) {
         this.post.like -= 1;
-        await postAPI.dislikeFloor(this.$store.state.userId, this.firstFloorId);
+        // await postAPI.dislikeFloor(this.$store.state.userId, this.firstFloorId);
       }
       this.test = false;
       this.test = true;

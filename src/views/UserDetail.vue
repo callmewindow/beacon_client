@@ -14,7 +14,7 @@
             <div
               class="info-content"
               style="margin-top: 10px"
-            >领域：{{users.major?users.major:'暂未填写领域'}}</div>
+            >职称：{{users.major?users.major:'暂未填写职称'}}</div>
             <template>
               <el-button
                 v-if="this.$store.state.teacherID===0||!this.$store.state.teacherID"
