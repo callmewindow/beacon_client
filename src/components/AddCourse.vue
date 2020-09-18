@@ -137,6 +137,7 @@ export default {
         courseIntro: "",
         startTime: "",
         endTime: "",
+        afterTime:"2099",
       },
 
       rules: {
@@ -162,12 +163,14 @@ export default {
     //this.getUserInfo();
     this.startDate = {
       disabledDate: (time) => {
-        return time.getTime() < new Date();
+          return (
+                  time.getTime() < new Date()
+          );
       },
     };
     this.endDate = {
       disabledDate: (time) => {
-        return time.getTime() < this.Form.startTime;
+        return time.getTime() < new Date() || time.getTime() < this.Form.startTime
       },
     };
   },
@@ -175,12 +178,15 @@ export default {
     changeTime() {
       this.startDate = {
         disabledDate: (time) => {
-          if (this.Form.endTime === null) {
-            return time.getTime() < new Date();
-          } else {
+          if(this.Form.endTime != null)
+          {
             return (
-              time.getTime() > this.Form.endTime || time.getTime() < new Date()
+                    time.getTime() > this.Form.endTime || time.getTime() < new Date()
             );
+          }
+          else
+          {
+            return time.getTime() < new Date()
           }
         },
       };
