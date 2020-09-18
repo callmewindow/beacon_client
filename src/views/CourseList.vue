@@ -15,7 +15,7 @@
           <el-button slot="append" style="color:#409eff" icon="el-icon-search" @click="searchAll"></el-button>
         </el-input>
       </el-col>
-      <el-col :span="3" style="margin-top: 80px;float:right">
+      <el-col v-if="$store.state.teacherID === 2" :span="3" style="margin-top: 80px;float:right">
         <el-button type="primary" style="float: right" @click="showAddCourse = true">
           创建课程
           <i class="el-icon-arrow-right"></i>
