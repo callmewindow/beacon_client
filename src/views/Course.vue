@@ -600,8 +600,8 @@ export default {
         callback: async (action) => {
           if (action === "confirm") {
             const temp = await CourseAPI.deleteVideo(video.id);
-            console.log("删除返回");
-            console.log(temp);
+            this.$message.success("视频删除成功");
+            this.getCourseVideoUrlArray();
           }
         },
       });

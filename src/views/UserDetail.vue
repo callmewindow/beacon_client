@@ -311,7 +311,7 @@
                           <div
                             style="float: right;color: #797b80;font-weight: bold;font-size: 13px"
                           >{{time(n.application_time)}}</div>
-                          <div class="message_content">{{n.content}}</div>
+                          <div class="message_content"> </div>
                           <el-button-group v-show="n.result===0">
                             <el-button
                               class="reject_button"
@@ -653,6 +653,7 @@ export default {
           this.friendMessages = [];
         } else {
           this.friendMessages = res.data;
+          this.friendMessages.reverse()
         }
         console.log("B", res.data);
       });

@@ -25,13 +25,7 @@
     </div>
     <div class="sendItem" style="width:50%">
       <div class="itemTitle">帖子标签</div>
-      <el-select
-        v-model="postTag"
-        filterable
-        clearable
-        default-first-option
-        placeholder="添加额外标签"
-      >
+      <el-select v-model="postTag" filterable clearable default-first-option placeholder="添加额外标签">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -74,9 +68,9 @@ export default {
   },
   methods: {
     async sendPost() {
-      if(this.post.title === "" || this.post.content === "") {
+      if (this.post.title === "" || this.post.content === "") {
         this.$message.error("不能发送空帖子");
-        return ;
+        return;
       }
       if (FT.CS(this.post.title + this.post.content)) {
         this.$message.error("为了社区和谐，请勿输入英文引号，感谢支持");
@@ -91,7 +85,13 @@ export default {
       };
       try {
         await forumAPI.sendPost(tempP);
-        await forumAPI.addPoint(this.$store.state.userId,this.$$route.params.courseId,100);
+        if (this.$store.state.permission !== 2) {
+          await forumAPI.addPoint(
+            this.$store.state.userId,
+            this.$route.params.courseId,
+            100
+          );
+        }
       } catch (error) {
         console.log(error);
       }

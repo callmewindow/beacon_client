@@ -57,7 +57,7 @@
         </el-col>
       </el-row>
 
-      <el-col style="height:42px;line-height:42px" :span="8" :offset="1">当前积分：{{this.point}}</el-col>
+      <el-col style="height:42px;line-height:42px" v-if="$store.state.permission !== 2" :span="8" :offset="1">当前积分：{{this.point}}</el-col>
     </el-card>
     <!--没帖子-->
     <el-card v-if="!havePost" style="margin-top: 20px;">目前圈子暂无帖子或未开启</el-card>
