@@ -10,7 +10,7 @@
         >{{ item.last_message.content | cutMsg }}</div>
         <div class="lastMessage" v-if="!item.last_message.content">对方暂无消息</div>
         <!-- <div class="msgStatusNo" v-if="item.last_message.is_read == 0">未读</div>
-        <div class="msgStatusYes" v-if="item.last_message.is_read == 1">已读</div> -->
+        <div class="msgStatusYes" v-if="item.last_message.is_read == 1">已读</div>-->
         <div class="friendBtn">
           <el-button size="mini" type="primary" @click="showMsg(index)">私信</el-button>
           <el-button size="mini" type="primary" @click="deleteFriend(index)">删除</el-button>
@@ -60,8 +60,8 @@ export default {
     async getFriendList() {
       let temp = await NoticeAPI.getAllFriend(this.$store.state.userId);
       this.friendList = temp.data.users;
-      console.log(23,temp);
-      if (this.friendList.length == 0) {
+      console.log(23, temp);
+      if (!this.friendList || this.friendList.length == 0) {
         this.haveFriend = false;
       } else {
         this.haveFriend = true;

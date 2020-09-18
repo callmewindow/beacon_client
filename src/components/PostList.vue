@@ -112,10 +112,10 @@
                 </el-col>
                 <el-col :span="3">
                   <div>
-                    <div v-if="post.teacher_identity === '1'" style="float: left">
+                    <div v-if="post.teacher_identity === '2'" style="float: left">
                       <Username :name="post.nickname" text="教师" />
                     </div>
-                    <div v-if="post.teacher_identity !== '1'" style="float: left">
+                    <div v-if="post.teacher_identity !== '2'" style="float: left">
                       <Username :name="post.nickname" text />
                     </div>
                   </div>
@@ -208,10 +208,10 @@
                 </el-col>
                 <el-col :span="3">
                   <div>
-                    <div v-if="post.teacher_identity === '1'" style="float: left">
+                    <div v-if="post.teacher_identity === '2'" style="float: left">
                       <Username :name="post.nickname" text="教师" />
                     </div>
-                    <div v-if="post.teacher_identity !== '1'" style="float: left">
+                    <div v-if="post.teacher_identity !== '2'" style="float: left">
                       <Username :name="post.nickname" text />
                     </div>
                   </div>
@@ -304,10 +304,10 @@
                 </el-col>
                 <el-col :span="3">
                   <div>
-                    <div v-if="post.teacher_identity === '1'" style="float: left">
+                    <div v-if="post.teacher_identity === '2'" style="float: left">
                       <Username :name="post.nickname" text="教师" />
                     </div>
-                    <div v-if="post.teacher_identity !== '1'" style="float: left">
+                    <div v-if="post.teacher_identity !== '2'" style="float: left">
                       <Username :name="post.nickname" text />
                     </div>
                   </div>
@@ -400,10 +400,10 @@
                 </el-col>
                 <el-col :span="3">
                   <div>
-                    <div v-if="post.teacher_identity === '1'" style="float: left">
+                    <div v-if="post.teacher_identity === '2'" style="float: left">
                       <Username :name="post.nickname" text="教师" />
                     </div>
-                    <div v-if="post.teacher_identity !== '1'" style="float: left">
+                    <div v-if="post.teacher_identity !== '2'" style="float: left">
                       <Username :name="post.nickname" text />
                     </div>
                   </div>
@@ -496,10 +496,10 @@
                 </el-col>
                 <el-col :span="3">
                   <div>
-                    <div v-if="post.teacher_identity === '1'" style="float: left">
+                    <div v-if="post.teacher_identity === '2'" style="float: left">
                       <Username :name="post.nickname" text="教师" />
                     </div>
-                    <div v-if="post.teacher_identity !== '1'" style="float: left">
+                    <div v-if="post.teacher_identity !== '2'" style="float: left">
                       <Username :name="post.nickname" text />
                     </div>
                   </div>
@@ -593,10 +593,10 @@
               </el-col>
               <el-col :span="3">
                 <div>
-                  <div v-if="post.teacher_identity === '1'" style="float: left">
+                  <div v-if="post.teacher_identity === '2'" style="float: left">
                     <Username :name="post.nickname" text="教师" />
                   </div>
-                  <div v-if="post.teacher_identity !== '1'" style="float: left">
+                  <div v-if="post.teacher_identity !== '2'" style="float: left">
                     <Username :name="post.nickname" text />
                   </div>
                 </div>

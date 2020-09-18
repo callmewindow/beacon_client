@@ -90,7 +90,7 @@ export default {
     };
 
     return {
-      pos:'login',
+      pos: "login",
       login: {
         username: "",
         password: "",
@@ -139,6 +139,7 @@ export default {
           this.$store.state.teacherID = userInfo.data.teacher_identity;
           this.$store.state.nickname = userInfo.data.user_nickname;
           this.$store.state.email = userInfo.data.email;
+          localStorage.setItem("userinfo", JSON.stringify(this.$store.state));
           setTimeout(() => {
             this.$router.push({ path: "/user/" + this.$store.state.userId });
           }, 2000);
@@ -170,7 +171,7 @@ export default {
                 message: "注册成功，欢迎加入烽火平台！",
                 type: "success",
               });
-              this.pos = 'login';
+              this.pos = "login";
             }
           } catch (e) {
             this.$message.error("哦豁，" + e.toString());

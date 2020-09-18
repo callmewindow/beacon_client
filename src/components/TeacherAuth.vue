@@ -96,7 +96,7 @@ export default {
   },
   async created() {
     if (this.status == "result") {
-      await userAPI.getUserDetail(7).then((res) => {
+      await userAPI.getUserDetail(this.$store.state.userId).then((res) => {
         this.auth.name = res.data.user.realname;
         this.auth.school = res.data.user.school;
         // this.auth.schoolId = res.data.user.school_id;
@@ -146,6 +146,7 @@ export default {
             type: "success",
             message: "认证发送成功",
           });
+          location.reload();
         })
         .catch(() => {});
     },

@@ -354,8 +354,17 @@ export default {
 
   // 加载
   async created() {
+    //填充旧数据
+    let oldUI = JSON.parse(localStorage.getItem("userinfo"));
+    if (oldUI) {
+      this.$store.state.email = oldUI.email;
+      this.$store.state.nickname = oldUI.nickname;
+      this.$store.state.permission = oldUI.permission;
+      this.$store.state.teacherID = oldUI.teacherID;
+      this.$store.state.userId = oldUI.userId;
+    }
     if (this.$store.state.userId === -1) {
-      this.$message.error("请登录后查看课程详情")
+      this.$message.error("请登录后查看课程详情");
       FT.toPath("/Home");
     }
     this.userId = this.$store.state.userId;
@@ -613,11 +622,12 @@ export default {
         callback: async (action) => {
           if (action === "confirm") {
             const temp = await CourseAPI.deleteStudent(user_id, this.courseId);
-            for (let i = 0; i < this.studentList.length; i++) {
-              if (this.studentList[i].user_id == user_id) {
-                this.studentList.pop(i);
-              }
-            }
+            // for (let i = 0; i < this.studentList.length; i++) {
+            //   if (this.studentList[i].user_id == user_id) {
+            //     this.studentList.remove(this.studentList[i]);
+            //   }
+            // }
+            this.getCourseStudentList();
             console.log("删除返回");
             console.log(temp);
           }

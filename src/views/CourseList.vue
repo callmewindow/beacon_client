@@ -118,6 +118,15 @@ export default {
     };
   },
   created() {
+    //填充旧数据
+    let oldUI = JSON.parse(localStorage.getItem("userinfo"));
+    if (oldUI) {
+      this.$store.state.email = oldUI.email;
+      this.$store.state.nickname = oldUI.nickname;
+      this.$store.state.permission = oldUI.permission;
+      this.$store.state.teacherID = oldUI.teacherID;
+      this.$store.state.userId = oldUI.userId;
+    }
     this.get_course_list();
   },
   filters: {
@@ -137,8 +146,8 @@ export default {
         this.display_search_result = false;
         this.search_course();
       }
-      if(this.select === "教师"){
-        this.$message("教师检索功能开发中，敬请期待！")
+      if (this.select === "教师") {
+        this.$message("教师检索功能开发中，敬请期待！");
       }
     },
     async get_course_list() {
@@ -166,7 +175,7 @@ export default {
 </script>
 
 <style scoped>
-#CL{
+#CL {
   min-height: calc(100vh + 10px);
 }
 </style>

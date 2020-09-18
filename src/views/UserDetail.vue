@@ -11,7 +11,10 @@
               <b style="margin-left: 5%">{{users.username}}</b>
             </div>
             <div class="info-content">学校：{{users.school?users.school:'暂未认证学校'}}</div>
-            <div class="info-content" style="margin-top: 10px">领域：{{users.major?users.major:'暂未填写领域'}}</div>
+            <div
+              class="info-content"
+              style="margin-top: 10px"
+            >领域：{{users.major?users.major:'暂未填写领域'}}</div>
             <template>
               <el-button
                 v-if="this.$store.state.teacherID===0||!this.$store.state.teacherID"
@@ -457,6 +460,15 @@ export default {
     };
   },
   created() {
+    //填充旧数据
+    let oldUI = JSON.parse(localStorage.getItem("userinfo"));
+    if (oldUI) {
+      this.$store.state.email = oldUI.email;
+      this.$store.state.nickname = oldUI.nickname;
+      this.$store.state.permission = oldUI.permission;
+      this.$store.state.teacherID = oldUI.teacherID;
+      this.$store.state.userId = oldUI.userId;
+    }
     // this.sendSystemMes();
     this.get_userDetail();
     this.get_userCourse();
@@ -487,6 +499,7 @@ export default {
         .then(async () => {
           this.$message.success("已退出登录");
           this.$store.state.userId = -1;
+          localStorage.removeItem("userinfo");
           this.$router.push({
             path: "/home",
           });
@@ -500,6 +513,10 @@ export default {
     //获取用户信息*
     get_userDetail() {
       this.userId = this.$store.state.userId;
+      if (this.userId == -1) {
+        this.$message.error("请登录后查看个人详情");
+        FT.toPath("/Home");
+      }
       userAPI.getUserDetail(this.userId).then((res) => {
         console.log(res);
         this.users.circle = res.data.user.course_number;
@@ -510,6 +527,7 @@ export default {
         this.users.time = res.data.user.coursetime;
         this.users.school = res.data.user.school;
         this.$store.state.teacherID = res.data.user.teacher_identity;
+        localStorage.setItem("userinfo", JSON.stringify(this.$store.state));
       });
     },
 
