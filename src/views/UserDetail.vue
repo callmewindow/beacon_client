@@ -300,9 +300,9 @@
                     <el-card class="message_detail">
                       <div class="message_title">
                         <span class="message_title">
-                          <b style="color: #409eff">{{n.user}}</b>
+                          <b style="color: #409eff">{{n.user_info.user_nickname}}</b>
                           申请加入
-                          <b style="color: #409eff">{{n.course}}</b>
+                          <b style="color: #409eff">{{n.course_info.course_name}}</b>
                           课程
                           <div
                             style="float: right;color: #797b80;font-weight: bold;font-size: 13px"
