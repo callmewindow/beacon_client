@@ -117,7 +117,7 @@
                         style="width: 60px"
                         v-show="o.profession"
                       >{{o.profession}}</el-tag>
-                      <div class="classFrom info-content">{{o.teachername}}</div>
+                      <div class="classFrom info-content"></div>
                       <div v-show="index !==i" class="startime info-content">
                         <i class="el-icon-date"></i>
                         {{time(o.start_time)}}
@@ -180,7 +180,7 @@
                         style="width: 60px"
                         v-show="w.profession"
                       >{{w.profession}}</el-tag>
-                      <div class="classFrom info-content">{{w.teachername}}</div>
+                      <div class="classFrom info-content"></div>
                       <div v-show="index !==i" class="startime info-content">
                         <i class="el-icon-date"></i>
                         {{time(w.start_time)}}
@@ -225,7 +225,7 @@
                       <el-card class="message_detail">
                         <div class="message_title">
                           <span class="message_title">
-                            <b style="color: #409eff">{{p.application_content}}</b>
+                            <b style="color: #409eff">{{p.user_nickname}}</b>
                             申请加你为好友
                             <div
                               style="float: right;color: #797b80;font-weight: bold;font-size: 13px"
@@ -234,12 +234,12 @@
                             <el-button-group>
                               <el-button
                                 class="confirm_button"
-                                @click="p.result=1,confirmFriend()"
+                                @click="p.result=1,confirmFriend(p.applicant_id)"
                                 v-show="p.result===0"
                               >同意</el-button>
                               <el-button
                                 class="confirm_button"
-                                @click="p.result=2,rejectFriend()"
+                                @click="p.result=2,rejectFriend(p.applicant_id)"
                                 v-show="p.result===0"
                               >拒绝</el-button>
                             </el-button-group>
@@ -311,11 +311,11 @@
                           <el-button-group v-show="n.result===0">
                             <el-button
                               class="reject_button"
-                              @click="confirmCourse(n.id),n.result=1"
+                              @click="confirmCourse(n.id,n.user),n.result=1"
                             >同意</el-button>
                             <el-button
                               class="reject_button"
-                              @click="rejectCourse(n.id),n.result=2"
+                              @click="rejectCourse(n.id,n.user),n.result=2"
                             >拒绝</el-button>
                           </el-button-group>
                           <el-button class="rejected_button" v-show="n.result===1">已同意</el-button>
@@ -360,6 +360,7 @@ export default {
       showResUp: false,
       showAuthUp: false,
       userId: this.$store.state.userId,
+      nickname:this.$store.state.nickname,
       circleUrl: require("@/assets/useravatar.jpg"),
       users: {
         username: "烽火",
@@ -376,7 +377,9 @@ export default {
       course_id: 1,
       sender_id: 1,
       current: 0,
+      messageid : 2,
       value1: true,
+      teachername:" 谭火彬",
       currentDate: new Date(),
       course: [
         {
@@ -396,7 +399,7 @@ export default {
           course_id: 12,
         },
       ],
-      makeCourse: [{}],
+      makeCourse: [],
       messages: [
         {
           message_title: "今晚5：30，WYX带你参观绿园",
@@ -457,7 +460,6 @@ export default {
     this.get_userMakeCourse();
     this.get_CourseApply();
     this.get_FriendApply();
-    this.sendSystemMes();
     console.log(this.$store.state);
   },
   filters: {
@@ -515,8 +517,9 @@ export default {
     get_userMakeCourse() {
       courseAPI.getUserOwnerCourse(this.userId).then((res) => {
         this.makeCourse = res.data.course_list;
+        this.teachername=res.data.teacher.realname;
         // console.log(res.data);
-        console.log("@", res.data.course_list);
+        //console.log("@", this.teachername);
       });
     },
 
@@ -531,7 +534,7 @@ export default {
         this.get_userCourse();
       });
     },
-    //获取course_id的工具函数
+    //获取course_id的工具函数*
     getcourse(course_id) {
       this.course_id = course_id;
     },
@@ -567,10 +570,10 @@ export default {
         });
       }
     },
-    //获取所有课程申请++
+    //获取所有课程申请++(user那里是user_id,不知道是不是nickname好一些/现在收不到数据)
     get_CourseApply() {
-      courseAPI.getUserApply(this.userId).then((res) => {
-        console.log("44", res.data);
+      courseAPI.getUserApply(1).then((res) => {
+        console.log("66", res.data);
         this.accptedMessages = res.data.accepted_applications;
         this.rejectedMessages = res.data.rejected_applications;
         this.unhandledMessages = res.data.unhandled_applications;
@@ -583,85 +586,83 @@ export default {
         console.log("A", newarr);
       });
     },
-    //同意加入课程*
-    confirmCourse(course_application_id) {
+    //同意加入课程*(系统消息发送情况没测，现在看不到课程申请）
+    confirmCourse(course_application_id,user_id) {
       this.$message({
         message: "已添加成员进入课程",
         type: "success",
       });
       courseAPI.Course(course_application_id).then((res) => {});
       courseAPI
-        .systemMessages(19, "课程申请", "老师已经通过了你的申请")
+        .systemMessages(user_id, "课程申请", "老师已经通过了你的申请")
         .then((res) => {
           console.log("C", res);
         });
     },
-    //拒绝加入课程*
-    rejectCourse(course_application_id) {
+    //拒绝加入课程*(系统消息发送情况没测，现在看不到课程申请）
+    rejectCourse(course_application_id,user_id) {
       this.$message({
         message: "拒绝成员进入课程",
         type: "success",
       });
       courseAPI.rejectCourse(course_application_id).then((res) => {});
       courseAPI
-        .systemMessages(19, "课程申请", "老师拒绝了你的申请")
+        .systemMessages(user_id, "课程申请", "老师拒绝了你的申请")
         .then((res) => {
           console.log("C", res);
         });
     },
-    //获取所有好友申请
+    //获取所有好友申请++（（看上去差不多了））
     get_FriendApply() {
       userAPI.getFriendApplication(this.userId).then((res) => {
         this.friendMessages = res.data;
         console.log("B", res.data);
       });
     },
-    //获取friend_id的工具函数
-    getfriend(sender_id) {
-      this.sender_id = sender_id;
-    },
-    //同意添加好友
-    confirmFriend() {
+    //同意添加好友++（看上去差不多了）
+    confirmFriend(sender_id) {
       this.$message({
         message: "成功添加好友",
         type: "success",
       });
-      userAPI.passFriend(20, 19).then((res) => {});
+      userAPI.passFriend(sender_id, this.userId).then((res) => {});
       courseAPI
-        .systemMessages(19, "好友申请", "20已经通过了你的好友申请")
+        .systemMessages(sender_id, "好友申请",this.nickname+"已经通过了你的好友申请")
         .then((res) => {
           console.log("C", res);
         });
     },
-    //拒绝添加好友
-    rejectFriend() {
+    //拒绝添加好友（看上去差不多了）
+    rejectFriend(sender_id) {
       this.$message({
         message: "已拒绝好友",
         type: "success",
       });
-      userAPI.rejectFriend(22, 19).then((res) => {});
+      userAPI.rejectFriend(sender_id,this.userId ).then((res) => {});
       courseAPI
-        .systemMessages(19, "好友申请", "2拒绝了你的好友申请")
+        .systemMessages(sender_id, "好友申请", this.nickname+"拒绝了你的好友申请")
         .then((res) => {
           console.log("C", res);
         });
     },
-    //发送系统消息
+    //发送系统消息（没用了，直接在同意拒绝里添加了）
     sendSystemMes() {
       courseAPI.systemMessages("1", "123", "456").then((res) => {
         console.log("C", res);
       });
     },
-    //消息已读
+    //消息已读（messageid替换）
     open2() {
       this.$message({
         message: "消息已标为已读",
         type: "success",
       });
-      courseAPI.readMessages("1").then((res) => {
+      courseAPI.readMessages(this.messageid).then((res) => {
         console.log("D", res);
       });
     },
+    //获取系统消息（虚位以待）(messages的数组，但是在sortmessages中迭代)
+
   },
 
   computed: {
