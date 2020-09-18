@@ -175,3 +175,20 @@ export const sendFriendApply = (userId, FID, time) => {
     })
   })
 }
+
+//修改用户信息
+export const modifyUserInfo = (user_id, auth) => {
+  return axios({
+    method: 'POST',
+    url: `/user/manage/update/`,
+    data: QS({
+      user_id,
+      realname: auth.name,
+      school: auth.school,
+      school_id: auth.schoolId,
+      profession: auth.profession,
+      email: auth.email,
+      teacher_identity: 1,
+    })
+  })
+}

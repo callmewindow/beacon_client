@@ -44,7 +44,7 @@
             clearable
           ></el-input>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="6">
           <el-button type="primary" @click="search_post">搜索帖子</el-button>
           <el-button
             type="primary"
@@ -55,10 +55,9 @@
         <el-col :span="2">
           <el-button id="sendBtn" type="primary" icon="el-icon-edit" @click="showSendUp = true">发帖</el-button>
         </el-col>
-        <el-col style="height:42px;line-height:42px" :span="4" :offset="0">
-          当前圈子积分：{{this.point}}
-        </el-col>
       </el-row>
+
+      <el-col style="height:42px;line-height:42px" :span="8" :offset="1">当前积分：{{this.point}}</el-col>
     </el-card>
     <!--没帖子-->
     <el-card v-if="!havePost" style="margin-top: 20px;">目前圈子暂无帖子或未开启</el-card>
@@ -767,7 +766,8 @@ export default {
     },
     async getCourseBasicInfo() {
       const temp = await CourseAPI.getCourseBasicInfo(
-        this.$route.params.courseId
+        this.$route.params.courseId,
+        this.$store.state.userId
       );
       this.rule_content = temp.data.course.rule;
     },

@@ -14,7 +14,8 @@ export const addCourse = (courseEntity) => {
       start_time: courseEntity.start_time,
       end_time: courseEntity.end_time,
       profession: courseEntity.profession,
-      rule: ''
+      rule: '',
+      teacher_id: courseEntity.teacher_id,
     })
   })
 }
@@ -200,10 +201,10 @@ export const deleteCourse = (course_id) => {
 }
 
 //发送系统消息
-export const systemMessages = (user_id, title, content) => {
+export const systemMessages = (user_id,title,content) => {
   return axios({
     method: 'GET',
-    url: `/sysmessage/send?user_id=${user_id}&title=${title}&content=${content}`,
+    url: `/sysmessage/send/?user_id=${user_id}&title=${title}&content=${content}`,
   })
 }
 //已读系统消息

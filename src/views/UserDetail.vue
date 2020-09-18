@@ -10,12 +10,8 @@
               <i class="el-icon-user-solid"></i>
               <b style="margin-left: 5%">{{users.username}}</b>
             </div>
-            <div class="info-content" v-show="this.$store.state.teacherID===0">
-              教师
-              <b style="margin-left: 5px; margin-right:5px">|</b>
-              {{users.school}}
-            </div>
-            <div class="info-content" style="margin-top: 10px">{{users.major}}</div>
+            <div class="info-content">学校：{{users.school}}</div>
+            <div class="info-content" style="margin-top: 10px">领域：{{users.major}}</div>
             <template>
               <el-button
                 v-if="this.$store.state.teacherID===0"
@@ -25,14 +21,14 @@
               >申请教师认证</el-button>
               <el-tag
                 v-if="this.$store.state.teacherID===1"
-                style="cursor: pointer"
+                style="cursor: pointer;margin-top:10px"
                 size="mini"
                 type="info"
-                @click="$message('认证结果会发送至您邮箱，届时请注意查收')"
+                @click="showResUp = true"
               >认证审核中</el-tag>
               <el-tag
                 v-if="this.$store.state.teacherID===2"
-                style="cursor:pointer"
+                style="cursor:pointer;margin-top:10px"
                 size="mini"
                 type="success"
                 @click="showResUp = true"
@@ -43,7 +39,7 @@
             <i class="el-icon-edit-outline el-icon"></i>
           </el-col>
           <el-col :span="2">
-            <div class="icon-content" style="margin-top: 30px">课程/圈子</div>
+            <div class="icon-content" style="margin-top: 30px">加入课程数</div>
             <div class="icon-content" style="margin-top: 10px; font-size: medium">{{users.circle}}个</div>
           </el-col>
           <el-col :span="1">
@@ -53,7 +49,7 @@
             <i class="el-icon-lollipop el-icon"></i>
           </el-col>
           <el-col :span="2">
-            <div class="icon-content" style="margin-top: 30px">圈子积分</div>
+            <div class="icon-content" style="margin-top: 30px">总圈子积分</div>
             <div class="icon-content" style="margin-top: 10px; font-size: medium">{{users.score}}分</div>
           </el-col>
           <el-col :span="1">
@@ -63,7 +59,7 @@
             <i class="el-icon-time el-icon"></i>
           </el-col>
           <el-col :span="2">
-            <div class="icon-content" style="margin-top: 30px">学习时长</div>
+            <div class="icon-content" style="margin-top: 30px">总学习时长</div>
             <div class="icon-content" style="margin-top: 10px; font-size: medium">{{users.time}}</div>
           </el-col>
           <el-col :span="1">
@@ -90,7 +86,7 @@
             <el-row :gutter="100" style="margin-top: 20px ">
               <el-col :span="5" :offset="0" v-for="(o,index) in course" :key="index">
                 <div style="min-width: 200px ;margin-bottom: 30px">
-                  <div v-on: @mouseover="show(index)" @mouseleave="i=-1" @click="jumpCourse()">
+                  <div v-on: @mouseover="show(index)" @mouseleave="i=-1">
                     <el-card :body-style="{padding:'2px'}" shadow="hover" class="courseCard">
                       <!-- 退出课程按钮-->
                       <div
@@ -101,7 +97,7 @@
                         <el-dropdown @command="handleCommand">
                           <span
                             class="el-dropdown-link"
-                            style="font-weight: bold"
+                            style="font-weight: bold;cursor:pointer"
                             @click="getcourse(o.course_id)"
                           >...</span>
                           <el-dropdown-menu slot="dropdown">
@@ -110,7 +106,7 @@
                         </el-dropdown>
                       </div>
                       <!--                                            课程信息详情-->
-                      <div class="className">{{o.course_name}}</div>
+                      <div class="className" @click="jumpCourse(o.course_id)">{{o.course_name}}</div>
                       <el-tag
                         class="tag"
                         type="warning"
@@ -153,7 +149,7 @@
             <el-row :gutter="100" style="margin-top: 20px ">
               <el-col :span="5" :offset="0" v-for="(w,index) in makeCourse" :key="index">
                 <div style="min-width: 200px ;margin-bottom: 30px">
-                  <div v-on: @mouseover="show(index)" @mouseleave="i=-1" @click="jumpCourse()">
+                  <div v-on: @mouseover="show(index)" @mouseleave="i=-1">
                     <el-card :body-style="{padding:'2px'}" shadow="hover" class="courseCard">
                       <!-- 退出课程按钮-->
                       <div
@@ -164,7 +160,7 @@
                         <el-dropdown @command="handleCommand">
                           <span
                             class="el-dropdown-link"
-                            style="font-weight: bold"
+                            style="font-weight: bold;cursor:pointer"
                             @click="getcourse(w.id)"
                           >...</span>
                           <el-dropdown-menu slot="dropdown">
@@ -173,7 +169,7 @@
                         </el-dropdown>
                       </div>
                       <!--                                            课程信息详情-->
-                      <div class="className">{{w.course_name}}</div>
+                      <div class="className" @click="jumpCourse(w.id)">{{w.course_name}}</div>
                       <el-tag
                         class="tag"
                         type="warning"
@@ -213,7 +209,7 @@
             </el-row>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="帖子" name="second"></el-tab-pane>
+        <el-tab-pane label="帖子" name="second">功能开发中...</el-tab-pane>
         <el-tab-pane label="好友" name="third">
           <div class="message">
             <el-row :gutter="30">
@@ -266,7 +262,7 @@
             <el-col :span="11">
               <el-card class="message_card">系统消息</el-card>
               <div style="overflow-y: scroll; height: 500px">
-                <div v-for="(m,index) in sortmessages" :key="index">
+                <div v-for="(m,index) in messages" :key="index">
                   <el-card class="message_detail">
                     <el-row>
                       <el-col :span="1">
@@ -278,12 +274,13 @@
                     </el-row>
                     <div class="message_content">{{m.message_content}}</div>
                     <div class="message_time">
-                      {{m.send_time}}
+                      {{m.send_time?m.send_time:'时间未知'}}
                       <el-button
-                        @click="open2(),m.is_read=1"
-                        class="button"
-                        :class="{ read_button:m.is_read===0,unread_button:m.is_read===1}"
+                        v-if="m.is_read === 0"
+                        @click="open2(m.id)"
+                        class="button read_button"
                       >标为已读</el-button>
+                      <div v-if="m.is_read === 1" disabled class="unread_button">已读</div>
                     </div>
                   </el-card>
                 </div>
@@ -300,9 +297,13 @@
                     <el-card class="message_detail">
                       <div class="message_title">
                         <span class="message_title">
-                          <b style="color: #409eff">{{n.user_info.user_nickname}}</b>
+                          <b
+                            style="color: #409eff"
+                          >{{n.user_info? n.user_info.user_nickname : '匿名' }}</b>
                           申请加入
-                          <b style="color: #409eff">{{n.course_info.course_name}}</b>
+                          <b
+                            style="color: #409eff"
+                          >{{n.course_info?n.course_info.course_name: '暂无课程名'}}</b>
                           课程
                           <div
                             style="float: right;color: #797b80;font-weight: bold;font-size: 13px"
@@ -343,13 +344,14 @@
 </template>
 
 <script>
-import Navigator from "../components/Navigator";
-import Footer from "../components/Footer";
+import Navigator from "@/components/Navigator";
+import Footer from "@/components/Footer";
 import TeacherAuth from "@/components/TeacherAuth";
 import FriendList from "@/components/FriendList";
-import * as FT from "../tools/frontTool";
-import * as userAPI from "../APIs/user.js";
-import * as courseAPI from "../APIs/course.js";
+import * as FT from "@/tools/frontTool";
+import * as userAPI from "@/APIs/user.js";
+import * as courseAPI from "@/APIs/course.js";
+import * as noticeAPI from "@/APIs/notice.js";
 
 export default {
   name: "UserDetail",
@@ -360,26 +362,26 @@ export default {
       showResUp: false,
       showAuthUp: false,
       userId: this.$store.state.userId,
-      nickname:this.$store.state.nickname,
+      nickname: this.$store.state.nickname,
       circleUrl: require("@/assets/useravatar.jpg"),
       users: {
-        username: "烽火",
+        username: "烽火用户",
         userId: "BH17373109",
         identity: 0,
-        school: "北京航空航天大学",
-        major: "软件工程",
-        circle: "5",
-        score: 99,
-        time: "13时26分",
+        school: "暂未认证学校信息",
+        major: "暂未认证领域信息",
+        circle: 0,
+        score: 0,
+        time: 0,
       },
       activeName: "first",
       seen: false,
       course_id: 1,
       sender_id: 1,
       current: 0,
-      messageid : 2,
+      messageid: 2,
       value1: true,
-      teachername:" 谭火彬",
+      teachername: " 谭火彬",
       currentDate: new Date(),
       course: [
         {
@@ -455,12 +457,13 @@ export default {
     };
   },
   created() {
+    this.sendSystemMes();
     this.get_userDetail();
     this.get_userCourse();
     this.get_userMakeCourse();
+    this.get_sysMsg();
     this.get_CourseApply();
     this.get_FriendApply();
-    console.log(this.$store.state);
   },
   filters: {
     filterIntro(value) {
@@ -468,7 +471,9 @@ export default {
     },
   },
   methods: {
-    jumpCourse() {},
+    jumpCourse(CID) {
+      this.$router.push({ path: "/course/" + CID });
+    },
 
     handleClick(tab, event) {
       console.log(tab, event);
@@ -494,13 +499,17 @@ export default {
     },
     //获取用户信息*
     get_userDetail() {
+      this.userId = this.$store.state.userId;
       userAPI.getUserDetail(this.userId).then((res) => {
+        console.log(res);
+        this.users.circle = res.data.user.course_number;
         this.users.username = res.data.user.nickname;
         this.users.school = res.data.user.school;
         this.users.major = res.data.user.profession;
         this.users.score = res.data.user.score;
         this.users.time = res.data.user.coursetime;
-        console.log(res.data.user.school_id);
+        this.users.school = res.data.user.school;
+        this.$store.state.teacherID = res.data.user.teacher_identity;
       });
     },
 
@@ -516,8 +525,9 @@ export default {
     //获取用户创建的课程*
     get_userMakeCourse() {
       courseAPI.getUserOwnerCourse(this.userId).then((res) => {
+        console.log(23333, res);
         this.makeCourse = res.data.course_list;
-        this.teachername=res.data.teacher.realname;
+        this.teachername = res.data.teacher.realname;
         // console.log(res.data);
         //console.log("@", this.teachername);
       });
@@ -587,7 +597,7 @@ export default {
       });
     },
     //同意加入课程*(系统消息发送情况没测，现在看不到课程申请）
-    confirmCourse(course_application_id,user_id) {
+    confirmCourse(course_application_id, user_id) {
       this.$message({
         message: "已添加成员进入课程",
         type: "success",
@@ -600,7 +610,7 @@ export default {
         });
     },
     //拒绝加入课程*(系统消息发送情况没测，现在看不到课程申请）
-    rejectCourse(course_application_id,user_id) {
+    rejectCourse(course_application_id, user_id) {
       this.$message({
         message: "拒绝成员进入课程",
         type: "success",
@@ -627,7 +637,11 @@ export default {
       });
       userAPI.passFriend(sender_id, this.userId).then((res) => {});
       courseAPI
-        .systemMessages(sender_id, "好友申请",this.nickname+"已经通过了你的好友申请")
+        .systemMessages(
+          sender_id,
+          "好友申请",
+          this.nickname + "已经通过了你的好友申请"
+        )
         .then((res) => {
           console.log("C", res);
         });
@@ -638,37 +652,42 @@ export default {
         message: "已拒绝好友",
         type: "success",
       });
-      userAPI.rejectFriend(sender_id,this.userId ).then((res) => {});
+      userAPI.rejectFriend(sender_id, this.userId).then((res) => {});
       courseAPI
-        .systemMessages(sender_id, "好友申请", this.nickname+"拒绝了你的好友申请")
+        .systemMessages(
+          sender_id,
+          "好友申请",
+          this.nickname + "拒绝了你的好友申请"
+        )
         .then((res) => {
           console.log("C", res);
         });
     },
     //发送系统消息（没用了，直接在同意拒绝里添加了）
     sendSystemMes() {
-      courseAPI.systemMessages("1", "123", "456").then((res) => {
+      courseAPI.systemMessages(1, "测试", "content内容").then((res) => {
         console.log("C", res);
       });
     },
+    //获取系统消息
+    get_sysMsg() {
+      noticeAPI.getAllSysMsg(this.userId).then((res) => {
+        this.messages = res.data.messages;
+        this.messages.reverse();
+      });
+    },
     //消息已读（messageid替换）
-    open2() {
+    open2(msgID) {
       this.$message({
         message: "消息已标为已读",
         type: "success",
       });
-      courseAPI.readMessages(this.messageid).then((res) => {
+      courseAPI.readMessages(msgID).then((res) => {
         console.log("D", res);
+        this.get_sysMsg();
       });
     },
     //获取系统消息（虚位以待）(messages的数组，但是在sortmessages中迭代)
-
-  },
-
-  computed: {
-    sortmessages: function () {
-      return sortByTime(this.messages, "send_time", "is_read");
-    },
   },
 };
 function sortByTime(array, key1, key2) {
@@ -772,6 +791,7 @@ function sortByTime(array, key1, key2) {
   font-family: 微软雅黑;
   font-weight: bold;
   float: inherit;
+  cursor: pointer;
 }
 
 .classFrom {
@@ -903,6 +923,12 @@ function sortByTime(array, key1, key2) {
 }
 
 .unread_button {
+  border-radius: 5px;
+  width: 40px;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  font-size: 13px;
   margin-left: 350px;
   margin-top: -30px;
   background-color: #797b80;
@@ -972,9 +998,9 @@ function sortByTime(array, key1, key2) {
   background-color: #ff7256;
 }
 
-.friendList{
-   overflow-y: scroll;
-   height: 450px;
-   margin-top: 10px;
+.friendList {
+  overflow-y: scroll;
+  height: 450px;
+  margin-top: 10px;
 }
 </style>

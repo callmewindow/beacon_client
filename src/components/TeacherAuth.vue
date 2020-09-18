@@ -140,13 +140,12 @@ export default {
         cancelButtonText: "继续编辑",
       })
         .then(async () => {
+          let msg = await userAPI.modifyUserInfo(this.$store.state.userId,this.auth);
+          console.log(msg);
           this.$message({
             type: "success",
             message: "认证发送成功",
           });
-          // this.$store.commit("setTeacherID",1);
-          this.$store.state.teacherID = 1;
-          location.reload();
         })
         .catch(() => {});
     },

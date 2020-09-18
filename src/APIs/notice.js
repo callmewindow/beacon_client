@@ -68,3 +68,10 @@ export const getAllFriend = (userId) => {
     url: `/api/friend/search?user_id=${userId}`
   })
 }
+
+export const getAllSysMsg = (userId) => {
+  return axios({
+    method: 'GET',
+    url: `/sysmessage/get?user_id=${userId}`
+  })
+}
