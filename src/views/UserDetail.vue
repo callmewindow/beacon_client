@@ -274,7 +274,7 @@
                     </el-row>
                     <div class="message_content">{{m.message_content}}</div>
                     <div class="message_time">
-                      {{m.send_time?m.send_time:'时间未知'}}
+                      {{m.send_time?m.send_time.substring(0,19):'时间未知'}}
                       <el-button
                         v-if="m.is_read === 0"
                         @click="open2(m.id)"

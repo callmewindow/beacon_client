@@ -8,9 +8,9 @@
           class="lastMessage"
           v-if="item.last_message.content"
         >{{ item.last_message.content | cutMsg }}</div>
-        <div class="lastMessage" v-if="!item.last_message.content">暂无最近对话</div>
-        <div class="msgStatusNo" v-if="item.last_message.is_read == 0">未读</div>
-        <div class="msgStatusYes" v-if="item.last_message.is_read == 1">已读</div>
+        <div class="lastMessage" v-if="!item.last_message.content">对方暂无消息</div>
+        <!-- <div class="msgStatusNo" v-if="item.last_message.is_read == 0">未读</div>
+        <div class="msgStatusYes" v-if="item.last_message.is_read == 1">已读</div> -->
         <div class="friendBtn">
           <el-button size="mini" type="primary" @click="showMsg(index)">私信</el-button>
           <el-button size="mini" type="primary" @click="deleteFriend(index)">删除</el-button>
@@ -72,23 +72,19 @@ export default {
       this.showMsgUp = true;
       let name = this.friendList[i].user_nickname;
       this.msgTitle = "与" + name + "的对话";
-      this.talkId = this.friendList[i].user_nickname;
-      if (i == 0) {
-        this.talkId = "45";
-      } else {
-        this.talkId = "44";
-      }
+      this.talkId = String(this.friendList[i].id);
     },
     async deleteFriend(i) {
       let name = this.friendList[i].user_nickname;
-      let id = this.friendList[i].user_nickname;
+      let id = this.friendList[i].id;
       this.$confirm("是否确定删除和 " + name + " 的好友关系？", "好友删除", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(async () => {
-          let temp = await UserAPI.deleteFriend(1, 44);
+          let temp = await UserAPI.deleteFriend(this.$store.state.userId, id);
+          console.log(temp);
           this.getFriendList();
           this.$message({
             type: "success",
