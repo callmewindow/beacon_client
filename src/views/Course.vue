@@ -698,20 +698,30 @@ export default {
       }
       if (target.name == "forum") {
         if (this.courseInfo.is_open === 0) {
-          this.$alert(
-            "该课程现在还未创建圈子社区，现在要创建圈子社区吗？",
-            "创建圈子社区",
-            {
+          if (this.identity === 2) {
+            this.$alert(
+              "该课程现在还未开启圈子社区，现在要开启圈子社区吗？",
+              "开启圈子社区",
+              {
+                confirmButtonText: "确定",
+                callback: async (action) => {
+                  if (action === "confirm") {
+                    // 同步保证请求发送成功
+                    await CourseAPI.openCourseForum(this.courseId);
+                    location.reload();
+                  }
+                },
+              }
+            );
+          } else {
+            this.$alert("该课程现在还未开启圈子社区", "圈子社区", {
               confirmButtonText: "确定",
-              callback: async (action) => {
-                if (action == "confirm") {
-                  // 同步保证请求发送成功
-                  await CourseAPI.openCourseForum(this.courseId);
-                  location.reload();
-                }
+              callback: (action) => {
+                this.tabPos = "intro";
+                this.$router.push("intro");
               },
-            }
-          );
+            });
+          }
         }
       }
     },
