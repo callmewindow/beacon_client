@@ -601,12 +601,21 @@ export default {
     },
 
     async deleteStudent(user_id) {
-      const temp = await CourseAPI.deleteStudent(user_id, this.courseId);
-      for (let i = 0; i < this.studentList.length; i++) {
-        if (this.studentList[i].user_id == user_id) {
-          this.studentList.pop(i);
-        }
-      }
+      this.$alert("确定删除该学生吗？", "删除学生", {
+        confirmButtonText: "确定",
+        callback: async (action) => {
+          if (action === "confirm") {
+            const temp = await CourseAPI.deleteStudent(user_id, this.courseId);
+            for (let i = 0; i < this.studentList.length; i++) {
+              if (this.studentList[i].user_id == user_id) {
+                this.studentList.pop(i);
+              }
+            }
+            console.log("删除返回");
+            console.log(temp);
+          }
+        },
+      });
     },
 
     manageVideoInfo(data) {
