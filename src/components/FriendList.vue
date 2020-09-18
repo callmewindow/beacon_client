@@ -60,7 +60,7 @@ export default {
     async getFriendList() {
       let temp = await NoticeAPI.getAllFriend(this.$store.state.userId);
       this.friendList = temp.data.users;
-      console.log(temp);
+      console.log(23,temp);
       if (this.friendList.length == 0) {
         this.haveFriend = false;
       } else {
@@ -68,6 +68,7 @@ export default {
       }
     },
     showMsg(i) {
+      console.log(this.friendList[i]);
       this.showMsgUp = true;
       let name = this.friendList[i].user_nickname;
       this.msgTitle = "与" + name + "的对话";

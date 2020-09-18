@@ -10,8 +10,8 @@
               <i class="el-icon-user-solid"></i>
               <b style="margin-left: 5%">{{users.username}}</b>
             </div>
-            <div class="info-content">学校：{{users.school}}</div>
-            <div class="info-content" style="margin-top: 10px">领域：{{users.major}}</div>
+            <div class="info-content">学校：{{users.school?users.school:'暂未认证学校'}}</div>
+            <div class="info-content" style="margin-top: 10px">领域：{{users.major?users.major:'暂未填写领域'}}</div>
             <template>
               <el-button
                 v-if="this.$store.state.teacherID===0||!this.$store.state.teacherID"
@@ -289,7 +289,7 @@
             <el-col :span="2">
               <div class="line">|</div>
             </el-col>
-            <el-col :span="11">
+            <el-col :span="11" v-if="$store.state.teacherID === 2">
               <el-card class="message_card">课程申请</el-card>
               <div style="overflow-y: scroll; height: 500px">
                 <div class="message_detail">
@@ -584,18 +584,22 @@ export default {
     },
     //获取所有课程申请++(user那里是user_id,不知道是不是nickname好一些/现在收不到数据)
     get_CourseApply() {
-      courseAPI.getUserApply(1).then((res) => {
+      courseAPI.getUserApply(this.$store.state.userId).then((res) => {
         console.log("66", res.data);
-        this.accptedMessages = res.data.accepted_applications;
-        this.rejectedMessages = res.data.rejected_applications;
-        this.unhandledMessages = res.data.unhandled_applications;
-        let newarr = [
-          ...this.unhandledMessages,
-          ...this.accptedMessages,
-          ...this.rejectedMessages,
-        ];
-        this.courseMessages = newarr;
-        console.log("A", newarr);
+        if (res.data.message === "该用户尚未创建任何课程。") {
+          this.courseMessages = [];
+        } else {
+          this.accptedMessages = res.data.accepted_applications;
+          this.rejectedMessages = res.data.rejected_applications;
+          this.unhandledMessages = res.data.unhandled_applications;
+          let newarr = [
+            ...this.unhandledMessages,
+            ...this.accptedMessages,
+            ...this.rejectedMessages,
+          ];
+          this.courseMessages = newarr;
+          console.log("A", newarr);
+        }
       });
     },
     //同意加入课程*(系统消息发送情况没测，现在看不到课程申请）
@@ -627,7 +631,11 @@ export default {
     //获取所有好友申请++（（看上去差不多了））
     get_FriendApply() {
       userAPI.getFriendApplication(this.userId).then((res) => {
-        this.friendMessages = res.data;
+        if (res.data.result === "no friend application") {
+          this.friendMessages = [];
+        } else {
+          this.friendMessages = res.data;
+        }
         console.log("B", res.data);
       });
     },
