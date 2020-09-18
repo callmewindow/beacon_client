@@ -400,6 +400,9 @@ export default {
       played_time: this.duration,
       start_play_time: this.firstStartTime,
     };
+    if (this.identity === 2) {
+      return;
+    }
     const temp = await CourseAPI.addWatchRecord(
       tempFormat.video_id,
       tempFormat.user_id,
@@ -432,7 +435,10 @@ export default {
 
     async getCourseBasicInfo() {
       console.log(this.userId);
-      const temp = await CourseAPI.getCourseBasicInfo(this.courseId, this.userId);
+      const temp = await CourseAPI.getCourseBasicInfo(
+        this.courseId,
+        this.userId
+      );
       const UCR = await CourseAPI.getUCRelation(
         this.$store.state.userId,
         this.$route.params.courseId
