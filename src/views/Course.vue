@@ -120,7 +120,7 @@
 
               <el-tab-pane :name="tabNames[3]">
                 <div class="tab_left_part" slot="label">圈子社区</div>
-                <div id="postList" style="min-height:600px" v-if="courseInfo.is_open">
+                <div id="postList" style="min-height:600px" v-if="courseInfo.is_open === 1">
                   <PostList :point="circlePoint" />
                 </div>
               </el-tab-pane>
@@ -185,28 +185,28 @@
         <el-table-column prop="watch_duration" label="总播放时长"></el-table-column>
         <el-table-column prop="user_identity" label="身份">
           <template slot-scope="scope">
-            <span v-if="scope.row.user_identity == 0">学生</span>
-            <span v-if="scope.row.user_identity == 1">助教</span>
+            <span v-if="scope.row.user_identity === 0">学生</span>
+            <span v-if="scope.row.user_identity === 1">助教</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="220px">
           <template slot-scope="scope">
             <el-button
-              v-if="scope.row.user_identity == 1"
+              v-if="scope.row.user_identity === 1"
               type="text"
               size="medium"
               style="color: #E6A23C;"
               @click="cancelAssistant(scope.row.user_id)"
             >取消助教</el-button>
             <el-button
-              v-if="scope.row.user_identity == 0"
+              v-if="scope.row.user_identity === 0"
               type="text"
               size="medium"
               @click="authAssistant(scope.row.user_id)"
             >设为助教</el-button>
-            <el-divider v-if="scope.row.user_identity == 0" direction="vertical"></el-divider>
+            <el-divider v-if="scope.row.user_identity === 0" direction="vertical"></el-divider>
             <el-button
-              v-if="scope.row.user_identity == 0"
+              v-if="scope.row.user_identity === 0"
               type="text"
               size="medium"
               style="color: #F56C6C;"
@@ -312,10 +312,7 @@ export default {
       showManageVideo: false,
       showSpecificVideoInfo: false,
       manageVideoTitle: null,
-      specificVideoInfo: {
-        title: "加载中",
-        introduction: "加载中",
-      },
+      specificVideoInfo: {},
       specificVideoId: null,
       newTitle: null,
       newIntroduction: null,
@@ -440,17 +437,16 @@ export default {
         this.$store.state.userId,
         this.$route.params.courseId
       );
-      if(UCR.data.result=="OK"){
+      if (UCR.data.result == "OK") {
         this.circlePoint = UCR.data.user_course.point;
-        if(!this.circlePoint){
+        if (!this.circlePoint) {
           this.circlePoint = 0;
         }
       }
       console.log("课程信息");
       console.log(temp.data);
       this.courseInfo = temp.data.course;
-      // this.identity = temp.data.relation;
-      this.identity = 2;
+      this.identity = temp.data.relation;
       this.$store.state.permission = this.identity;
       this.teacherInfo = temp.data.teacher;
     },
@@ -553,7 +549,7 @@ export default {
         .then(async () => {
           const temp = await CourseAPI.joinCourse(
             this.courseId,
-            7,
+            this.userId,
             "233"
           );
           console.log("申请返回");
