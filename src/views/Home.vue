@@ -175,7 +175,7 @@ export default {
         this.selectClasses.push(this.allSelect[index]);
       }
     }
-    console.log(this.selectClasses)
+    console.log(this.selectClasses);
     await this.getHotCourse();
   },
   methods: {
@@ -185,8 +185,9 @@ export default {
     async getHotCourse(type) {
       let temp = await CourseAPI.getHotCourses();
       this.hotCourse = temp.data.courses;
-      this.hotCourse.pop();
-      this.hotCourse.pop();
+      for (let i = this.hotCourse.length; i > 8; i--) {
+        this.hotCourse.pop();
+      }
       if (type == "f5") {
         this.$message.success("热门课程已刷新");
       }
