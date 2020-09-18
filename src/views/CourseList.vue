@@ -97,7 +97,6 @@ import Navigator from "@/components/Navigator";
 import AddCourse from "@/components/AddCourse";
 import Footer from "@/components/Footer";
 import * as frontTool from "@/tools/frontTool";
-//import Username from "@/components/Username";
 
 export default {
   name: "CourseList",
@@ -105,7 +104,6 @@ export default {
     Navigator,
     Footer,
     AddCourse,
-    //Username,
   },
   data() {
     return {
@@ -113,7 +111,7 @@ export default {
       select: "课程",
       searchInput: "",
       showAddCourse: false,
-      course_list: [], // course_intro,course_name,end_time,id,is_open,profession,rule,start_time
+      course_list: [],
       search_keyword: "",
       search_list: [],
       display_search_result: false,
@@ -134,12 +132,12 @@ export default {
   },
   methods: {
     async searchAll() {
-      if (this.select == "课程") {
+      if (this.select === "课程") {
         this.search_keyword = this.searchInput;
         this.display_search_result = false;
         this.search_course();
       }
-      if(this.select == "教师"){
+      if(this.select === "教师"){
         this.$message("教师检索功能开发中，敬请期待！")
       }
     },
