@@ -355,6 +355,7 @@ export default {
   // 加载
   async created() {
     if (this.$store.state.userId === -1) {
+      this.$message.error("请登录后查看课程详情")
       FT.toPath("/Home");
     }
     this.userId = this.$store.state.userId;
